@@ -24,6 +24,7 @@ yarn-error.log*
 
 # Dados do ETL
 etl/data/
+*.zip
 
 # Logs
 *.log
