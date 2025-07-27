@@ -141,6 +141,9 @@ This project was developed collaboratively by:
 - **Samuel Colaço Lira Carvalho**  
   [SamuelColaço](https://github.com/SamuelColaco)
 
+- **Gustavo Henrique Rocha Oliveira**  
+  [Gustavo](https://github.com/yScroww)
+
 ## License
 
 This is an academic project. All rights reserved to the authors.
