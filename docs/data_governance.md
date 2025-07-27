@@ -1,79 +1,79 @@
-# Governança e Linhagem de Dados - Alpargatas Insight
+# Data Governance and Lineage - Alpargatas Insight
 
-## 1. Introdução
+## 1. Introduction
 
-Este documento serve como a fonte central de verdade para todos os dados utilizados na plataforma Alpargatas Insight. O seu objetivo é garantir a transparência, a confiabilidade e a reprodutibilidade das nossas análises, detalhando a origem, as transformações e as definições de cada conjunto de dados.
+This document serves as the central source of truth for all data used in the Alpargatas Insight platform. Its purpose is to ensure the transparency, reliability, and reproducibility of our analyses by detailing the origin, transformations, and definitions of each dataset.
 
-Esta é a implementação prática da nossa política de Governança de Dados.
+This is the practical implementation of our Data Governance policy.
 
 ---
 
-## 2. Fontes de Dados Primárias (MVP)
+## 2. Primary Data Sources (MVP)
 
-### 2.1. Censo Escolar da Educação Básica
+### 2.1. Basic Education School Census
 
-- **Nome da Fonte:** Microdados do Censo Escolar
-- **Mantenedor:** Instituto Nacional de Estudos e Pesquisas Educacionais Anísio Teixeira (INEP)
-- **Link Oficial de Acesso:** [Portal de Dados Abertos do INEP](https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados)
-- **Versão Utilizada no Projeto:** **2023**
-- **Descrição:** Este é o principal levantamento estatístico sobre a educação básica no Brasil. Contém informações detalhadas sobre escolas, turmas, alunos e profissionais da educação em nível municipal, estadual e federal. Os dados são disponibilizados em formato de arquivos CSV, compactados em um arquivo ZIP.
+- **Source Name:** School Census Microdata
+- **Maintainer:** National Institute for Educational Studies and Research Anísio Teixeira (INEP)
+- **Official Access Link:** [INEP Open Data Portal](https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados)
+- **Version Used in Project:** **2023**
+- **Description:** This is the main statistical survey on basic education in Brazil. It contains detailed information about schools, classes, students, and education professionals at the municipal, state, and federal levels. The data is provided in CSV format, compressed in a ZIP file.
 
-#### **Linhagem dos Dados (Data Lineage)**
+#### **Data Lineage**
 
-O fluxograma abaixo descreve a jornada dos dados desde sua origem bruta até estarem prontos para consumo pela API no banco de dados.
+The flowchart below describes the data's journey from its raw origin to being ready for consumption by the API in the database.
 
 ```mermaid
 graph TD
-    A[<b>Origem:</b><br>Arquivo ZIP do INEP<br><code>censo_2023.zip</code>] --> B{<b>Extração:</b><br>Script <code>01_extract.py</code>};
-    B --> C[<b>Artefato Bruto:</b><br>Dados filtrados da Paraíba<br><code>escolas_paraiba.parquet</code>];
-    C --> D{<b>Transformação:</b><br>Script <code>02_transform.py</code>};
-    D --> E[<b>Artefato Processado:</b><br>Dados limpos e enriquecidos<br><code>escolas_processado.parquet</code>];
-    E --> F{<b>Carregamento:</b><br>Script <code>03_load.py</code>};
-    F --> G[<b>Destino Final:</b><br>Coleções no MongoDB Atlas];
+    A[<b>Origin:</b><br>INEP ZIP File<br><code>censo_2023.zip</code>] --> B{<b>Extraction:</b><br>Script <code>01_extract.py</code>};
+    B --> C[<b>Raw Artifact:</b><br>Filtered Paraíba Data<br><code>escolas_paraiba.parquet</code>];
+    C --> D{<b>Transformation:</b><br>Script <code>02_transform.py</code>};
+    D --> E[<b>Processed Artifact:</b><br>Cleaned and Enriched Data<br><code>escolas_processado.parquet</code>];
+    E --> F{<b>Loading:</b><br>Script <code>03_load.py</code>};
+    F --> G[<b>Final Destination:</b><br>Collections in MongoDB Atlas];
 
     style A fill:#D6EAF8
     style G fill:#A9DFBF
 ```
 
-**Etapas Detalhadas:**
+**Detailed Steps:**
 
-1. **Download e Cópia (Manual/Dockerfile):** O arquivo `censo_2023.zip` é baixado manualmente e colocado na pasta `etl/data/`. O `Dockerfile` do ETL copia este arquivo para dentro da imagem Docker, garantindo que o processo seja offline e reprodutível.
+1.  **Download and Copy (Manual/Dockerfile):** The `censo_2023.zip` file is downloaded manually and placed in the `etl/data/` folder. The ETL's `Dockerfile` copies this file into the Docker image, ensuring the process is offline and reproducible.
 
-2. **Extração (`01_extract.py`):**
+2.  **Extraction (`01_extract.py`):**
 
-   - O script lê o arquivo `.zip` de dentro do container.
-   - Ele identifica e descompacta o arquivo `.csv` principal em memória.
-   - Os dados são carregados em um DataFrame do Pandas.
-   - **Primeira Filtragem:** Apenas os registros do estado da Paraíba (`SG_UF == 'PB'`) e de escolas públicas em funcionamento são selecionados.
-   - O resultado é salvo como `escolas_paraiba.parquet`, contendo todas as colunas originais, mas apenas para o universo de interesse.
+    - The script reads the `.zip` file from within the container.
+    - It identifies and unzips the main `.csv` file in memory.
+    - The data is loaded into a Pandas DataFrame.
+    - **Initial Filtering:** Only records from the state of Paraíba (`SG_UF == 'PB'`) and active public schools are selected.
+    - The result is saved as `escolas_paraiba.parquet`, containing all original columns but only for the universe of interest.
 
-3. **Transformação (`02_transform.py`):**
+3.  **Transformation (`02_transform.py`):**
 
-   - O script carrega o arquivo `escolas_paraiba.parquet`.
-   - **Seleção e Renomeação:** Apenas as colunas relevantes para o projeto são selecionadas e renomeadas para nomes amigáveis (ex: `NO_ENTIDADE` -> `escola_nome`).
-   - **Limpeza:** Tipos de dados são corrigidos e valores nulos são tratados.
-   - **Estruturação:** Colunas relacionadas são agrupadas em sub-documentos (ex: `infraestrutura`, `indicadores`) para se alinharem ao modelo NoSQL.
-   - **Enriquecimento:** A lógica de cálculo do `score_de_risco` é aplicada, criando uma nova coluna com este indicador.
-   - O resultado é salvo como `escolas_processado.parquet`.
+    - The script loads the `escolas_paraiba.parquet` file.
+    - **Selection and Renaming:** Only the columns relevant to the project are selected and renamed to user-friendly names (e.g., `NO_ENTIDADE` -> `escola_nome`).
+    - **Cleaning:** Data types are corrected, and null values are handled.
+    - **Structuring:** Related columns are grouped into sub-documents (e.g., `infraestrutura`, `indicadores`) to align with the NoSQL model.
+    - **Enrichment:** The `risk_score` calculation logic is applied, creating a new column with this indicator.
+    - The result is saved as `escolas_processado.parquet`.
 
-4. **Carregamento (`03_load.py`):**
-   - O script carrega o arquivo `escolas_processado.parquet`.
-   - Ele se conecta ao cluster do MongoDB Atlas.
-   - Os dados são inseridos (com `update_one` e `upsert=True` para evitar duplicatas) nas coleções designadas (ex: `escolas`).
+4.  **Loading (`03_load.py`):**
+    - The script loads the `escolas_processado.parquet` file.
+    - It connects to the MongoDB Atlas cluster.
+    - The data is inserted (using `update_one` and `upsert=True` to avoid duplicates) into the designated collections (e.g., `escolas`).
 
 ---
 
-## 3. Fontes de Dados Secundárias (Visão de Futuro)
+## 3. Secondary Data Sources (Future Vision)
 
-Para futuras evoluções do projeto, as seguintes fontes de dados foram mapeadas para enriquecer a análise e permitir a funcionalidade de "Análise Ecossistêmica":
+For future project evolutions, the following data sources have been mapped to enrich the analysis and enable the "Ecosystem Analysis" functionality:
 
-- **Fonte:** Censo Demográfico e PNAD Contínua (IBGE)
+- **Source:** Demographic Census and Continuous PNAD (IBGE)
 
-  - **Uso Potencial:** Cruzar dados educacionais com indicadores socioeconômicos (renda per capita, escolaridade dos pais) por município.
+  - **Potential Use:** Cross-reference educational data with socioeconomic indicators (per capita income, parental education level) by municipality.
 
-- **Fonte:** Mapa das Organizações da Sociedade Civil (IPEA)
+- **Source:** Map of Civil Society Organizations (IPEA)
 
-  - **Uso Potencial:** Mapear ONGs e parceiros em potencial que já atuam nos territórios das escolas de alto risco.
+  - **Potential Use:** Map NGOs and potential partners already operating in the territories of high-risk schools.
 
-- **Fonte:** Dados de Emprego (CAGED/RAIS)
-  - **Uso Potencial:** Analisar a correlação entre evasão escolar e a dinâmica do mercado de trabalho local.
+- **Source:** Employment Data (CAGED/RAIS)
+  - **Potential Use:** Analyze the correlation between school dropout rates and local labor market dynamics.
