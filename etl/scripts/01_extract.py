@@ -13,10 +13,6 @@ dotenv_path = Path(__file__).resolve().parents[2] / '.env'
 load_dotenv(dotenv_path=dotenv_path)
 
 def extract_data_from_source() -> pd.DataFrame:
-    """
-    Função principal para extrair os dados.
-    A lógica do seu colega virá para cá.
-    """
     logging.info("Iniciando o processo de extração...")
 
     data_path = os.getenv("RAW_DATA_PATH", "default/path/not/found")
@@ -34,7 +30,6 @@ def extract_data_from_source() -> pd.DataFrame:
 def save_raw_data(df: pd.DataFrame, file_path: Path) -> None:
     logging.info(f"Salvando dados brutos em {file_path}...")
 
-    # Garante que o diretório de destino exista
     file_path.parent.mkdir(parents=True, exist_ok=True)
 
     df.to_parquet(file_path, index=False)
