@@ -11,12 +11,12 @@ graph TD
     subgraph "Local Environment (Docker Compose)"
         A[Frontend - React/Nginx <br> Port: 5173]
         B[Backend - Node.js/API <br> Port: 3000]
-        C[ETL - Python/Poetry <br> (Executed on demand)]
+        C[ETL - Python/Poetry <br> Executed on demand]
     end
 
     subgraph "External Data Sources"
-        D[Raw Data <br> (INEP Microdata)]
-        E[Cloud Database <br> (MongoDB Atlas)]
+        D[Raw Data <br> INEP Microdata]
+        E[Cloud Database <br> MongoDB Atlas]
     end
 
     A --"HTTP/API Requests"--> B
@@ -28,7 +28,7 @@ graph TD
     style B fill:#8CC84B,stroke:#000,stroke-width:2px
     style C fill:#FFE057,stroke:#000,stroke-width:2px
     style E fill:#4DB33D,stroke:#000,stroke-width:2px
-
+```
 
 ## Component Details
 
@@ -68,7 +68,3 @@ graph TD
   Serves as our _"single source of truth."_
   Stores all data processed by the ETL pipeline.
   Using a cloud service ensures that the entire development team accesses the same database, simplifying local environments.
-
-```
-
-```
