@@ -4,7 +4,7 @@ name: Verificador e Corretor de Qualidade do Código
 
 on:
   pull_request:
-    branches: [ "main", "development" ]
+    branches: ["main", "development"]
   workflow_dispatch:
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
       - name: Configurar Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Instalar Poetry
         run: pip install poetry
@@ -59,16 +59,17 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
-          cache: 'npm'
+          node-version: "lts/*"
+          cache: "npm"
+          # Corrigido para apontar para a pasta 'server'
           cache-dependency-path: server/package-lock.json
 
       - name: Instalar dependências
-        # Usamos --prefix para dizer ao npm onde trabalhar
+        # Corrigido: Usamos --prefix server para dizer ao npm onde trabalhar
         run: npm ci --prefix server
 
       - name: Verificar e formatar código
-        # Também usamos --prefix para os scripts
+        # Corrigido: Também usamos --prefix para os scripts
         run: |
           npm run lint --prefix server
           npm run format --prefix server
@@ -76,6 +77,7 @@ jobs:
       - name: Fazer commit das alterações de formatação
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "style(backend): Formata código TypeScript automaticamente ✨"
+          # Corrigido para refletir a mudança de nome
+          commit_message: "style(server): Formata código TypeScript automaticamente ✨"
           commit_user_name: "GitHub Actions Bot"
           commit_user_email: "actions@github.com"
