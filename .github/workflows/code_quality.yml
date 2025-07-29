@@ -1,6 +1,4 @@
-# .github/workflows/code_quality.yml
-
-name: Verificador e Corretor de Qualidade do Código
+name: Code Quality Automation
 
 on:
   pull_request:
@@ -16,32 +14,32 @@ jobs:
       run:
         working-directory: ./etl
     steps:
-      - name: Checkout do código
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
 
-      - name: Configurar Python
+      - name: Set up Python environment
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Instalar Poetry
+      - name: Install Poetry
         run: pip install poetry
 
-      - name: Instalar dependências com Poetry
+      - name: Install project dependencies
         run: poetry install --sync
 
-      - name: Formatar código com Ruff
+      - name: Apply Ruff formatter
         run: poetry run ruff format .
 
-      - name: Verificar e corrigir o resto com Ruff
+      - name: Run Ruff linter with autofix
         run: poetry run ruff check . --fix --ignore E501
 
-      - name: Fazer commit das alterações de formatação
+      - name: Commit formatting changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "style(etl): Formata código Python automaticamente ✨"
+          commit_message: "chore(etl): auto-format Python code via CI"
           commit_user_name: "GitHub Actions Bot"
           commit_user_email: "actions@github.com"
 
@@ -49,35 +47,30 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    # Removido o working-directory daqui para evitar conflitos de caminho
     steps:
-      - name: Checkout do código
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
 
-      - name: Configurar Node.js
+      - name: Set up Node.js environment
         uses: actions/setup-node@v4
         with:
           node-version: "lts/*"
           cache: "npm"
-          # Corrigido para apontar para a pasta 'server'
           cache-dependency-path: server/package-lock.json
 
-      - name: Instalar dependências
-        # Corrigido: Usamos --prefix server para dizer ao npm onde trabalhar
+      - name: Install project dependencies
         run: npm ci --prefix server
 
-      - name: Verificar, formatar e corrigir código
-        # Corrigido: Adicionamos a flag '--fix' ao comando de lint
+      - name: Run linter with autofix and apply formatter
         run: |
           npm run lint --prefix server -- --fix || true
           npm run format --prefix server
 
-      - name: Fazer commit das alterações de formatação
+      - name: Commit formatting changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          # Corrigido para refletir a mudança de nome
-          commit_message: "style(server): Formata código TypeScript automaticamente ✨"
+          commit_message: "chore(server): auto-format TypeScript code via CI"
           commit_user_name: "GitHub Actions Bot"
           commit_user_email: "actions@github.com"
