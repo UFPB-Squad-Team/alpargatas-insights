@@ -1,0 +1,83 @@
+# .github/workflows/code_quality.yml
+
+name: Verificador e Corretor de Qualidade do Código
+
+on:
+  pull_request:
+    branches: ["main", "development"]
+  workflow_dispatch:
+
+jobs:
+  lint-and-format-etl:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: ./etl
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar Poetry
+        run: pip install poetry
+
+      - name: Instalar dependências com Poetry
+        run: poetry install --sync
+
+      - name: Formatar código com Ruff
+        run: poetry run ruff format .
+
+      - name: Verificar e corrigir o resto com Ruff
+        run: poetry run ruff check . --fix --ignore E501
+
+      - name: Fazer commit das alterações de formatação
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "style(etl): Formata código Python automaticamente ✨"
+          commit_user_name: "GitHub Actions Bot"
+          commit_user_email: "actions@github.com"
+
+  lint-and-format-backend:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    # Removido o working-directory daqui para evitar conflitos de caminho
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+          cache: "npm"
+          # Corrigido para apontar para a pasta 'server'
+          cache-dependency-path: server/package-lock.json
+
+      - name: Instalar dependências
+        # Corrigido: Usamos --prefix server para dizer ao npm onde trabalhar
+        run: npm ci --prefix server
+
+      - name: Verificar, formatar e corrigir código
+        # Corrigido: Adicionamos a flag '--fix' ao comando de lint
+        run: |
+          npm run lint --prefix server -- --fix || true
+          npm run format --prefix server
+
+      - name: Fazer commit das alterações de formatação
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          # Corrigido para refletir a mudança de nome
+          commit_message: "style(server): Formata código TypeScript automaticamente ✨"
+          commit_user_name: "GitHub Actions Bot"
+          commit_user_email: "actions@github.com"

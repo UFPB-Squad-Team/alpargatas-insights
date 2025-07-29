@@ -1,9 +1,9 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 dotenv.config();
 
-import express, { Request, Response } from "express";
-import connectDataBase from "./infrastructure/config/connectDataBase";
-import { config } from "./infrastructure/config/app";
+import express, { Request, Response } from 'express';
+import connectDataBase from './infrastructure/config/connectDataBase';
+import { config } from './infrastructure/config/app';
 
 const app = express();
 // const BASE_PATH = config.BASE_PATH;
@@ -11,9 +11,9 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req: Request, res: Response) => {
+app.get('/', (req: Request, res: Response) => {
   res.status(200).json({
-    status: "online",
+    status: 'online',
     port: config.PORT,
     environment: config.NODE_ENV,
   });

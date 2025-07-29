@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "ETL pipeline for Alpargatas Insight project."
 authors = ["Brenno Henrique <brennohdev@gmail.com>"]
 readme = "README.md"
-package-mode = false # Agora está no lugar certo!
+package-mode = false 
 
 [tool.poetry.dependencies]
 python = ">=3.12"
@@ -26,7 +26,9 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.ruff]
 line-length = 88
-select = ["E", "F", "W", "I"] 
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
 ignore = []
 
 [tool.ruff.format]
