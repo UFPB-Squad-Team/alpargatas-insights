@@ -1,4 +1,6 @@
-name: Code Quality Verifier
+# .github/workflows/code_quality.yml
+
+name: Verificador e Corretor de Qualidade do Código
 
 on:
   pull_request:
@@ -8,7 +10,6 @@ on:
 jobs:
   lint-and-format-etl:
     runs-on: ubuntu-latest
-    # Permissão para que a Action possa fazer commits no PR
     permissions:
       contents: write
     defaults:
@@ -18,7 +19,6 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
         with:
-          # Faz o checkout da branch do PR, não do commit de merge
           ref: ${{ github.head_ref }}
 
       - name: Configurar Python
@@ -30,19 +30,16 @@ jobs:
         run: pip install poetry
 
       - name: Instalar dependências com Poetry
-        # Usamos --sync para garantir que o ambiente reflita exatamente o poetry.lock
         run: poetry install --sync
 
-      - name: Verificar código com Linter do Ruff
-        run: poetry run ruff check .
-
-      - name: Formatar código com Ruff
-        run: poetry run ruff format .
+      - name: Corrigir e verificar código com Ruff
+        # Adicionamos --fix para corrigir automaticamente os problemas
+        run: poetry run ruff check . --fix && poetry run ruff format .
 
       - name: Fazer commit das alterações de formatação
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "style(etl): Formata código Python automaticamente "
+          commit_message: "style(etl): Formata código Python automaticamente ✨"
           commit_user_name: "GitHub Actions Bot"
           commit_user_email: "actions@github.com"
 
@@ -64,10 +61,11 @@ jobs:
         with:
           node-version: "lts/*"
           cache: "npm"
-          cache-dependency-path: backend/package-lock.json
+          # Corrigido: Usamos '**/package-lock.json' para encontrar o arquivo em qualquer subpasta
+          cache-dependency-path: "**/package-lock.json"
 
       - name: Instalar dependências
-        run: npm ci # 'ci' é mais rápido e seguro para automação
+        run: npm ci
 
       - name: Verificar código com ESLint
         run: npm run lint
@@ -78,6 +76,6 @@ jobs:
       - name: Fazer commit das alterações de formatação
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "style(backend): Formata código TypeScript automaticamente"
+          commit_message: "style(backend): Formata código TypeScript automaticamente ✨"
           commit_user_name: "GitHub Actions Bot"
           commit_user_email: "actions@github.com"
