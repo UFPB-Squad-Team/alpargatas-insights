@@ -1,4 +1,4 @@
-name: Notificador de Pull Requests no Discord
+name: Discord Notifier
 
 on:
   pull_request:
@@ -15,7 +15,7 @@ jobs:
           content: "Ei, @everyone! Temos um novo Pull Request para revisar!"
           embed-title: "${{ github.event.pull_request.title }}"
           embed-url: "${{ github.event.pull_request.html_url }}"
-          embed-color: "65280" 
+          embed-color: "65280"
           embed-author-name: "${{ github.actor }}"
           embed-author-url: "${{ github.server_url }}/${{ github.actor }}"
           embed-author-icon-url: "${{ github.server_url }}/${{ github.actor }}.png?size=32"
