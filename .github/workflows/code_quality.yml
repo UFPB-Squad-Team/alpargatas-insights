@@ -4,7 +4,7 @@ name: Verificador e Corretor de Qualidade do Código
 
 on:
   pull_request:
-    branches: ["main", "development"]
+    branches: [ "main", "development" ]
   workflow_dispatch:
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
       - name: Configurar Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: '3.12'
 
       - name: Instalar Poetry
         run: pip install poetry
@@ -33,11 +33,9 @@ jobs:
         run: poetry install --sync
 
       - name: Formatar código com Ruff
-        # Primeiro, formatamos. Isso corrige E501 (linha longa) e outros.
         run: poetry run ruff format .
 
       - name: Verificar e corrigir o resto com Ruff
-        # Depois, verificamos o resto, ignorando E501 pois já foi tratado.
         run: poetry run ruff check . --fix --ignore E501
 
       - name: Fazer commit das alterações de formatação
@@ -51,9 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    defaults:
-      run:
-        working-directory: ./server
+    # Removido o working-directory daqui para evitar conflitos de caminho
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
@@ -63,19 +59,19 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "lts/*"
-          cache: "npm"
-          cache-dependency-path: backend/package-lock.json
+          node-version: 'lts/*'
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
 
       - name: Instalar dependências
-        run: npm ci
+        # Usamos --prefix para dizer ao npm onde trabalhar
+        run: npm ci --prefix server
 
-      - name: Verificar código com ESLint
-        # O ESLint com a nova config já entende o Prettier.
-        run: npm run lint
-
-      - name: Formatar código com Prettier
-        run: npm run format
+      - name: Verificar e formatar código
+        # Também usamos --prefix para os scripts
+        run: |
+          npm run lint --prefix server
+          npm run format --prefix server
 
       - name: Fazer commit das alterações de formatação
         uses: stefanzweifel/git-auto-commit-action@v5
