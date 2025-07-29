@@ -34,6 +34,8 @@ The project is built on a microservices architecture orchestrated with Docker, o
 
 The only prerequisite to run this project is to have **Docker Desktop** installed. Everything else is managed by the containers.
 
+**⚠️ REQUIRED INITIAL STEP:** First of all, you need to download the raw data. Follow the guide in: **[docs/DATA_SETUP.md](./docs/DATA_SETUP.md)**.
+
 ### 1. Clone the Repository
 
 ```bash
