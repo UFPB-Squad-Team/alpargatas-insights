@@ -1,109 +1,105 @@
-import { randomUUID } from "node:crypto"
-import { dependenciaAdministrativa } from "../enums/enumDependenciaAdministrativa"
-import { UF } from "../enums/enumUnidadesFederativas"
-import { SchoolValidator } from "../validators/schoolValidator"
+import { randomUUID } from 'node:crypto';
+import { dependenciaAdministrativa } from '../enums/enumDependenciaAdministrativa';
+import { UF } from '../enums/enumUnidadesFederativas';
+import { SchoolValidator } from '../validators/schoolValidator';
 
-type LocationCoordinates = [number, number]
+type LocationCoordinates = [number, number];
 
 export type SchoolProps = {
+  municipioId: string;
 
-    municipioId: string
+  codigoInep: number;
 
-    codigoInep: number
+  nome: string;
 
-    nome: string
+  municipioNome: string;
 
-    municipioNome: string
+  uf: UF;
 
-    uf: UF
+  dependenciaAdministrativa: dependenciaAdministrativa;
 
-    dependenciaAdministrativa: dependenciaAdministrativa
+  localizacao: {
+    type: string;
+    coordinates: LocationCoordinates;
+  };
 
-    localizacao: {
-        type: string
-        coordinates: LocationCoordinates
-    }
+  scoreRisco: number;
 
-    scoreRisco: number
+  indicadores: {
+    total_alunos: number;
+    taxa_abandono_escolar: number;
+    taxa_reprovacao: number;
+  };
 
-    indicadores: {
-        total_alunos: number
-        taxa_abandono_escolar: number
-        taxa_reprovacao: number
-    }
+  corpo_docente: {
+    total_professores: number;
+    percentual_docentes_com_superior: number;
+  };
 
-    corpo_docente: {
-        total_professores: number
-        percentual_docentes_com_superior: number
-    }
+  infraestrutura: Record<string, boolean>;
+};
 
-    infraestrutura: Record<string, boolean>
+export class School {
+  public readonly id: string;
 
-}
+  public municipioId: string;
 
-export class School{
-    public readonly id: string
+  public readonly codigoInep: number;
 
-    public municipioId: string
+  public nome: string;
 
-    public readonly codigoInep: number
+  public municipioNome: string;
 
-    public nome: string
+  public readonly uf: UF;
 
-    public municipioNome: string
+  public dependenciaAdministrativa: dependenciaAdministrativa;
 
-    public readonly uf: UF
+  public localizacao: {
+    type: string;
+    coordinates: LocationCoordinates;
+  };
 
-    public dependenciaAdministrativa: dependenciaAdministrativa
+  public scoreRisco: number;
 
-    public localizacao: {
-        type: string
-        coordinates: LocationCoordinates
-    }
+  public indicadores: {
+    total_alunos: number;
+    taxa_abandono_escolar: number;
+    taxa_reprovacao: number;
+  };
 
-    public scoreRisco: number
+  public corpo_docente: {
+    total_professores: number;
+    percentual_docentes_com_superior: number;
+  };
 
-    public indicadores: {
-        total_alunos: number
-        taxa_abandono_escolar: number
-        taxa_reprovacao: number
-    }
+  public infraestrutura: Record<string, boolean>;
 
-    public corpo_docente: {
-        total_professores: number
-        percentual_docentes_com_superior: number
-    }
+  constructor(props: SchoolProps, id?: string) {
+    // Aqui faz a validação das propriedades
+    SchoolValidator.validate(props);
 
-    public infraestrutura: Record<string, boolean>
+    this.id = id ?? randomUUID();
 
-    constructor(props: SchoolProps, id?: string){
+    this.municipioId = props.municipioId;
 
-        // Aqui faz a validação das propriedades
-        SchoolValidator.validate(props)
+    this.codigoInep = props.codigoInep;
 
-        this.id = id ?? randomUUID()
+    this.nome = props.nome;
 
-        this.municipioId = props.municipioId
+    this.municipioNome = props.municipioNome;
 
-        this.codigoInep = props.codigoInep
+    this.uf = props.uf;
 
-        this.nome = props.nome
+    this.dependenciaAdministrativa = props.dependenciaAdministrativa;
 
-        this.municipioNome = props.municipioNome
+    this.localizacao = props.localizacao;
 
-        this.uf = props.uf
+    this.scoreRisco = props.scoreRisco;
 
-        this.dependenciaAdministrativa = props.dependenciaAdministrativa
+    this.indicadores = props.indicadores;
 
-        this.localizacao = props.localizacao
+    this.corpo_docente = props.corpo_docente;
 
-        this.scoreRisco = props.scoreRisco
-
-        this.indicadores = props.indicadores
-
-        this.corpo_docente = props.corpo_docente
-
-        this.infraestrutura = props.infraestrutura
-    }
-
+    this.infraestrutura = props.infraestrutura;
+  }
 }

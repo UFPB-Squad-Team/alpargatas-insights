@@ -1,58 +1,57 @@
-import { randomUUID } from "node:crypto"
-import { UF } from "../enums/enumUnidadesFederativas"
-import { MunicipalityValidator } from "../validators/municipalityValidator"
+import { randomUUID } from 'node:crypto';
+import { UF } from '../enums/enumUnidadesFederativas';
+import { MunicipalityValidator } from '../validators/municipalityValidator';
 
 export type MunicipalityProps = {
-    codigoIbge: number
+  codigoIbge: number;
 
-    nome: string
+  nome: string;
 
-    uf: UF
+  uf: UF;
 
-    populacao: number
+  populacao: number;
 
-    riscoMedio: number
+  riscoMedio: number;
 
-    totalEscolas: number
+  totalEscolas: number;
 
-    estatisticasInfraestrutura: Record<string,number>
-}
+  estatisticasInfraestrutura: Record<string, number>;
+};
 
-export class Municipality{
-    public readonly id: string
+export class Municipality {
+  public readonly id: string;
 
-    public readonly codigoIbge: number
+  public readonly codigoIbge: number;
 
-    public nome: string
+  public nome: string;
 
-    public readonly uf: UF
+  public readonly uf: UF;
 
-    public populacao: number
+  public populacao: number;
 
-    public riscoMedio: number
+  public riscoMedio: number;
 
-    public totalEscolas: number
+  public totalEscolas: number;
 
-    public estatisticasInfraestrutura: Record<string,number>
+  public estatisticasInfraestrutura: Record<string, number>;
 
-    constructor(props: MunicipalityProps, id?: string){
+  constructor(props: MunicipalityProps, id?: string) {
+    MunicipalityValidator.validate(props);
 
-        MunicipalityValidator.validate(props)
-        
-        this.id = id ?? randomUUID()
+    this.id = id ?? randomUUID();
 
-        this.codigoIbge = props.codigoIbge
+    this.codigoIbge = props.codigoIbge;
 
-        this.nome = props.nome
+    this.nome = props.nome;
 
-        this.uf = props.uf
+    this.uf = props.uf;
 
-        this.populacao = props.populacao
+    this.populacao = props.populacao;
 
-        this.riscoMedio = props.riscoMedio
+    this.riscoMedio = props.riscoMedio;
 
-        this.totalEscolas = props.totalEscolas
+    this.totalEscolas = props.totalEscolas;
 
-        this.estatisticasInfraestrutura = props.estatisticasInfraestrutura
-    }
+    this.estatisticasInfraestrutura = props.estatisticasInfraestrutura;
+  }
 }
