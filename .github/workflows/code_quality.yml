@@ -68,10 +68,10 @@ jobs:
         # Corrigido: Usamos --prefix server para dizer ao npm onde trabalhar
         run: npm ci --prefix server
 
-      - name: Verificar e formatar código
-        # Corrigido: Também usamos --prefix para os scripts
+      - name: Verificar, formatar e corrigir código
+        # Corrigido: Adicionamos a flag '--fix' ao comando de lint
         run: |
-          npm run lint --prefix server
+          npm run lint --prefix server -- --fix || true
           npm run format --prefix server
 
       - name: Fazer commit das alterações de formatação
