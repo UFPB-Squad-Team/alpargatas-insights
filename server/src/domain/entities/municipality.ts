@@ -1,7 +1,8 @@
 import { randomUUID } from "node:crypto"
 import { UF } from "../enums/enumUnidadesFederativas"
+import { MunicipalityValidator } from "../validators/municipalityValidator"
 
-type MunicipalityProps = {
+export type MunicipalityProps = {
     codigoIbge: number
 
     nome: string
@@ -20,11 +21,11 @@ type MunicipalityProps = {
 export class Municipality{
     public readonly id: string
 
-    public codigoIbge: number
+    public readonly codigoIbge: number
 
     public nome: string
 
-    public uf: UF
+    public readonly uf: UF
 
     public populacao: number
 
@@ -34,22 +35,24 @@ export class Municipality{
 
     public estatisticasInfraestrutura: Record<string,number>
 
-    constructor({ codigoIbge, nome, uf, populacao,riscoMedio, totalEscolas, estatisticasInfraestrutura }: MunicipalityProps, id?: string){
+    constructor(props: MunicipalityProps, id?: string){
 
+        MunicipalityValidator.validate(props)
+        
         this.id = id ?? randomUUID()
 
-        this.codigoIbge = codigoIbge
+        this.codigoIbge = props.codigoIbge
 
-        this.nome = nome
+        this.nome = props.nome
 
-        this.uf = uf
+        this.uf = props.uf
 
-        this.populacao = populacao
+        this.populacao = props.populacao
 
-        this.riscoMedio = riscoMedio
+        this.riscoMedio = props.riscoMedio
 
-        this.totalEscolas = totalEscolas
+        this.totalEscolas = props.totalEscolas
 
-        this.estatisticasInfraestrutura = estatisticasInfraestrutura
+        this.estatisticasInfraestrutura = props.estatisticasInfraestrutura
     }
 }

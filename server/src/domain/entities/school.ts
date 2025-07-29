@@ -1,10 +1,11 @@
 import { randomUUID } from "node:crypto"
 import { dependenciaAdministrativa } from "../enums/enumDependenciaAdministrativa"
 import { UF } from "../enums/enumUnidadesFederativas"
+import { SchoolValidator } from "../validators/schoolValidator"
 
 type LocationCoordinates = [number, number]
 
-type SchoolProps = {
+export type SchoolProps = {
 
     municipioId: string
 
@@ -45,13 +46,13 @@ export class School{
 
     public municipioId: string
 
-    public codigoInep: number
+    public readonly codigoInep: number
 
     public nome: string
 
     public municipioNome: string
 
-    public uf: UF
+    public readonly uf: UF
 
     public dependenciaAdministrativa: dependenciaAdministrativa
 
@@ -75,31 +76,34 @@ export class School{
 
     public infraestrutura: Record<string, boolean>
 
-    constructor({ municipioId, codigoInep, nome, municipioNome, uf, dependenciaAdministrativa, localizacao, scoreRisco, indicadores, corpo_docente, infraestrutura }: SchoolProps, id?: string){
+    constructor(props: SchoolProps, id?: string){
+
+        // Aqui faz a validação das propriedades
+        SchoolValidator.validate(props)
 
         this.id = id ?? randomUUID()
 
-        this.municipioId = municipioId
+        this.municipioId = props.municipioId
 
-        this.codigoInep = codigoInep
+        this.codigoInep = props.codigoInep
 
-        this.nome = nome
+        this.nome = props.nome
 
-        this.municipioNome = municipioNome
+        this.municipioNome = props.municipioNome
 
-        this.uf = uf
+        this.uf = props.uf
 
-        this.dependenciaAdministrativa = dependenciaAdministrativa
+        this.dependenciaAdministrativa = props.dependenciaAdministrativa
 
-        this.localizacao = localizacao
+        this.localizacao = props.localizacao
 
-        this.scoreRisco = scoreRisco
+        this.scoreRisco = props.scoreRisco
 
-        this.indicadores = indicadores
+        this.indicadores = props.indicadores
 
-        this.corpo_docente = corpo_docente
+        this.corpo_docente = props.corpo_docente
 
-        this.infraestrutura = infraestrutura
+        this.infraestrutura = props.infraestrutura
     }
 
 }
