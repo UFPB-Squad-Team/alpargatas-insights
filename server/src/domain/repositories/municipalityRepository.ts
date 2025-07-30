@@ -1,5 +1,5 @@
-import { Municipality } from "../entities/municipality";
-import { UF } from "../enums/enumUnidadesFederativas";
+import { Municipality } from '../entities/municipality';
+import { UF } from '../enums/enumUnidadesFederativas';
 
 export interface IMunicipalityRepository{
     findById(id: string): Promise<Municipality | null>
