@@ -5,8 +5,8 @@ import { UF } from "../enums/enumUnidadesFederativas";
 export interface ISchoolRepository{
     findById(id: string): Promise<School | null>
     findByName(name: string): Promise<School | null>
-    findByUf(uf: UF): Promise<School | null>
-    findByDepAdm(dependenciaAdministrativa: dependenciaAdministrativa): Promise<School | null>
+    findByUf(uf: UF): Promise<School[]>
+    findByDepAdm(dependenciaAdministrativa: dependenciaAdministrativa): Promise<School[]>
     findAll(): Promise<School[]>
     delete(id: string): Promise<void>
     update(school: School): Promise<void>
