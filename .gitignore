@@ -28,3 +28,6 @@ etl/data/
 
 # Logs
 *.log
+
+# Docker
+docker-compose.override.yml
