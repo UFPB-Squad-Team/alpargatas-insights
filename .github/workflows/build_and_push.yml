@@ -36,4 +36,4 @@ jobs:
         with:
           context: ./client
           push: true
-          tags: ghcr.io/ufpb-squad-team/alpargatas-api:latest
+          tags: ghcr.io/ufpb-squad-team/alpargatas-frontend:latest
