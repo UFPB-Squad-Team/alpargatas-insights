@@ -2,8 +2,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import express, { Request, Response } from 'express';
-import connectDataBase from './infrastructure/config/connectDataBase';
-import { config } from './infrastructure/config/app';
+import connectDataBase from './infrastructure/configs/connectDataBase';
+import { config } from './infrastructure/configs/app';
 
 const app = express();
 // const BASE_PATH = config.BASE_PATH;
