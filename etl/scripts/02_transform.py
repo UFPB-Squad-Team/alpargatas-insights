@@ -220,7 +220,7 @@ def main():
         df_renamed = select_and_rename_columns(df_raw)
         df_cleaned = clean_data(df_renamed)
         df_structured = structure_data_as_documents(df_cleaned)
-        df_transformed = save_transformed_data(df_structured, output_path)
+        save_transformed_data(df_structured, output_path)
 
         # Still building
         df_final = enrich_with_risk_score(df_structured)
