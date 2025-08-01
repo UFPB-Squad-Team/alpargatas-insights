@@ -1,31 +1,27 @@
-import { Config } from "jest"
+import { Config } from 'jest';
 
 const config: Config = {
-  
   bail: true,
-    preset: "ts-jest",                
-    testEnvironment: "node",
+  preset: 'ts-jest',
+  testEnvironment: 'node',
 
-    transform: {
-        "^.+\\.tsx?$": ["ts-jest", { useESM: true }]  
-    },
-    
+  transform: {
+    '^.+\\.tsx?$': ['ts-jest', { useESM: true }],
+  },
 
-    extensionsToTreatAsEsm: [".ts"],  
-    
-    moduleNameMapper: {
-        "^(\\.{1,2}/.*)\\.js$": "$1"   
-    },
+  extensionsToTreatAsEsm: ['.ts'],
 
-    testMatch: ["**/*.spec.ts"],
+  moduleNameMapper: {
+    '^(\\.{1,2}/.*)\\.js$': '$1',
+  },
 
+  testMatch: ['**/*.spec.ts'],
 
   clearMocks: true,
 
-  coverageDirectory: "coverage",
+  coverageDirectory: 'coverage',
 
-  coverageProvider: "v8",
-
+  coverageProvider: 'v8',
 };
 
 export default config;

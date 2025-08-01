@@ -1,4 +1,3 @@
-
-export interface GetSchoolDetailsDTO{
-    id: string
+export interface GetSchoolDetailsDTO {
+  id: string;
 }

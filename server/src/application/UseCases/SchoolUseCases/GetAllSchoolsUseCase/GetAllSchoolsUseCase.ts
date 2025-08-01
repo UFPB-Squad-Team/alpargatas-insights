@@ -1,11 +1,9 @@
-import { ISchoolRepository } from "../../../../domain/repositories/schoolRepository";
+import { ISchoolRepository } from '../../../../domain/repositories/schoolRepository';
 
-export class GetAllSchoolsUseCase{
-    constructor(
-        private schoolRepository: ISchoolRepository
-    ){}
+export class GetAllSchoolsUseCase {
+  constructor(private schoolRepository: ISchoolRepository) {}
 
-    async execute(){
-        return await this.schoolRepository.findAll()
-    }
+  async execute() {
+    return await this.schoolRepository.findAll();
+  }
 }
