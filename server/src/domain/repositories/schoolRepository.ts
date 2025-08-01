@@ -9,6 +9,7 @@ export interface ISchoolRepository {
   findByDepAdm(
     dependenciaAdministrativa: dependenciaAdministrativa,
   ): Promise<School[]>;
+  findAllForMap(): Promise<Pick<School, 'id' | 'nome' | 'localizacao' | 'scoreRisco'>[]>
   findAll(): Promise<School[]>;
   delete(id: string): Promise<void>;
   update(school: School): Promise<void>;
