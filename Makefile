@@ -33,6 +33,9 @@ shell-etl: ## Open a shell in the ETL container
 etl-extract: ## Run the extract step of the ETL process
 	docker-compose run --rm etl python scripts/01_extract.py
 
+etl-geocode:
+	docker-compose run --rm etl python scripts/01_geocode_addresses.py
+
 etl-transform: ## Run the transform step of the ETL process
 	docker-compose run --rm etl python scripts/02_transform.py
 

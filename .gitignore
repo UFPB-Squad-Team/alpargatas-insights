@@ -31,3 +31,6 @@ etl/data/
 
 # Docker
 docker-compose.override.yml
+
+# Notebooks
+*.ipynb
