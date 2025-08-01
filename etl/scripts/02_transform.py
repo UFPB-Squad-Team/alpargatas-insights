@@ -263,13 +263,9 @@ def main():
     """
     logging.info("--- INICIANDO SCRIPT DE TRANSFORMAÇÃO (02_transform.py) ---")
 
-    input_path = Path(
-        "C:/Users/Gustavo/OneDrive/codigos VScode/alpargatas-insights/etl/data/raw/escolas_paraiba.parquet"
-    )
-
-    output_path = (
-        Path(__file__).resolve().parents[1] / "data/transformed/escolas_paraiba.parquet"
-    )
+    base_path = Path(__file__).resolve().parents[1]
+    input_path = base_path / "data/raw/escolas_paraiba.parquet"
+    output_path = base_path / "data/processed/escolas_processado.parquet"
 
     df_raw = load_raw_data(input_path)
 
