@@ -19,7 +19,7 @@ export type SchoolProps = {
 
   dependenciaAdm: dependenciaAdministrativa;
 
-  tipoLocalizacao: tipoLocalizacao
+  tipoLocalizacao: tipoLocalizacao;
 
   localizacao: {
     type: string;
@@ -50,7 +50,7 @@ export class School {
 
   public dependenciaAdm: dependenciaAdministrativa;
 
-  public tipoLocalizacao: tipoLocalizacao
+  public tipoLocalizacao: tipoLocalizacao;
 
   public localizacao: {
     type: string;
@@ -83,7 +83,7 @@ export class School {
 
     this.dependenciaAdm = props.dependenciaAdm;
 
-    this.tipoLocalizacao = props.tipoLocalizacao
+    this.tipoLocalizacao = props.tipoLocalizacao;
 
     this.localizacao = props.localizacao;
 

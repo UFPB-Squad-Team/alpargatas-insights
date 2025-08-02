@@ -1,5 +1,4 @@
-import { GetDashboardKPIsUseCase } from "../../../application/UseCases/DashboardUseCases/GetDashboardKPIsUseCase/GetDashboardKPIsUseCase";
-
+import { GetDashboardKPIsUseCase } from '../../../application/UseCases/DashboardUseCases/GetDashboardKPIsUseCase/GetDashboardKPIsUseCase';
 
 describe('GetDashboardKPIsUseCase', () => {
   it('Get all KPIs without errors', async () => {
@@ -25,7 +24,7 @@ describe('GetDashboardKPIsUseCase', () => {
           },
           scoreRisco: 0.82,
           indicadores: {
-            total_alunos: 450
+            total_alunos: 450,
           },
           infraestrutura: {
             possui_biblioteca: false,
@@ -56,7 +55,7 @@ describe('GetDashboardKPIsUseCase', () => {
           },
           scoreRisco: 0.45,
           indicadores: {
-            total_alunos: 820
+            total_alunos: 820,
           },
           infraestrutura: {
             possui_biblioteca: true,
