@@ -1,0 +1,40 @@
+name: ETL Pipeline and Data Validation
+
+on:
+  push:
+    branches:
+      - "development"
+  workflow_dispatch:
+
+jobs:
+  run-etl-and-validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install ETL dependencies
+        run: poetry install --sync --no-root
+        working-directory: ./etl
+
+      - name: Prepare Data Files for CI
+        run: |
+          curl -L "https://github.com/kelvins/Municipios-Brasileiros/raw/main/csv/municipios.csv" -o "./etl/data/municipios_brasileiros.csv"
+          mv ./etl/data/raw/escolas_paraiba_sample.parquet ./etl/data/raw/escolas_paraiba.parquet
+
+      - name: Run ETL Step Transform Data
+        run: poetry run python scripts/transform.py
+        working-directory: ./etl
+
+      - name: Run ETL Final Step Validate Data Quality
+        run: poetry run python scripts/validate_processed_data.py
+        working-directory: ./etl

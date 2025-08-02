@@ -31,13 +31,16 @@ shell-etl: ## Open a shell in the ETL container
 	docker-compose exec etl /bin/sh
 
 etl-extract: ## Run the extract step of the ETL process
-	docker-compose run --rm etl python scripts/01_extract.py
+	docker-compose run --rm etl python scripts/extract.py
 
 etl-transform: ## Run the transform step of the ETL process
-	docker-compose run --rm etl python scripts/02_transform.py
+	docker-compose run --rm etl python scripts/transform.py
+
+etl-data-inspector: ## Run the Data Inspector script of the ETL process data
+	docker-compose run --rm etl python scripts/validate_processed_data.py
 
 etl-load: ## Run the load step of the ETL process
-	docker-compose run --rm etl python scripts/03_load.py
+	docker-compose run --rm etl python scripts/load.py
 
 help: ## Show available commands
 	@echo "Available commands:"
