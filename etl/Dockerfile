@@ -9,5 +9,4 @@ FROM python:3.12-slim
 WORKDIR /app
 COPY --from=builder /app/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-COPY ./data/censo_2023.zip ./data/censo_2023.zip
 COPY ./scripts ./scripts
