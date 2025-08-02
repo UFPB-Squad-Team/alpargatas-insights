@@ -2,21 +2,24 @@ import { randomUUID } from 'node:crypto';
 import { dependenciaAdministrativa } from '../enums/enumDependenciaAdministrativa';
 import { UF } from '../enums/enumUnidadesFederativas';
 import { SchoolValidator } from '../validators/schoolValidator';
+import { tipoLocalizacao } from '../enums/enumTipoLocalizacao';
 
 type LocationCoordinates = [number, number];
 
 export type SchoolProps = {
-  municipioId: string;
+  municipioIdIbge: string;
 
-  codigoInep: number;
+  escolaIdInep: number;
 
-  nome: string;
+  escolaNome: string;
 
   municipioNome: string;
 
-  uf: UF;
+  estadoSigla: UF;
 
-  dependenciaAdministrativa: dependenciaAdministrativa;
+  dependenciaAdm: dependenciaAdministrativa;
+
+  tipoLocalizacao: tipoLocalizacao
 
   localizacao: {
     type: string;
@@ -27,13 +30,6 @@ export type SchoolProps = {
 
   indicadores: {
     total_alunos: number;
-    taxa_abandono_escolar: number;
-    taxa_reprovacao: number;
-  };
-
-  corpo_docente: {
-    total_professores: number;
-    percentual_docentes_com_superior: number;
   };
 
   infraestrutura: Record<string, boolean>;
@@ -42,17 +38,19 @@ export type SchoolProps = {
 export class School {
   public readonly id: string;
 
-  public municipioId: string;
+  public municipioIdIbge: string;
 
-  public readonly codigoInep: number;
+  public readonly escolaIdInep: number;
 
-  public nome: string;
+  public escolaNome: string;
 
   public municipioNome: string;
 
-  public readonly uf: UF;
+  public readonly estadoSigla: UF;
 
-  public dependenciaAdministrativa: dependenciaAdministrativa;
+  public dependenciaAdm: dependenciaAdministrativa;
+
+  public tipoLocalizacao: tipoLocalizacao
 
   public localizacao: {
     type: string;
@@ -63,13 +61,6 @@ export class School {
 
   public indicadores: {
     total_alunos: number;
-    taxa_abandono_escolar: number;
-    taxa_reprovacao: number;
-  };
-
-  public corpo_docente: {
-    total_professores: number;
-    percentual_docentes_com_superior: number;
   };
 
   public infraestrutura: Record<string, boolean>;
@@ -80,25 +71,25 @@ export class School {
 
     this.id = id ?? randomUUID();
 
-    this.municipioId = props.municipioId;
+    this.municipioIdIbge = props.municipioIdIbge;
 
-    this.codigoInep = props.codigoInep;
+    this.escolaIdInep = props.escolaIdInep;
 
-    this.nome = props.nome;
+    this.escolaNome = props.escolaNome;
 
     this.municipioNome = props.municipioNome;
 
-    this.uf = props.uf;
+    this.estadoSigla = props.estadoSigla;
 
-    this.dependenciaAdministrativa = props.dependenciaAdministrativa;
+    this.dependenciaAdm = props.dependenciaAdm;
+
+    this.tipoLocalizacao = props.tipoLocalizacao
 
     this.localizacao = props.localizacao;
 
     this.scoreRisco = props.scoreRisco;
 
     this.indicadores = props.indicadores;
-
-    this.corpo_docente = props.corpo_docente;
 
     this.infraestrutura = props.infraestrutura;
   }

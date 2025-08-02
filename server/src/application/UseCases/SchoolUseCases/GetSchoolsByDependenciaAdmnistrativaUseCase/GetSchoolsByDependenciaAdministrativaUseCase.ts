@@ -5,10 +5,10 @@ export class GetSchoolsByDependenciaAdministrativa {
   constructor(private schoolRepository: ISchoolRepository) {}
 
   async execute({
-    dependenciaAdministrativa,
+    dependenciaAdm,
   }: GetSchoolsByDependenciaAdministrativaDTO) {
     const schoolsByDependenciaAdministrativa =
-      await this.schoolRepository.findByDepAdm(dependenciaAdministrativa);
+      await this.schoolRepository.findByDepAdm(dependenciaAdm);
 
     return schoolsByDependenciaAdministrativa || [];
   }

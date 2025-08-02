@@ -1,4 +1,5 @@
-import { GetDashboardKPIsUseCase } from '../../../application/UseCases/DashboardUseCases/GetDashboardKPIsUseCase/GetDashboardKPIsUseCase';
+import { GetDashboardKPIsUseCase } from "../../../application/UseCases/DashboardUseCases/GetDashboardKPIsUseCase/GetDashboardKPIsUseCase";
+
 
 describe('GetDashboardKPIsUseCase', () => {
   it('Get all KPIs without errors', async () => {
@@ -11,25 +12,20 @@ describe('GetDashboardKPIsUseCase', () => {
       findAll: jest.fn().mockResolvedValue([
         {
           id: 'esc-001',
-          municipioId: 'mun-002',
-          codigoInep: 12345678,
-          nome: 'Escola Municipal Professora Ana Silva',
+          municipioIdIbge: 'mun-002',
+          escolaIdInep: 12345678,
+          escolaNome: 'Escola Municipal Professora Ana Silva',
           municipioNome: 'João Pessoa',
-          uf: 'PB',
-          dependenciaAdministrativa: 'municipal',
+          estadoSigla: 'PB',
+          dependenciaAdm: 'municipal',
+          tipoLocalizacao: 'urbana',
           localizacao: {
             type: 'Point',
             coordinates: [-34.8811, -7.1195],
           },
           scoreRisco: 0.82,
           indicadores: {
-            total_alunos: 450,
-            taxa_abandono_escolar: 0.15,
-            taxa_reprovacao: 0.25,
-          },
-          corpo_docente: {
-            total_professores: 18,
-            percentual_docentes_com_superior: 0.72,
+            total_alunos: 450
           },
           infraestrutura: {
             possui_biblioteca: false,
@@ -47,25 +43,20 @@ describe('GetDashboardKPIsUseCase', () => {
         },
         {
           id: 'esc-002',
-          municipioId: 'mun-002',
-          codigoInep: 87654321,
-          nome: 'Escola Estadual Coronel João Pessoa',
+          municipioIdIbge: 'mun-002',
+          escolaIdInep: 87654321,
+          escolaNome: 'Escola Estadual Coronel João Pessoa',
           municipioNome: 'Campina Grande',
-          uf: 'PB',
-          dependenciaAdministrativa: 'estadual',
+          estadoSigla: 'PB',
+          dependenciaAdm: 'estadual',
+          tipoLocalizacao: 'rural',
           localizacao: {
             type: 'Point',
             coordinates: [-35.9187, -7.2306],
           },
           scoreRisco: 0.45,
           indicadores: {
-            total_alunos: 820,
-            taxa_abandono_escolar: 0.08,
-            taxa_reprovacao: 0.12,
-          },
-          corpo_docente: {
-            total_professores: 32,
-            percentual_docentes_com_superior: 0.91,
+            total_alunos: 820
           },
           infraestrutura: {
             possui_biblioteca: true,
@@ -116,12 +107,12 @@ describe('GetDashboardKPIsUseCase', () => {
       schoolsWithHighInfraestructureRisk: [
         {
           id: 'esc-001',
-          municipioId: 'mun-002',
-          codigoInep: 12345678,
-          nome: 'Escola Municipal Professora Ana Silva',
+          municipioIdIbge: 'mun-002',
+          escolaIdInep: 12345678,
+          escolaNome: 'Escola Municipal Professora Ana Silva',
           municipioNome: 'João Pessoa',
-          uf: 'PB',
-          dependenciaAdministrativa: 'municipal',
+          estadoSigla: 'PB',
+          dependenciaAdm: 'municipal',
           localizacao: {
             type: 'Point',
             coordinates: [-34.8811, -7.1195],

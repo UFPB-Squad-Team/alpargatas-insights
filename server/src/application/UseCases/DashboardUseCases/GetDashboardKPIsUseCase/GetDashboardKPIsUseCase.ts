@@ -13,6 +13,8 @@ export class GetDashboardKPIsUseCase {
 
     const municipalities = await this.municipalityRepository.findAll();
 
+    const HIGH_RISK_THRESHOLD: number = 0.75
+
     const theHighMunicipalitiesRisk = new Map<string, number>();
 
     let lackCountMax: number = 0;
@@ -20,24 +22,24 @@ export class GetDashboardKPIsUseCase {
     let lackName: string = 'No lacks identify';
 
     const schoolsWithHighInfraestructureRisk = schools
-      .filter((school) => school.scoreRisco >= 0.75)
+      .filter((school) => school.scoreRisco >= HIGH_RISK_THRESHOLD)
       .map((school) => ({
         id: school.id,
-        codigoInep: school.codigoInep,
-        nome: school.nome,
+        escolaIdInep: school.escolaIdInep,
+        escolaNome: school.escolaNome,
         municipioNome: school.municipioNome,
-        municipioId: school.municipioId,
-        dependenciaAdministrativa: school.dependenciaAdministrativa,
-        uf: school.uf,
+        municipioIdIbge: school.municipioIdIbge,
+        dependenciaAdm: school.dependenciaAdm,
+        estadoSigla: school.estadoSigla,
         scoreRisco: school.scoreRisco,
         infraestrutura: school.infraestrutura,
         localizacao: school.localizacao,
       }));
 
     schoolsWithHighInfraestructureRisk.forEach((schools) => {
-      const count = theHighMunicipalitiesRisk.get(schools.municipioId) || 0;
+      const count = theHighMunicipalitiesRisk.get(schools.municipioIdIbge) || 0;
 
-      theHighMunicipalitiesRisk.set(schools.municipioId, count + 1);
+      theHighMunicipalitiesRisk.set(schools.municipioIdIbge, count + 1);
     });
 
     const municipalitiesWithMostSchoolsInHighRisk = municipalities.filter(

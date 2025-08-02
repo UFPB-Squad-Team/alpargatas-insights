@@ -6,13 +6,13 @@ export interface GetDashboardKPIsDTO {
   schoolsWithHighInfraestructureRisk: Pick<
     School,
     | 'id'
-    | 'codigoInep'
-    | 'nome'
+    | 'escolaIdInep'
+    | 'escolaNome'
     | 'municipioNome'
-    | 'municipioId'
+    | 'municipioIdIbge'
     | 'scoreRisco'
     | 'localizacao'
-    | 'dependenciaAdministrativa'
+    | 'dependenciaAdm'
     | 'infraestrutura'
   >[];
   municipalitiesWithMostSchoolsInHighRisk: Municipality[];
