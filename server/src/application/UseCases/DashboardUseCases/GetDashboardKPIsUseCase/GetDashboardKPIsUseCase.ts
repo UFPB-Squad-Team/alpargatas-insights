@@ -15,13 +15,7 @@ export class GetDashboardKPIsUseCase {
 
     const theHighMunicipalitiesRisk = new Map<string, number>();
 
-<<<<<<< HEAD:server/src/application/UseCases/DashboardUseCases/GetDashboardKPIsUseCase/GetDashboardKPIsUseCase.ts
-        const HIGH_RISK_THRESHOLD: number = 0.75
-
-        let theHighMunicipalitiesRisk =  new Map<string, number>()
-=======
     let lackCountMax: number = 0;
->>>>>>> 382dc088c831659a0bb9aa572196a7fb8698b772:server/src/application/UseCases/SchoolUseCases/GetDashboardKPIsUseCase/GetDashboardKPIsUseCase.ts
 
     let lackName: string = 'No lacks identify';
 

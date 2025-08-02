@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { GetDashboardKPIsUseCase } from "../../../application/UseCases/DashboardUseCases/GetDashboardKPIsUseCase/GetDashboardKPIsUseCase"
-=======
-import { GetDashboardKPIsUseCase } from '../../../application/UseCases/SchoolUseCases/GetDashboardKPIsUseCase/GetDashboardKPIsUseCase';
->>>>>>> 382dc088c831659a0bb9aa572196a7fb8698b772
+import { GetDashboardKPIsUseCase } from "../../../application/UseCases/DashboardUseCases/GetDashboardKPIsUseCase/GetDashboardKPIsUseCase";
 
 describe('GetDashboardKPIsUseCase', () => {
   it('Get all KPIs without errors', async () => {
