@@ -4,11 +4,9 @@ import { GetSchoolsByDependenciaAdministrativaDTO } from './GetSchoolsByDependen
 export class GetSchoolsByDependenciaAdministrativa {
   constructor(private schoolRepository: ISchoolRepository) {}
 
-  async execute({
-    dependenciaAdministrativa,
-  }: GetSchoolsByDependenciaAdministrativaDTO) {
+  async execute({ dependenciaAdm }: GetSchoolsByDependenciaAdministrativaDTO) {
     const schoolsByDependenciaAdministrativa =
-      await this.schoolRepository.findByDepAdm(dependenciaAdministrativa);
+      await this.schoolRepository.findByDepAdm(dependenciaAdm);
 
     return schoolsByDependenciaAdministrativa || [];
   }
