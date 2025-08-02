@@ -1,4 +1,4 @@
-import { GetDashboardKPIsUseCase } from "../../../application/UseCases/SchoolUseCases/GetDashboardKPIsUseCase/GetDashboardKPIsUseCase"
+import { GetDashboardKPIsUseCase } from "../../../application/UseCases/DashboardUseCases/GetDashboardKPIsUseCase/GetDashboardKPIsUseCase"
 
 describe("GetDashboardKPIsUseCase", () => {
     it("Get all KPIs without errors", async () => {

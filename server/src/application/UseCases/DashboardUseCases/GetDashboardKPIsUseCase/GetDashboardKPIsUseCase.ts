@@ -15,13 +15,15 @@ export class GetDashboardKPIsUseCase{
 
         const municipalities = await this.municipalityRepository.findAll()
 
+        const HIGH_RISK_THRESHOLD: number = 0.75
+
         let theHighMunicipalitiesRisk =  new Map<string, number>()
 
         let lackCountMax : number = 0
 
         let lackName: string = 'No lacks identify'
         
-        const schoolsWithHighInfraestructureRisk = schools.filter((school) => school.scoreRisco >= 0.75 ).map(school => ({
+        const schoolsWithHighInfraestructureRisk = schools.filter((school) => school.scoreRisco >= HIGH_RISK_THRESHOLD ).map(school => ({
             id: school.id,
             codigoInep: school.codigoInep,
             nome: school.nome,
