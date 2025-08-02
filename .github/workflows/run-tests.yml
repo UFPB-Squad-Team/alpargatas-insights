@@ -1,0 +1,49 @@
+name: Run Automated Tests
+
+on:
+  pull_request:
+    branches: ["main", development]
+  workflow_dispatch:
+
+jobs:
+  # test-backend:
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: ./server
+  #   steps:
+  #     - name: 1. Code Checkout
+  #       uses: actions/checkout@v4
+  #     - name: 2. Set up Node.js environment
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: "lts/*"
+  #         cache: "npm"
+  #         cache-dependency-path: server/package-lock.json
+  #     - name: 3. Install project dependencies
+  #       run: npm ci
+  #     - name: 4. Run Jest unit tests
+  #       run: npm test
+
+  test-etl:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./etl
+    steps:
+      - name: 1. Code Checkout
+        uses: actions/checkout@v4
+
+      - name: 2. Set up Python environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 3. Install Poetry
+        run: pip install poetry
+
+      - name: 4. Install project dependencies
+        run: poetry install --sync
+
+      - name: 5. Run Pytest unit tests
+        run: poetry run pytest
