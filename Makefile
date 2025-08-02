@@ -42,6 +42,9 @@ etl-transform: ## Run the transform step of the ETL process
 etl-load: ## Run the load step of the ETL process
 	docker-compose run --rm etl python scripts/03_load.py
 
+etl-test: ## Run the pytest tests of the ETL process
+	poetry run pytest
+
 help: ## Show available commands
 	@echo "Available commands:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
