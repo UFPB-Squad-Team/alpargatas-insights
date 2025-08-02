@@ -22,9 +22,19 @@ yarn-error.log*
 .vscode/
 .idea/
 
-# Dados do ETL
-etl/data/
+# Ignora diretórios de dados processados e de entrada
+etl/data/processed/
+etl/data/input_data/
+
+# Ignora todos os arquivos .zip e .csv (em qualquer pasta)
 *.zip
+*.csv
+
+# Ignora todos os arquivos .parquet dentro de data/raw/
+etl/data/raw/*.parquet
+
+# Exceto este arquivo específico
+!etl/data/raw/escolas_paraiba_sample.parquet
 
 # Logs
 *.log
