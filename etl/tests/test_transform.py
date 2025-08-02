@@ -46,13 +46,7 @@ def test_transform_data_integration(sample_df_for_transformation):
     Testa a função 'transform_data' de forma integrada, verificando limpeza,
     estruturação de sub-documentos e o cálculo do score de risco.
     """
-    # Arrange
-    df_to_test = sample_df_for_transformation
-    
-    # Act
     df_final = transform_data(sample_df_for_transformation)
-    
-    # Assert
     
     # a) verifica se a estrutura final das colunas está correta
     expected_columns = [
@@ -77,8 +71,8 @@ def test_transform_data_integration(sample_df_for_transformation):
     assert df_final.loc[0, 'localizacao']['coordinates'] == [-34.80, -7.11]
     
     # d) verifica se a lógica de acessibilidade foi invertida e inclída
-    assert df_final.loc[0, 'infraestrutura']['possui_acessibilidade_pcd'] == True    
-    
+    assert df_final.loc[0, "infraestrutura"]["possui_acessibilidade_pcd"]   
+     
     # e) verifica se o score de risco foi calculado corretamente para cada cenário
     assert df_final.loc[0, 'score_de_risco'] == 0.0
     assert df_final.loc[1, 'score_de_risco'] == 0.3  # (20 biblioteca + 10 quadra) / 100
