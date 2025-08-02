@@ -9,6 +9,7 @@ jobs:
   build-check:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         service: [server, client, etl]
 
