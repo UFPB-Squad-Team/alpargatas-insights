@@ -1,6 +1,10 @@
 ##  O que este PR faz?
 
-##  Qual problema ele resolve?
+##  Link da Task no Linear:
+
+```Text
+Exemplo: [Nome da task](Link da Task)
+```
 
 ##  Screenshots ou GIFs (se aplicável)
 
