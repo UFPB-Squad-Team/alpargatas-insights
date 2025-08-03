@@ -4,7 +4,7 @@ import Sidebar from './Sidebar';
 
 const Layout = () => {
   return (
-    <div className="flex h-screen bg-brand-surface">
+    <div className="flex h-screen bg-brand-surface ">
       <div
         className="
         transition-all duration-300 ease-in-out

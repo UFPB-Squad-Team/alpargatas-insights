@@ -2,7 +2,7 @@ import { Search, Bell, Settings, Menu as MenuIcon } from 'lucide-react';
 
 const Navbar = () => {
   return (
-    <header className="flex items-center justify-between p-4 bg-brand-background border-b rounded-xl border-gray-200 gap-4">
+    <header className="flex items-center justify-between p-4 bg-brand-background border-b rounded-xl border-gray-200 gap-4 shadow-sm">
       <div className="flex items-center gap-4 flex-1">
         {/* TODO: este botão pode controlar a visibilidade da sidebar em mobile */}
         <button className="sm:hidden text-brand-text-secondary">
