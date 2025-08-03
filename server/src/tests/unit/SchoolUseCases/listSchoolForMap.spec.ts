@@ -10,7 +10,7 @@ describe('ListSchoolForMapUseCase', () => {
       findAllForMap: jest.fn().mockResolvedValue([
         {
           id: '1',
-          nome: 'Escola mock',
+          escolaNome: 'Escola mock',
           localizacao: { type: 1, coordinates: [0, 0] },
           scoreRisco: 0.8,
         },
@@ -28,7 +28,7 @@ describe('ListSchoolForMapUseCase', () => {
     expect(await listSchoolForMapUseCase.execute()).toEqual([
       {
         id: '1',
-        nome: 'Escola mock',
+        escolaNome: 'Escola mock',
         localizacao: { type: 1, coordinates: [0, 0] },
         scoreRisco: 0.8,
       },

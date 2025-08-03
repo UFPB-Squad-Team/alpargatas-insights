@@ -9,7 +9,7 @@ describe('GetSchoolsByDependenciaAdministrativaUseCase', () => {
       findByUf: jest.fn().mockResolvedValue(null),
       findByDepAdm: jest.fn().mockResolvedValue([
         {
-          dependenciaAdministrativa: 'estadual',
+          dependenciaAdm: 'estadual',
         },
       ]),
       findAllForMap: jest.fn().mockResolvedValue(null),
@@ -23,7 +23,7 @@ describe('GetSchoolsByDependenciaAdministrativaUseCase', () => {
       new GetSchoolsByDependenciaAdministrativa(mockSchoolRepository);
 
     const schoolData = {
-      dependenciaAdministrativa: dependenciaAdministrativa.ESTADUAL,
+      dependenciaAdm: dependenciaAdministrativa.ESTADUAL,
     };
 
     expect(
@@ -50,7 +50,7 @@ describe('GetSchoolsByDependenciaAdministrativaUseCase', () => {
       new GetSchoolsByDependenciaAdministrativa(mockSchoolRepository);
 
     const schoolData = {
-      dependenciaAdministrativa: dependenciaAdministrativa.ESTADUAL,
+      dependenciaAdm: dependenciaAdministrativa.ESTADUAL,
     };
 
     expect(
