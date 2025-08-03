@@ -13,7 +13,7 @@ export class GetDashboardKPIsUseCase {
 
     const municipalities = await this.municipalityRepository.findAll();
 
-    const HIGH_RISK_THRESHOLD: number = 0.75
+    const HIGH_RISK_THRESHOLD: number = 0.75;
 
     const theHighMunicipalitiesRisk = new Map<string, number>();
 
