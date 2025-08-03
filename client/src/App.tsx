@@ -1,30 +1,17 @@
-import { useState } from 'react'
+import { Routes, Route } from 'react-router-dom';
+import Layout from './components/layout/Layout';
+import DashboardPage from './features/dashboard/DashboardPage';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-        </a>
-        <a href="https://react.dev" target="_blank">
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Routes>
+      {/* Todas as rotas aqui dentro usarão o Layout */}
+      <Route element={<Layout />}>
+        <Route path="/" element={<DashboardPage />} />
+        {/* Adicione outras páginas aqui no futuro */}
+      </Route>
+    </Routes>
+  );
 }
 
-export default App
+export default App;
