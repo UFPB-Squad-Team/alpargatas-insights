@@ -8,7 +8,6 @@ interface NavbarProps {
   onNotificationsClick: () => void;
   onSettingsClick: () => void;
   notificationsRef: React.RefObject<HTMLDivElement | null>;
-  onSearchChange: (value: string) => void;
 }
 
 const Navbar = ({
