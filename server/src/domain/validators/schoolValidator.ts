@@ -10,7 +10,7 @@ export class SchoolValidator {
       throw new Error('Name must contain at least 1 character');
     }
 
-    if (props.scoreRisco >= 0 && props.scoreRisco <= 1) {
+    if (!(props.scoreRisco >= 0 && props.scoreRisco <= 1)) {
       throw new Error('Score need be between 0 and 1');
     }
 
