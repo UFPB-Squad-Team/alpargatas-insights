@@ -13,7 +13,7 @@ const Sidebar = () => {
           >
             <img
               className="w-10 h-10 lg:w-12 lg:h-12"
-              src="/logo_no_background.svg" // Caminho simplificado para arquivos na pasta public
+              src="/logo_no_background.svg" 
               alt="Logo do Instituto Alpargatas"
             />
             <span className="hidden lg:block font-bold text-brand-text-primary text-lg">
