@@ -1,12 +1,14 @@
-import { Search, Bell, Settings, Menu as MenuIcon } from 'lucide-react';
+import { Bell, Settings, Menu as MenuIcon } from 'lucide-react';
 import NotificationsDropdown from './NotificationsDropdown';
 import React from 'react';
+import SearchInput from '../common/SearchInput';
 
 interface NavbarProps {
   isNotificationsOpen: boolean;
   onNotificationsClick: () => void;
   onSettingsClick: () => void;
   notificationsRef: React.RefObject<HTMLDivElement | null>;
+  onSearchChange: (value: string) => void;
 }
 
 const Navbar = ({
@@ -16,18 +18,13 @@ const Navbar = ({
   notificationsRef,
 }: NavbarProps) => {
   return (
-    <header className="flex items-center justify-between p-4 bg-brand-background border-b rounded-xl border-gray-200 gap-4 shadow-sm">
+    <header className="relative flex items-center justify-between p-4 bg-brand-background border-b rounded-xl border-gray-200 gap-4 shadow-sm">
       <div className="flex items-center gap-4 flex-1">
         <button className="sm:hidden text-brand-text-secondary">
           <MenuIcon className="h-6 w-6" />
         </button>
         <div className="hidden sm:flex items-center bg-brand-surface rounded-md p-2 w-full max-w-md lg:max-w-xl xl:max-w-2xl">
-          <Search className="h-5 w-5 text-brand-text-secondary" />
-          <input
-            type="text"
-            placeholder="Buscar escolas ou municípios..."
-            className="bg-transparent ml-2 outline-none w-full text-brand-text-primary"
-          />
+          <SearchInput />
         </div>
       </div>
 
@@ -56,10 +53,10 @@ const Navbar = ({
           </div>
           <div className="hidden md:block">
             <p className="font-semibold text-sm text-brand-text-primary">
-              Brenno Henrique
+              Brenno Henrique {/* TODO: vai ser um component futuramente*/}
             </p>
             <p className="text-xs text-brand-text-secondary">
-              Diretor Executivo
+              Diretor Executivo {/* TODO: vai ser um component futuramente*/}
             </p>
           </div>
         </div>
