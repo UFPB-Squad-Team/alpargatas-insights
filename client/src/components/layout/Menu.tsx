@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
   School,
@@ -21,7 +21,6 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
-  // --- Grupo de Análises (Módulo 1) ---
   {
     id: 1,
     title: 'Dashboard',
@@ -45,7 +44,6 @@ const menuItems: MenuItem[] = [
     group: 'Análises',
     disabled: true,
   },
-  // --- Grupo de Ferramentas (Módulos 2, 3, 4) ---
   {
     id: 4,
     title: 'Simulador de Impacto',
@@ -70,7 +68,6 @@ const menuItems: MenuItem[] = [
     group: 'Ferramentas',
     disabled: true,
   },
-  // --- Grupo de Análise Avançada (Módulo 5) ---
   {
     id: 7,
     title: 'Ecossistema',
@@ -79,7 +76,6 @@ const menuItems: MenuItem[] = [
     group: 'Avançado',
     disabled: true,
   },
-  // --- Grupo de Sistema ---
   {
     id: 8,
     title: 'Configurações',
@@ -91,6 +87,8 @@ const menuItems: MenuItem[] = [
 ];
 
 const Menu = () => {
+  const { pathname } = useLocation();
+
   const groupedItems = menuItems.reduce(
     (acc, item) => {
       if (!acc[item.group]) acc[item.group] = [];
@@ -108,24 +106,39 @@ const Menu = () => {
             {groupTitle}
           </span>
           <ul>
-            {items.map((item) => (
-              <li key={item.id}>
-                {!item.disabled ? (
-                  <Link
-                    to={item.path}
-                    className="p-2 flex items-center rounded-md my-1 text-brand-text-primary hover:bg-brand-orange-dark hover:text-white transition-colors duration-200"
-                  >
-                    <item.Icon className="h-5 w-5" />
-                    <span className="hidden lg:inline ml-4">{item.title}</span>
-                  </Link>
-                ) : (
-                  <div className="p-2 flex items-center rounded-md my-1 text-gray-400 cursor-not-allowed">
-                    <item.Icon className="h-5 w-5" />
-                    <span className="hidden lg:inline ml-4">{item.title}</span>
-                  </div>
-                )}
-              </li>
-            ))}
+            {items.map((item) => {
+              const isActive = pathname === item.path;
+
+              return (
+                <li key={item.id}>
+                  {!item.disabled ? (
+                    <Link
+                      to={item.path}
+                      className={`
+                        p-2 flex items-center rounded-md my-1 transition-colors duration-200
+                        ${
+                          isActive
+                            ? 'bg-brand-orange-dark text-white'
+                            : 'text-brand-text-secondary hover:bg-brand-surface hover:text-brand-text-primary'
+                        }
+                      `}
+                    >
+                      <item.Icon className="h-5 w-5" />
+                      <span className="hidden lg:inline ml-4">
+                        {item.title}
+                      </span>
+                    </Link>
+                  ) : (
+                    <div className="p-2 flex items-center rounded-md my-1 text-gray-400 cursor-not-allowed">
+                      <item.Icon className="h-5 w-5" />
+                      <span className="hidden lg:inline ml-4">
+                        {item.title}
+                      </span>
+                    </div>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </div>
       ))}
