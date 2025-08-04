@@ -7,6 +7,7 @@ export interface ISchoolRepository {
   findByName(name: string): Promise<School | null>;
   findByUf(estadoSigla: UF): Promise<School[]>;
   findByDepAdm(dependenciaAdm: dependenciaAdministrativa): Promise<School[]>;
+  findSearchByTerm(term: string, page: number, limit: number): Promise<School[]>
   findAllForMap(): Promise<
     Pick<School, 'id' | 'escolaNome' | 'localizacao' | 'scoreRisco'>[]
   >;
