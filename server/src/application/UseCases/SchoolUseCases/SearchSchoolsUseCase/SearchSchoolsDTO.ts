@@ -1,6 +1,5 @@
-
-export interface SearchSchoolsDTO{
-    term: string
-    page: number
-    limit: number
+export interface SearchSchoolsDTO {
+  term: string;
+  page: number;
+  limit: number;
 }
