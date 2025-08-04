@@ -3,7 +3,10 @@
 ## Link da Task no Linear:
 
 ```Text
-Exemplo: Fixes <ALP-1>
+Exemplo:
+
+Fixes ALP-21 – [Ver issue](https://linear.app/alpargatas-insights/issue/ALP-21/...)
+Fixes ALP-24 – [Ver issue](https://linear.app/alpargatas-insights/issue/ALP-24/...)
 ```
 
 ## Screenshots ou GIFs (se aplicável)
