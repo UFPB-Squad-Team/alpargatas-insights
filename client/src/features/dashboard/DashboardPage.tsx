@@ -57,7 +57,7 @@ const DashboardPage = () => {
               value={kpis.escolasAltoRisco}
               icon={AlertTriangle}
               icon_secondary={Radical}
-              description="Com score de risco superior a 0.75"
+              description="Com score de risco superior a 75%."
             />
             <KpiCard
               title="Município Destaque"
