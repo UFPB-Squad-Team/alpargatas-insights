@@ -6,7 +6,8 @@ export default {
       colors: {
         'brand-orange': {
           light: '#FFA726',
-          dark: '#E65100',
+          dark: '#D46419',
+          contrast: '#963B14',
         },
         'brand-background': '#FFFFFF',
         'brand-surface': '#F8F9FA',
