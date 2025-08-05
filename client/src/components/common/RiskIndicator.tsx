@@ -3,10 +3,10 @@ interface RiskIndicatorProps {
 }
 
 const vulnerabilityLevels = [
-  { min: 0.9, color: 'bg-red-800', text: 'Crítica' },
-  { min: 0.75, color: 'bg-red-500', text: 'Alta Vulnerabilidade' },
-  { min: 0.4, color: 'bg-yellow-500', text: 'Vulnerabilidade Moderada' },
-  { min: 0, color: 'bg-green-500', text: 'Baixa Vulnerabilidade' },
+  { min: 0.9, color: 'bg-red-700', text: 'Alerta Máximo' },
+  { min: 0.75, color: 'bg-orange-500', text: 'Alto Risco' },
+  { min: 0.4, color: 'bg-yellow-500', text: 'Risco Moderado' },
+  { min: 0, color: 'bg-gray-300', text: 'Baixo Risco' },
 ];
 
 const RiskIndicator = ({ score }: RiskIndicatorProps) => {
