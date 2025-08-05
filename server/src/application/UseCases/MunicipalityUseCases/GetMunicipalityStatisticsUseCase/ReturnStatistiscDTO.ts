@@ -1,6 +1,5 @@
-
-export interface ReturnStatisticsFromMunicipalityDTO{
-    ibgeCode: number
-    totalSchools: number
-    averageRisk: number 
+export interface ReturnStatisticsFromMunicipalityDTO {
+  ibgeCode: number;
+  totalSchools: number;
+  averageRisk: number;
 }
