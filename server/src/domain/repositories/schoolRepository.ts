@@ -4,6 +4,7 @@ import { UF } from '../enums/enumUnidadesFederativas';
 
 export interface ISchoolRepository {
   findById(id: string): Promise<School | null>;
+  findByIbgeCode(municipioIdIbge: number): Promise<School[]>
   findByName(name: string): Promise<School | null>;
   findByUf(estadoSigla: UF): Promise<School[]>;
   findByDepAdm(dependenciaAdm: dependenciaAdministrativa): Promise<School[]>;

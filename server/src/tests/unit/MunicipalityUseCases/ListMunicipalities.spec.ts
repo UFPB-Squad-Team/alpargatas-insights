@@ -4,6 +4,7 @@ describe('ListMunicipalitiesUseCase', () => {
   it('List municipality without errors', async () => {
     const mockMunicipalityRepository = {
       findById: jest.fn().mockResolvedValue(null),
+      findByIbgeCode: jest.fn().mockResolvedValue(null),
       findByName: jest.fn().mockResolvedValue(null),
       findByUf: jest.fn().mockResolvedValue(null),
       findAllForDropdown: jest.fn().mockResolvedValue([
@@ -33,6 +34,7 @@ describe('ListMunicipalitiesUseCase', () => {
   it('List a empty array', async () => {
     const mockMunicipalityRepository = {
       findById: jest.fn().mockResolvedValue(null),
+      findByIbgeCode: jest.fn().mockResolvedValue(null),
       findByName: jest.fn().mockResolvedValue(null),
       findByUf: jest.fn().mockResolvedValue(null),
       findAllForDropdown: jest.fn().mockResolvedValue(null),

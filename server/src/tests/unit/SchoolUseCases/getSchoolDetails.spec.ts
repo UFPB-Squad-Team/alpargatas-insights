@@ -7,6 +7,7 @@ describe('GetSchoolDetailsUseCase', () => {
       findById: jest.fn().mockResolvedValue({
         id: '1',
       }),
+      findByIbgeCode: jest.fn().mockResolvedValue(null),
       findByName: jest.fn().mockResolvedValue(null),
       findByUf: jest.fn().mockResolvedValue(null),
       findByDepAdm: jest.fn().mockResolvedValue(null),
@@ -36,6 +37,7 @@ describe('GetSchoolDetailsUseCase', () => {
   it('Get school with not found error', async () => {
     const mockSchoolRepository = {
       findById: jest.fn().mockResolvedValue(null),
+      findByIbgeCode: jest.fn().mockResolvedValue(null),
       findByName: jest.fn().mockResolvedValue(null),
       findByUf: jest.fn().mockResolvedValue(null),
       findByDepAdm: jest.fn().mockResolvedValue(null),
