@@ -7,6 +7,7 @@ describe('GetDashboardKPIsUseCase', () => {
       findByName: jest.fn().mockResolvedValue(null),
       findByUf: jest.fn().mockResolvedValue(null),
       findByDepAdm: jest.fn().mockResolvedValue(null),
+      findSearchByTerm: jest.fn().mockResolvedValue(null),
       findAllForMap: jest.fn().mockResolvedValue(null),
       findAll: jest.fn().mockResolvedValue([
         {
