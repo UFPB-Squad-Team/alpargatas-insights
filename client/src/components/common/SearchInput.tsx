@@ -1,9 +1,9 @@
 import { useClickOutside } from '@/hooks/useClickOutside';
 import { useState, useEffect } from 'react';
-import { searchSchools } from '@/mocks/services/apiService';
 import { Search } from 'lucide-react';
 import { SchoolProps } from '@/domain/entities/School';
 import RiskIndicator from './RiskIndicator';
+import { searchSchools } from '@/mocks/services/searchSchools';
 
 const SearchInput = () => {
   const [searchTerm, setSearchTerm] = useState('');
