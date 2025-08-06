@@ -5,8 +5,13 @@ import {
   HighRiskSchool,
 } from '@/mocks/services/getHighRiskSchools';
 import { BadgeAlert } from 'lucide-react';
+import Spinner from '@/components/common/Spinner';
 
-const HighRiskSchoolsList = () => {
+interface HighRiskSchoolsListProps {
+  onSelectSchool: (school: HighRiskSchool) => void;
+}
+
+const HighRiskSchoolsList = ({ onSelectSchool }: HighRiskSchoolsListProps) => {
   const [schools, setSchools] = useState<HighRiskSchool[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -35,15 +40,17 @@ const HighRiskSchoolsList = () => {
         </h3>
       </div>
       {isLoading ? (
-        <p>Carregando lista...</p> //TODO: Criar um componente de loading mais elaborado
+        <Spinner />
       ) : (
-        <ul className="space-y-3">
-          {schools.map((school, index) => (
-            <SchoolListItem
+        <ul>
+          {schools.map((school) => (
+            <li
               key={school.escola_id_inep}
-              school={school}
-              index={index}
-            />
+              onClick={() => onSelectSchool(school)}
+              className="cursor-pointer hover:bg-brand-surface rounded p-2 ease-in-out duration-200"
+            >
+              <SchoolListItem school={school} index={0} />
+            </li>
           ))}
         </ul>
       )}
