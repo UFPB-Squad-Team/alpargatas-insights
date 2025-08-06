@@ -15,7 +15,7 @@ const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-[9999] flex justify-center items-center">
       {/* Container do Modal */}
       <div
         className="bg-white rounded-lg shadow-xl w-full max-w-md p-6"

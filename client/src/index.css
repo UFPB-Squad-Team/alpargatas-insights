@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.marker-cluster.bg-brand-orange-light {
+  background-color: #ffa726;
+  color: #92400e;
+}
+
+.marker-cluster.bg-brand-orange {
+  background-color: #d46419;
+  color: white;
+}
+
+.marker-cluster.bg-brand-orange-dark {
+  background-color: #963b14;
+  color: white;
+}
