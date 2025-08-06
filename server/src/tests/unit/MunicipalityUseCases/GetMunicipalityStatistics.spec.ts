@@ -1,6 +1,6 @@
-import { GetMunicipalityStatisticsUseCase } from "../../../application/UseCases/MunicipalityUseCases/GetMunicipalityStatisticsUseCase/GetMunicipalityStatisticsUseCase";
-import { UF } from "../../../domain/enums/enumUnidadesFederativas";
-import { HTTPSTATUS } from "../../../shared/config/http";
+import { GetMunicipalityStatisticsUseCase } from '../../../application/UseCases/MunicipalityUseCases/GetMunicipalityStatisticsUseCase/GetMunicipalityStatisticsUseCase';
+import { UF } from '../../../domain/enums/enumUnidadesFederativas';
+import { HTTPSTATUS } from '../../../shared/config/http';
 
 describe('GetMunicipalityStatisticsUseCase', () => {
   it('Get statistics without errors', async () => {

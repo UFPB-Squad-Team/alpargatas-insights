@@ -1,8 +1,8 @@
-import { ISchoolRepository } from "../../../../domain/repositories/schoolRepository";
-import { HTTPSTATUS } from "../../../../shared/config/http";
-import { AppError } from "../../../../shared/utils/errors/appError";
-import { GetMunicipalityStatisticsDTO } from "./GetMunicipalityStatisticsDTO";
-import { ReturnStatisticsFromMunicipalityDTO } from "./ReturnStatistiscDTO";
+import { ISchoolRepository } from '../../../../domain/repositories/schoolRepository';
+import { HTTPSTATUS } from '../../../../shared/config/http';
+import { AppError } from '../../../../shared/utils/errors/appError';
+import { GetMunicipalityStatisticsDTO } from './GetMunicipalityStatisticsDTO';
+import { ReturnStatisticsFromMunicipalityDTO } from './ReturnStatistiscDTO';
 
 export class GetMunicipalityStatisticsUseCase {
   constructor(private schoolRepository: ISchoolRepository) {}

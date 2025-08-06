@@ -1,7 +1,4 @@
-import {
-  HTTPSTATUS,
-  httpStatusCodeType,
-} from '../../config/http';
+import { HTTPSTATUS, httpStatusCodeType } from '../../config/http';
 
 export class AppError {
   message: string;
