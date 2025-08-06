@@ -1,5 +1,5 @@
 import { ISchoolRepository } from '../../../../domain/repositories/schoolRepository';
-import { HTTPSTATUS } from '../../../../infrastructure/configs/http';
+import { HTTPSTATUS } from '../../../../shared/config/http';
 import { AppError } from '../../../../shared/utils/errors/appError';
 import { GetSchoolDetailsDTO } from './GetSchoolDetailsDTO';
 

@@ -1,7 +1,7 @@
 import {
   HTTPSTATUS,
   httpStatusCodeType,
-} from '../../../infrastructure/configs/http';
+} from '../../config/http';
 
 export class AppError {
   message: string;

@@ -1,5 +1,5 @@
 import { GetSchoolDetailsUseCase } from '../../../application/UseCases/SchoolUseCases/GetSchoolDetailsUseCase/GetSchoolDetailsUseCase';
-import { HTTPSTATUS } from '../../../infrastructure/configs/http';
+import { HTTPSTATUS } from '../../../shared/config/http';
 
 describe('GetSchoolDetailsUseCase', () => {
   it('Get schools without errors', async () => {
