@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import Menu from './Menu';
-import { HelpCircle, Lightbulb  } from 'lucide-react';
+import { HelpCircle, Lightbulb } from 'lucide-react';
 
 const Sidebar = () => {
   return (

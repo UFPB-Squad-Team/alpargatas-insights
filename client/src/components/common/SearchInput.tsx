@@ -59,7 +59,7 @@ const SearchInput = () => {
       </div>
 
       {isDropdownOpen && (
-        <div className="absolute top-full left-0 w-full bg-white border rounded-md shadow-lg mt-2 z-10 max-h-80 overflow-y-auto">
+        <div className="absolute top-full left-0 w-full bg-white border rounded-md shadow-lg mt-2 z-[9999] max-h-80  overflow-y-auto">
           {isLoading ? (
             <div className="p-4 text-gray-500">Buscando...</div>
           ) : searchResults.length > 0 ? (

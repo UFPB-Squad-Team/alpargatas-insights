@@ -7,37 +7,52 @@ import {
   Library,
   Radical,
   ArrowBigUpDash,
+  Map,
 } from 'lucide-react';
 import HighRiskSchoolsList from './components/HighRiskSchoolsList';
-// import { getSchoolsForMap, SchoolForMap } from '@/services/apiService';
-// import MapChart from './components/MapChart';
 import PartnerNeedsCard from './components/PartneerNeedsCard';
 import {
   DashboardKpis,
   getDashboardKPIs,
 } from '@/mocks/services/getDashboardKPIs';
+import {
+  getSchoolsForMap,
+  SchoolForMap,
+} from '@/mocks/services/getSchoolsForMap';
+import MapChart from './components/MapChart';
+import Spinner from '@/components/common/Spinner';
+import RiskLegend from '@/components/common/RiskLegend';
 
 const DashboardPage = () => {
   const [kpis, setKpis] = useState<DashboardKpis | null>(null);
-  // const [mapData, setMapData] = useState<SchoolForMap[]>([]);
+  const [mapData, setMapData] = useState<SchoolForMap[]>([]);
+  const [selectedSchoolId, setSelectedSchoolId] = useState<
+    string | null | number
+  >(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchAllDashboardData = async () => {
       try {
-        const [kpisData] = await Promise.all([getDashboardKPIs()]);
+        const [kpisData, schoolsData] = await Promise.all([
+          getDashboardKPIs(),
+          getSchoolsForMap(),
+        ]);
+
         setKpis(kpisData);
+        setMapData(schoolsData);
       } catch (error) {
         console.error('Erro ao buscar dados do dashboard:', error);
       } finally {
         setIsLoading(false);
       }
     };
+
     fetchAllDashboardData();
   }, []);
 
   if (isLoading) {
-    return <div>Carregando dashboard...</div>; //TODO: Criar um componente de loading mais elaborado
+    return <Spinner />;
   }
 
   return (
@@ -78,13 +93,26 @@ const DashboardPage = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/*COLUNA ESQUERDA (PRINCIPAL)*/}
+        {/* COLUNA ESQUERDA (PRINCIPAL) */}
         <div className="lg:col-span-2 flex flex-col gap-6">
           {/* 1. O Mapa de Risco */}
           <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-200">
-            <h3 className="font-semibold text-brand-text-primary mb-4">
-              Mapa de Risco das Escolas
-            </h3>
+            <div className="flex items-center gap-4 mb-4">
+              <div className="bg-brand-orange-light p-2 rounded-lg">
+                <Map className="h-6 w-6 text-brand-orange-dark" />
+              </div>
+              <h3 className="font-bold text-lg text-brand-text-primary">
+                Mapa de Riscos das Escolas na Paraíba
+              </h3>
+            </div>
+            {isLoading ? (
+              <div className="h-[500px] w-full flex justify-center items-center bg-gray-200 rounded-lg">
+                <Spinner />
+              </div>
+            ) : (
+              <MapChart schools={mapData} selectedSchoolId={selectedSchoolId} />
+            )}
+            <RiskLegend />
           </div>
 
           {/* Container para os gráficos inferiores */}
@@ -104,9 +132,13 @@ const DashboardPage = () => {
           </div>
         </div>
 
-        {/*COLUNA DIREITA (SECUNDÁRIA)*/}
+        {/* COLUNA DIREITA (SECUNDÁRIA) */}
         <div className="lg:col-span-1 flex flex-col gap-6">
-          <HighRiskSchoolsList />
+          <HighRiskSchoolsList
+            onSelectSchool={(school) =>
+              setSelectedSchoolId(school.escola_id_inep)
+            }
+          />
           <PartnerNeedsCard />
         </div>
       </div>
