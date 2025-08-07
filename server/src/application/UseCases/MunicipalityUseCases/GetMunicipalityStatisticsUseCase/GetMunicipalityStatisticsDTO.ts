@@ -1,3 +1,3 @@
 export interface GetMunicipalityStatisticsDTO {
-  municipioIdIbge: number;
+  municipioIdIbge: string;
 }

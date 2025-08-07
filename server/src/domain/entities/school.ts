@@ -4,7 +4,7 @@ import { UF } from '../enums/enumUnidadesFederativas';
 import { SchoolValidator } from '../validators/schoolValidator';
 import { tipoLocalizacao } from '../enums/enumTipoLocalizacao';
 
-type LocationCoordinates = [number, number];
+export type LocationCoordinates = [number, number];
 
 export type SchoolProps = {
   municipioIdIbge: string;

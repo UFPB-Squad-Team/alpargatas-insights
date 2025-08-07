@@ -10,8 +10,8 @@ export class GetMunicipalityStatisticsUseCase {
   async execute({
     municipioIdIbge,
   }: GetMunicipalityStatisticsDTO): Promise<ReturnStatisticsFromMunicipalityDTO> {
-    if (!municipioIdIbge || typeof municipioIdIbge !== 'number') {
-      throw new AppError('This code need be a number');
+    if (!municipioIdIbge || typeof municipioIdIbge !== 'string') {
+      throw new AppError('This code need be a string');
     }
 
     const schools = await this.schoolRepository.findByIbgeCode(municipioIdIbge);
