@@ -14,23 +14,23 @@ def define_data_schema() -> pa.DataFrameSchema:
     """Define o contrato de qualidade dos nossos dados processados."""
     schema = pa.DataFrameSchema(
         {
-            "escola_id_inep": pa.Column(int, required=True),
-            "escola_nome": pa.Column(str, required=True),
-            "municipio_id_ibge": pa.Column(int, required=True),
-            "municipio_nome": pa.Column(str, required=True),
-            "estado_sigla": pa.Column(
+            "escolaIdInep": pa.Column(int, required=True),
+            "escolaNome": pa.Column(str, required=True),
+            "municipioIdIbge": pa.Column(int, required=True),
+            "municipioNome": pa.Column(str, required=True),
+            "estadoSigla": pa.Column(
                 str, checks=pa.Check.str_length(min_value=2, max_value=2)
             ),
-            "dependencia_adm": pa.Column(
+            "dependenciaAdm": pa.Column(
                 str, checks=pa.Check.isin(["Federal", "Estadual", "Municipal"])
             ),
-            "tipo_localizacao": pa.Column(
+            "tipoLocalizacao": pa.Column(
                 str, checks=pa.Check.isin(["Urbana", "Rural"])
             ),
             "infraestrutura": pa.Column(object, required=True),
             "indicadores": pa.Column(object, required=True),
             "localizacao": pa.Column(object, required=True),
-            "score_de_risco": pa.Column(
+            "scoreRisco": pa.Column(
                 float, checks=pa.Check.in_range(min_value=0.0, max_value=1.0)
             ),
         },

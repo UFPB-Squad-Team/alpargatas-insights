@@ -56,26 +56,26 @@ def test_transform_data_integration(sample_df_for_transformation):
 
     # a) verifica se a estrutura final das colunas está correta
     expected_columns = [
-        "escola_id_inep",
-        "escola_nome",
-        "municipio_id_ibge",
-        "municipio_nome",
-        "estado_sigla",
-        "dependencia_adm",
-        "tipo_localizacao",
+        "escolaIdInep",
+        "escolaNome",
+        "municipioIdIbge",
+        "municipioNome",
+        "estadoSigla",
+        "dependenciaAdm",
+        "tipoLocalizacao",
         "infraestrutura",
         "indicadores",
         "localizacao",
-        "score_de_risco",
+        "scoreRisco",
     ]
 
     assert list(df_final.columns) == expected_columns
 
     # b) verifica se os dados foram limpos e traduzidos corretamente
 
-    assert df_final.loc[0, "dependencia_adm"] == "Estadual"
-    assert df_final.loc[1, "dependencia_adm"] == "Municipal"
-    assert df_final.loc[1, "tipo_localizacao"] == "Rural"
+    assert df_final.loc[0, "dependenciaAdm"] == "Estadual"
+    assert df_final.loc[1, "dependenciaAdm"] == "Municipal"
+    assert df_final.loc[1, "tipoLocalizacao"] == "Rural"
 
     assert isinstance(df_final.loc[0, "infraestrutura"], dict)
     assert isinstance(df_final.loc[0, "localizacao"], dict)
@@ -88,6 +88,6 @@ def test_transform_data_integration(sample_df_for_transformation):
     assert df_final.loc[0, "infraestrutura"]["possui_acessibilidade_pcd"]
 
     # e) verifica se o score de risco foi calculado corretamente para cada cenário
-    assert df_final.loc[0, "score_de_risco"] == 0.0
-    assert df_final.loc[1, "score_de_risco"] == 0.3  # (20 biblioteca + 10 quadra) / 100
-    assert df_final.loc[2, "score_de_risco"] == 0.45  # (25 saneamento + 20 agua) / 100
+    assert df_final.loc[0, "scoreRisco"] == 0.0
+    assert df_final.loc[1, "scoreRisco"] == 0.3  # (20 biblioteca + 10 quadra) / 100
+    assert df_final.loc[2, "scoreRisco"] == 0.45  # (25 saneamento + 20 agua) / 100
