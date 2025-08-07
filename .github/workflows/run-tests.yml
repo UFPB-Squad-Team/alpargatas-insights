@@ -26,6 +26,8 @@ jobs:
         run: npm ci
       - name: 4. Run Jest unit tests
         run: npm test
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI}}
 
   test-etl:
     runs-on: ubuntu-latest
