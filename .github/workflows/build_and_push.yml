@@ -31,9 +31,27 @@ jobs:
           push: true
           tags: ghcr.io/ufpb-squad-team/alpargatas-api:latest
 
-      - name: 4. Build and Push Frontend Image
+      - name: 4. Scan Backend Image for Vulnerabilities
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: "ghcr.io/ufpb-squad-team/alpargatas-api:latest"
+          format: "table"
+          exit-code: "1"
+          ignore-unfixed: true
+          severity: "CRITICAL,HIGH"
+
+      - name: 5. Build and Push Frontend Image
         uses: docker/build-push-action@v5
         with:
           context: ./client
           push: true
           tags: ghcr.io/ufpb-squad-team/alpargatas-frontend:latest
+
+      - name: 6. Scan Frontend Image for Vulnerabilities
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: "ghcr.io/ufpb-squad-team/alpargatas-frontend:latest"
+          format: "table"
+          exit-code: "1"
+          ignore-unfixed: true
+          severity: "CRITICAL,HIGH"
