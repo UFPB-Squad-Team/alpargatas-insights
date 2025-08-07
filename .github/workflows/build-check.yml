@@ -24,6 +24,5 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./${{ matrix.service == 'client' && 'client' || matrix.service == 'server' && 'server' || 'etl' }}
-          fail-fast: false
           push: false
           load: false
