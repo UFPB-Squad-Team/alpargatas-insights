@@ -5,6 +5,7 @@ describe('GetSchoolsByDependenciaAdministrativaUseCase', () => {
   it('Get school without errors', async () => {
     const mockSchoolRepository = {
       findById: jest.fn().mockResolvedValue(null),
+      findByIbgeCode: jest.fn().mockResolvedValue(null),
       findByName: jest.fn().mockResolvedValue(null),
       findByUf: jest.fn().mockResolvedValue(null),
       findByDepAdm: jest.fn().mockResolvedValue([
@@ -37,6 +38,7 @@ describe('GetSchoolsByDependenciaAdministrativaUseCase', () => {
   it('Get a empty array', async () => {
     const mockSchoolRepository = {
       findById: jest.fn().mockResolvedValue(null),
+      findByIbgeCode: jest.fn().mockResolvedValue(null),
       findByName: jest.fn().mockResolvedValue(null),
       findByUf: jest.fn().mockResolvedValue(null),
       findByDepAdm: jest.fn().mockResolvedValue(null),

@@ -4,6 +4,7 @@ describe('SearchSchoolsNameUseCase', () => {
   it('Search schools without errors', async () => {
     const mockSchoolRepository = {
       findById: jest.fn().mockResolvedValue(null),
+      findByIbgeCode: jest.fn().mockResolvedValue(null),
       findByName: jest.fn().mockResolvedValue(null),
       findByUf: jest.fn().mockResolvedValue(null),
       findByDepAdm: jest.fn().mockResolvedValue(null),
@@ -95,6 +96,7 @@ describe('SearchSchoolsNameUseCase', () => {
   it('Search schools with term empty error', async () => {
     const mockSchoolRepository = {
       findById: jest.fn().mockResolvedValue(null),
+      findByIbgeCode: jest.fn().mockResolvedValue(null),
       findByName: jest.fn().mockResolvedValue(null),
       findByUf: jest.fn().mockResolvedValue(null),
       findByDepAdm: jest.fn().mockResolvedValue(null),
@@ -159,6 +161,7 @@ describe('SearchSchoolsNameUseCase', () => {
   it('Search schools with page error', async () => {
     const mockSchoolRepository = {
       findById: jest.fn().mockResolvedValue(null),
+      findByIbgeCode: jest.fn().mockResolvedValue(null),
       findByName: jest.fn().mockResolvedValue(null),
       findByUf: jest.fn().mockResolvedValue(null),
       findByDepAdm: jest.fn().mockResolvedValue(null),
@@ -223,6 +226,7 @@ describe('SearchSchoolsNameUseCase', () => {
   it('Searc schools with limit error', async () => {
     const mockSchoolRepository = {
       findById: jest.fn().mockResolvedValue(null),
+      findByIbgeCode: jest.fn().mockResolvedValue(null),
       findByName: jest.fn().mockResolvedValue(null),
       findByUf: jest.fn().mockResolvedValue(null),
       findByDepAdm: jest.fn().mockResolvedValue(null),
