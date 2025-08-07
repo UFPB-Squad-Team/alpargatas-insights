@@ -12,7 +12,12 @@ export interface ISchoolRepository {
     term: string,
     page: number,
     limit: number,
-  ): Promise<{ schools: School[], total: number, page: number, currentPage: number }>;
+  ): Promise<{
+    schools: School[];
+    total: number;
+    page: number;
+    currentPage: number;
+  }>;
   findAllForMap(): Promise<
     Pick<School, 'id' | 'escolaNome' | 'localizacao' | 'scoreRisco'>[]
   >;
