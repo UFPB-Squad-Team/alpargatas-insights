@@ -1,6 +1,5 @@
-
-import express, { Request, Response } from "express"
-import cors from "cors"
+import express, { Request, Response } from 'express';
+import cors from 'cors';
 import { config } from './infrastructure/configs/app';
 import { errorHandling } from './infrastructure/http/middleware/errorHandling';
 
@@ -10,10 +9,12 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(cors({
-  origin: config.FRONTEND_ORIGIN,
-  credentials: true
-}))
+app.use(
+  cors({
+    origin: config.FRONTEND_ORIGIN,
+    credentials: true,
+  }),
+);
 
 app.get('/', (req: Request, res: Response) => {
   res.status(200).json({
@@ -23,8 +24,6 @@ app.get('/', (req: Request, res: Response) => {
   });
 });
 
-app.use(errorHandling)
+app.use(errorHandling);
 
-
-export { app }
-
+export { app };
