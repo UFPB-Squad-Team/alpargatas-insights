@@ -126,7 +126,7 @@ def transform_data(df: pd.DataFrame) -> pd.DataFrame:
         return min(round(score_final, 4), 1.0)
 
     df["score_de_risco"] = df.apply(calculate_score, axis=1)
-    
+
     rename_to_camel_case_map = {
         "escola_id_inep": "escolaIdInep",
         "escola_nome": "escolaNome",
@@ -137,7 +137,7 @@ def transform_data(df: pd.DataFrame) -> pd.DataFrame:
         "tipo_localizacao": "tipoLocalizacao",
         "score_de_risco": "scoreRisco",
     }
-    
+
     df_renamed = df.rename(columns=rename_to_camel_case_map)
 
     final_columns_camel_case = [
@@ -148,12 +148,12 @@ def transform_data(df: pd.DataFrame) -> pd.DataFrame:
         "estadoSigla",
         "dependenciaAdm",
         "tipoLocalizacao",
-        "infraestrutura",  
-        "indicadores",    
-        "localizacao",     
+        "infraestrutura",
+        "indicadores",
+        "localizacao",
         "scoreRisco",
     ]
-    
+
     return df_renamed[final_columns_camel_case]
 
 
