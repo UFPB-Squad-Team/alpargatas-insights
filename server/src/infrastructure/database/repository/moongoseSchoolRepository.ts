@@ -26,21 +26,24 @@ export class MoongoseSchoolRepository implements ISchoolRepository{
         return SchoolMapper.toDomain(schoolExist)
     }
     
-    async findByIbgeCode(municipioIdIbge: number): Promise<School[]> {
+    async findByIbgeCode(municipioIdIbge: string): Promise<School[]> {
     const pipeline = [
         {
             $match: { municipioIdIbge }
         },
         {
             $project: {
-                _id: 1,
+                _id: 0,
+                id: "$_id",
                 municipioIdIbge: 1,
                 escolaIdInep: 1,
                 escolaNome: 1,
                 municipioNome: 1,
                 estadoSigla: 1,
                 dependenciaAdm: 1,
-                scoreRisco: 1
+                scoreRisco: 1,
+                indicadores: 1,
+                infraestrutura: 1
             }
         },
     ];
@@ -57,7 +60,8 @@ export class MoongoseSchoolRepository implements ISchoolRepository{
             },
             {
                 $project: {
-                    _id: 1,
+                    _id: 0,
+                    id: "$_id",
                     municipioIdIbge: 1,
                     escolaIdInep: 1,
                     escolaNome: 1,
@@ -83,7 +87,8 @@ export class MoongoseSchoolRepository implements ISchoolRepository{
             },
             {
                 $project: {
-                    _id: 1,
+                    _id: 0,
+                    id: "$_id",
                     municipioIdIbge: 1,
                     escolaIdInep: 1,
                     escolaNome: 1,
@@ -103,15 +108,11 @@ export class MoongoseSchoolRepository implements ISchoolRepository{
     }
 
     async findSearchByTerm(term: string, page: number, limit: number): Promise<{ schools: School[]; total: number; page: number; currentPage: number; }> {
-
-        const regex = new RegExp(term, 'i')
-    
         const query = {
             $or: [
-                { escolaNome: regex },
-                { municipioNome: regex },
-                { municipioIdIbge: regex },
-                { estadoSigla: regex }
+                { $text: { $search: term } },
+                { municipioIdIbge: { $regex: term, $options: 'i' } },
+                { estadoSigla: term.toUpperCase() }
             ]
         }
     
@@ -137,21 +138,13 @@ export class MoongoseSchoolRepository implements ISchoolRepository{
         const pipeline = [
             {
                 $project: {
-                    _id: 1,
+                    _id: 0,
+                    id: "$_id",
                     escolaNome: 1,
                     localizacao: 1,
                     scoreRisco: 1
                 }
             },
-            {
-                $addFields: {
-                        id: "$_id"
-                    },
-            },
-
-                {
-                    $unset:"_id"
-            }
 
         ]
 
@@ -164,7 +157,8 @@ export class MoongoseSchoolRepository implements ISchoolRepository{
         const pipeline = [
             {
                 $project: {
-                    _id: 1,
+                    _id: 0,
+                    id: "$_id",
                     municipioIdIbge: 1,
                     escolaIdInep: 1,
                     escolaNome: 1,

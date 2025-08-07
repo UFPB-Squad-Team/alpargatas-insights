@@ -9,7 +9,7 @@ describe('GetMunicipalityStatisticsUseCase', () => {
       findByIbgeCode: jest.fn().mockResolvedValue([
         {
           id: '1',
-          municipioIdIbge: 1234567,
+          municipioIdIbge: '1234567',
           escolaIdInep: 12345678,
           escolaNome: 'Escola de Diego Antonio',
           municipioNome: 'Cabaceiros',
@@ -41,11 +41,11 @@ describe('GetMunicipalityStatisticsUseCase', () => {
       new GetMunicipalityStatisticsUseCase(mockSchoolRepository);
 
     const schoolData = {
-      municipioIdIbge: 1234567,
+      municipioIdIbge: '1234567',
     };
 
     expect(await getMunicipalityStatisticsUseCase.execute(schoolData)).toEqual({
-      ibgeCode: 1234567,
+      ibgeCode: '1234567',
       totalSchools: 2,
       averageRisk: 0.425,
     });
@@ -69,7 +69,7 @@ describe('GetMunicipalityStatisticsUseCase', () => {
       new GetMunicipalityStatisticsUseCase(mockSchoolRepository);
 
     const schoolData = {
-      municipioIdIbge: 1234567,
+      municipioIdIbge: '1234567',
     };
 
     await expect(
