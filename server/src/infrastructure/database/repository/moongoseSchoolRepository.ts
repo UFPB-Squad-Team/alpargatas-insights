@@ -23,18 +23,18 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
       return null;
     }
 
-    return SchoolMapper.toDomain(schoolExist)
+    return SchoolMapper.toDomain(schoolExist);
   }
 
   async findByIbgeCode(municipioIdIbge: string): Promise<School[]> {
     const pipeline = [
       {
-        $match: { municipioIdIbge }
+        $match: { municipioIdIbge },
       },
       {
         $project: {
           _id: 0,
-          id: "$_id",
+          id: '$_id',
           municipioIdIbge: 1,
           escolaIdInep: 1,
           escolaNome: 1,
@@ -43,9 +43,9 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
           dependenciaAdm: 1,
           scoreRisco: 1,
           indicadores: 1,
-          infraestrutura: 1
-        }
-      }
+          infraestrutura: 1,
+        },
+      },
     ];
 
     const schools = await SchoolModel.aggregate(pipeline);
@@ -53,73 +53,87 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
     return SchoolMapper.toDomainManySchools(schools);
   }
 
-    async findByUf(estadoSigla: UF): Promise<School[]> {
-        const pipeline = [
-            {
-                $match: { estadoSigla }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    id: "$_id",
-                    municipioIdIbge: 1,
-                    escolaIdInep: 1,
-                    escolaNome: 1,
-                    municipioNome: 1,
-                    estadoSigla: 1,
-                    dependenciaAdm: 1,
-                    scoreRisco: 1,
-                    indicadores: 1,
-                    infraestrutura: 1
-                }
-            }
-        ];
+  async findByUf(estadoSigla: UF): Promise<School[]> {
+    const pipeline = [
+      {
+        $match: { estadoSigla },
+      },
+      {
+        $project: {
+          _id: 0,
+          id: '$_id',
+          municipioIdIbge: 1,
+          escolaIdInep: 1,
+          escolaNome: 1,
+          municipioNome: 1,
+          estadoSigla: 1,
+          dependenciaAdm: 1,
+          scoreRisco: 1,
+          indicadores: 1,
+          infraestrutura: 1,
+        },
+      },
+    ];
 
     const school = await SchoolModel.aggregate(pipeline);
 
     return SchoolMapper.toDomainManySchools(school);
   }
 
-    async findByDepAdm(dependenciaAdm: dependenciaAdministrativa): Promise<School[]> {
-       const pipeline = [
-            {
-                $match: { dependenciaAdm }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    id: "$_id",
-                    municipioIdIbge: 1,
-                    escolaIdInep: 1,
-                    escolaNome: 1,
-                    municipioNome: 1,
-                    estadoSigla: 1,
-                    dependenciaAdm: 1,
-                    scoreRisco: 1,
-                    indicadores: 1,
-                    infraestrutura: 1
-                }
-            }
-        ];
+  async findByDepAdm(
+    dependenciaAdm: dependenciaAdministrativa,
+  ): Promise<School[]> {
+    const pipeline = [
+      {
+        $match: { dependenciaAdm },
+      },
+      {
+        $project: {
+          _id: 0,
+          id: '$_id',
+          municipioIdIbge: 1,
+          escolaIdInep: 1,
+          escolaNome: 1,
+          municipioNome: 1,
+          estadoSigla: 1,
+          dependenciaAdm: 1,
+          scoreRisco: 1,
+          indicadores: 1,
+          infraestrutura: 1,
+        },
+      },
+    ];
 
     const school = await SchoolModel.aggregate(pipeline);
 
     return SchoolMapper.toDomainManySchools(school);
   }
 
-  async findSearchByTerm(term: string, page: number, limit: number): Promise<{ schools: School[]; total: number; page: number; currentPage: number; }> {
-        const query = {
-            $or: [
-                { $text: { $search: term } },
-                { municipioIdIbge: { $regex: term, $options: 'i' } },
-                { estadoSigla: term.toUpperCase() }
-            ]
-        }
-    
-      const [school, total] = await Promise.all([
-            SchoolModel.find(query).skip((page-1) * limit).limit(limit).lean(),
-            SchoolModel.countDocuments(query)
-        ])
+  async findSearchByTerm(
+    term: string,
+    page: number,
+    limit: number,
+  ): Promise<{
+    schools: School[];
+    total: number;
+    page: number;
+    currentPage: number;
+  }> {
+    const query = {
+      $or: [
+        { $text: { $search: term } },
+        { municipioIdIbge: { $regex: term, $options: 'i' } },
+        { estadoSigla: term.toUpperCase() },
+      ],
+    };
+
+    const [school, total] = await Promise.all([
+      SchoolModel.find(query)
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .lean(),
+      SchoolModel.countDocuments(query),
+    ]);
 
     const pages = Math.ceil(total / limit);
 
@@ -131,47 +145,46 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
     };
   }
 
-    async findAllForMap(): Promise<Pick<School, "id" | "escolaNome" | "localizacao" | "scoreRisco">[]> {
-        const pipeline = [
-            {
-                $project: {
-                    _id: 0,
-                    id: "$_id",
-                    escolaNome: 1,
-                    localizacao: 1,
-                    scoreRisco: 1
-                }
-            },
-
-          ]
+  async findAllForMap(): Promise<
+    Pick<School, 'id' | 'escolaNome' | 'localizacao' | 'scoreRisco'>[]
+  > {
+    const pipeline = [
+      {
+        $project: {
+          _id: 0,
+          id: '$_id',
+          escolaNome: 1,
+          localizacao: 1,
+          scoreRisco: 1,
+        },
+      },
+    ];
 
     const school = await SchoolModel.aggregate(pipeline);
 
     return school;
   }
 
-
   async findAll(): Promise<School[]> {
-        const pipeline = [
-            {
-                $project: {
-                    _id: 0,
-                    id: "$_id",
-                    municipioIdIbge: 1,
-                    escolaIdInep: 1,
-                    escolaNome: 1,
-                    municipioNome: 1,
-                    estadoSigla: 1,
-                    dependenciaAdm: 1,
-                    tipoLocalizacao: 1,
-                    localizacao: 1,
-                    scoreRisco: 1,
-                    indicadores: 1,
-                    infraestrutura: 1
-                }
-            },
-          ]
-
+    const pipeline = [
+      {
+        $project: {
+          _id: 0,
+          id: '$_id',
+          municipioIdIbge: 1,
+          escolaIdInep: 1,
+          escolaNome: 1,
+          municipioNome: 1,
+          estadoSigla: 1,
+          dependenciaAdm: 1,
+          tipoLocalizacao: 1,
+          localizacao: 1,
+          scoreRisco: 1,
+          indicadores: 1,
+          infraestrutura: 1,
+        },
+      },
+    ];
 
     const school = await SchoolModel.aggregate(pipeline);
 
@@ -183,7 +196,7 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
   }
 
   async update({ id, ...school }: School): Promise<void> {
-    await SchoolModel.updateOne({ _id: id }, { $set: school })
+    await SchoolModel.updateOne({ _id: id }, { $set: school });
   }
 
   async save({
