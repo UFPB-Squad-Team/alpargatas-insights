@@ -6,6 +6,13 @@ import {
 } from '@/mocks/services/getTopMunicipalitiesByRisk';
 import { Building2 } from 'lucide-react';
 
+const getRiskInfo = (score: number) => {
+  if (score >= 0.9) return { color: 'text-orange-900', text: 'Alerta Máximo' };
+  if (score >= 0.75) return { color: 'text-orange-700', text: 'Alto Risco' };
+  if (score >= 0.4) return { color: 'text-orange-500', text: 'Risco Moderado' };
+  return { color: 'text-orange-300', text: 'Baixo Risco' };
+};
+
 const TopMunicipalitiesChart = () => {
   const [data, setData] = useState<MunicipalityRisk[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,16 +31,17 @@ const TopMunicipalitiesChart = () => {
     fetchData();
   }, []);
 
-  const getRiskColor = (score: number) => {
-    if (score >= 0.9) return 'bg-orange-900';
-    if (score >= 0.75) return 'bg-orange-700';
-    if (score >= 0.4) return 'bg-orange-500';
-    return 'bg-orange-300';
-  };
+  if (isLoading) {
+    return (
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex items-center justify-center h-full">
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <div className="bg-brand-background p-6 rounded-2xl shadow-sm border border-gray-200">
-      <div className="flex items-center gap-4 mb-4">
+      <div className="flex items-center gap-4 mb-6">
         <div className="bg-brand-orange-light p-2 rounded-lg">
           <Building2 className="h-6 w-6 text-brand-orange-dark" />
         </div>
@@ -41,32 +49,45 @@ const TopMunicipalitiesChart = () => {
           Municípios Prioritários
         </h3>
       </div>
-      {isLoading ? (
-        <Spinner />
-      ) : (
-        <div className="space-y-4">
-          {data.map((item) => (
+      <div className="space-y-5">
+        {data.map((item) => {
+          const riskInfo = getRiskInfo(item.risco_medio);
+          const scorePercentage = (item.risco_medio * 100).toFixed(0);
+
+          return (
             <div key={item.municipio_nome}>
               <div className="flex justify-between items-center mb-1 text-sm">
                 <span className="font-medium text-brand-text-primary">
                   {item.municipio_nome}
                 </span>
-                <span className="font-semibold text-brand-text-secondary">
-                  Risco de {(item.risco_medio * 100).toFixed(0)}%
+                <span className={`font-bold ${riskInfo.color}`}>
+                  {riskInfo.text}
                 </span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2.5">
+
+              <div className="relative w-full pt-2">
+                <div className="flex w-full h-2 rounded-full overflow-hidden">
+                  <div className="bg-orange-300" style={{ width: '40%' }}></div>
+                  <div className="bg-orange-500" style={{ width: '35%' }}></div>
+                  <div className="bg-orange-700" style={{ width: '15%' }}></div>
+                  <div className="bg-orange-900" style={{ width: '10%' }}></div>
+                </div>
                 <div
-                  className={`${getRiskColor(
-                    item.risco_medio,
-                  )} h-2.5 rounded-full transition-all duration-500`}
-                  style={{ width: `${item.risco_medio * 100}%` }}
+                  className="absolute top-0 w-0 h-0"
+                  style={{
+                    left: `${scorePercentage}%`,
+                    borderLeft: '6px solid transparent',
+                    borderRight: '6px solid transparent',
+                    borderTop: '8px solid #212529',
+                    transform: 'translateX(-50%)',
+                    transition: 'left 0.3s ease-in-out',
+                  }}
                 ></div>
               </div>
             </div>
-          ))}
-        </div>
-      )}
+          );
+        })}
+      </div>
     </div>
   );
 };
