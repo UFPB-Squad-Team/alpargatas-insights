@@ -1,8 +1,8 @@
 const legendItems = [
-  { label: 'Crítico', color: 'bg-red-600' },
-  { label: 'Alto Risco', color: 'bg-orange-500' },
-  { label: 'Risco Moderado', color: 'bg-yellow-400' },
-  { label: 'Baixo Risco', color: 'bg-gray-400' },
+  { label: 'Alerta Máximo', color: 'bg-orange-800' },
+  { label: 'Alto Risco', color: 'bg-orange-600' },
+  { label: 'Risco Moderado', color: 'bg-orange-500' },
+  { label: 'Baixo Risco', color: 'bg-orange-300' },
 ];
 
 const RiskLegend = () => {
