@@ -11,6 +11,6 @@ export class ListSchoolsForMapController{
 
         const school = await this.listSchoolsForMapUseCase.execute()
 
-        res.status(200).json(school.length > 0 ? school : { message: "No have schools" })
+        res.status(200).json(school.length > 0 ? school : [])
     }
 }

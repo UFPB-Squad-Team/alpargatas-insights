@@ -19,8 +19,8 @@ export class SearchSchoolsController{
 
         const { term, page, limit } = querySchema.parse(req.query)
 
-        await this.searchSchoolsUseCase.execute({ term, page, limit })
+        const searchResult = await this.searchSchoolsUseCase.execute({ term, page, limit })
 
-        res.status(200).json({ message: "Search schools with success" })
+        res.status(200).json(searchResult)
     }
 }

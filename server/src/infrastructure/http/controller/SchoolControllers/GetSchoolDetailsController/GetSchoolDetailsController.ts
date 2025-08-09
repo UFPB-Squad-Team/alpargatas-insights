@@ -18,6 +18,6 @@ export class GetSchoolDetailsController{
 
         const details = await this.getSchoolDetailsUseCase.execute({ id })
 
-        res.status(200).json({ message: details})
+        res.status(200).json(details)
     }
 }

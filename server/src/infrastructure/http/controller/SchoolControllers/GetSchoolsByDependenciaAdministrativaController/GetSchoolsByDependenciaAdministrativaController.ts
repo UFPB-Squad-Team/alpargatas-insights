@@ -19,6 +19,6 @@ export class GetSchoolsByDependenciaAdministrativaController{
 
         const school = await this.getSchoolsByDependenciaAdministrativaUseCase.execute({ dependenciaAdm })
 
-        res.status(200).json(school.length > 0 ? school : { message: "No have schools with this param" })
+        res.status(200).json(school.length > 0 ? school : [])
     }
 }

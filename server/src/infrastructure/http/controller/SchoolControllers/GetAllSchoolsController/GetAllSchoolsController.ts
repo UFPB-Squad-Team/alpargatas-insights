@@ -10,6 +10,6 @@ export class GetAllSchoolsController{
     async getAll(req: Request, res: Response){
         const school = await this.getAllSchoolsUseCase.execute()
 
-        res.status(200).json(school.length > 0 ? school : { message: "No have schools in our databases" })
+        res.status(200).json(school.length > 0 ? school : [])
     }
 }
