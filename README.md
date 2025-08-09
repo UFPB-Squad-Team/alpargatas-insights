@@ -34,6 +34,8 @@ The project is built on a microservices architecture orchestrated with Docker, o
 
 The only prerequisite to run this project is to have **Docker Desktop** installed. Everything else is managed by the containers.
 
+**⚠️ REQUIRED INITIAL STEP:** First of all, you need to download the raw data. Follow the guide in: **[docs/DATA_SETUP.md](./docs/DATA_SETUP.md)**.
+
 ### 1. Clone the Repository
 
 ```bash
@@ -69,7 +71,7 @@ docker-compose up
 
 After a few moments, the services will be available:
 
-- **Frontend**: [http://localhost:5173](http://localhost:5173)
+- **Frontend**: [http://localhost:5174](http://localhost:5173)
 - **Backend (API)**: [http://localhost:3000](http://localhost:3000)
 
 ## Workflow & Useful Commands
@@ -113,15 +115,15 @@ If you have `make` installed on your system (common on Linux/macOS), you can use
 - `make build`: Builds the images.
 - `make run`: Starts the application.
 - `make stop`: Stops the application.
-- `make etl`: An example of how to run an ETL script.
+- `make etl-<script name>`: An example of how to run an ETL script.
 
 ## Project Structure
 
 ```bash
 .
-├── backend/             # API service in Node.js/TypeScript
+├── server/             # API service in Node.js/TypeScript
 ├── etl/                 # Data pipeline in Python
-├── frontend/            # Application in React
+├── client/            # Application in React
 ├── docs/                # Project documentation
 ├── .env                 # (Local, unversioned) Application secrets
 ├── .env.example         # Example environment variables
@@ -140,6 +142,9 @@ This project was developed collaboratively by:
 
 - **Samuel Colaço Lira Carvalho**  
   [SamuelColaço](https://github.com/SamuelColaco)
+
+- **Gustavo Henrique Rocha Oliveira**  
+  [Gustavo](https://github.com/yScroww)
 
 ## License
 
