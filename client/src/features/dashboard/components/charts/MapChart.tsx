@@ -10,16 +10,16 @@ import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 import { SchoolForMap } from '@/mocks/services/getSchoolsForMap';
-import CustomPopup from './CustomPopup';
+import CustomPopup from '../custom/CustomPopup';
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({ iconRetinaUrl, iconUrl, shadowUrl });
 
 const createCustomIcon = (score: number) => {
-  let color = '#9CA3AF';
-  if (score >= 0.9) color = '#dc2626';
-  else if (score >= 0.75) color = '#f97316';
-  else if (score >= 0.4) color = '#facc15';
+  let color = '#FDBA74';
+  if (score >= 0.9) color = '#7C2D12';
+  else if (score >= 0.75) color = '#B45309';
+  else if (score >= 0.4) color = '#F97316';
 
   const iconHtml = `
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="${color}" stroke="white" stroke-width="1.5">

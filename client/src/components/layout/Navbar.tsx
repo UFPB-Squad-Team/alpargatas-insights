@@ -7,7 +7,7 @@ interface NavbarProps {
   isNotificationsOpen: boolean;
   onNotificationsClick: () => void;
   onSettingsClick: () => void;
-  notificationsRef: React.RefObject<HTMLDivElement | null>;
+  notificationsRef: React.RefObject<HTMLDivElement>;
 }
 
 const Navbar = ({
