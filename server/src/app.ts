@@ -17,7 +17,7 @@ app.use(
   }),
 );
 
-app.use(schoolRoutes)
+app.use(schoolRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.status(200).json({

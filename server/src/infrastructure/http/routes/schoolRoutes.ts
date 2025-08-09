@@ -1,16 +1,35 @@
+import { Router } from 'express';
 
-import { Router } from "express"
+import * as schoolControllers from '../controller/SchoolControllers/index';
 
-import * as schoolControllers from "../controller/SchoolControllers/index"
+const schoolRoutes = Router();
 
-const schoolRoutes = Router()
+schoolRoutes.get(
+  '/api/v1/schools/:id',
+  schoolControllers.getSchoolDetailsController.getDetails.bind(
+    schoolControllers.getSchoolDetailsController,
+  ),
+);
 
-schoolRoutes.get("/api/v1/schools/:id", schoolControllers.getSchoolDetailsController.getDetails.bind(schoolControllers.getSchoolDetailsController))
+schoolRoutes.get(
+  '/api/v1/schools/all',
+  schoolControllers.getAllSchoolsController.getAll.bind(
+    schoolControllers.getAllSchoolsController,
+  ),
+);
 
-schoolRoutes.get("/api/v1/schools/all", schoolControllers.getAllSchoolsController.getAll.bind(schoolControllers.getAllSchoolsController))
+schoolRoutes.get(
+  '/api/v1/schools',
+  schoolControllers.searchSchoolsController.searchSchools.bind(
+    schoolControllers.searchSchoolsController,
+  ),
+);
 
-schoolRoutes.get("/api/v1/schools", schoolControllers.searchSchoolsController.searchSchools.bind(schoolControllers.searchSchoolsController))
+schoolRoutes.get(
+  '/api/v1/schools/:dependenciaAdm',
+  schoolControllers.getSchoolsByDependenciaAdministrativaController.getByDependenciaAdm.bind(
+    schoolControllers.getSchoolsByDependenciaAdministrativaController,
+  ),
+);
 
-schoolRoutes.get("/api/v1/schools/:dependenciaAdm", schoolControllers.getSchoolsByDependenciaAdministrativaController.getByDependenciaAdm.bind(schoolControllers.getSchoolsByDependenciaAdministrativaController))
-
-export { schoolRoutes }
+export { schoolRoutes };
