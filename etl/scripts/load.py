@@ -1,9 +1,10 @@
 import logging
-from pymongo import MongoClient
+from pymongo import MongoClient, UpdateOne
 import pandas as pd
 import os
 from pathlib import Path
 import numpy as np
+from dotenv import load_dotenv
 
 logging.basicConfig(
     level=logging.INFO,
@@ -26,29 +27,43 @@ def load_to_mongo (df: pd.DataFrame, db_name: str, collection_name: str, uri: st
             logging.error("O DataFrame está vazio. Nenhum dado será inserido.")
             return
         
+        logging.info("Preparando a lista para operação de upsert.")
         data_to_load = df.to_dict(orient='records')
 
-        if data_to_load:
-            collection.delete_many({})
+        operations = [
+            UpdateOne(
+                {"escola_id_inep": doc["escola_id_inep"]},
+                {"$set": doc},
+                upsert= True
+            )
+            for doc in data_to_load
+        ]
 
-            result = collection.insert_many(data_to_load)
-            logging.info(f"Load do ETL concluído: {len(result.inserted_ids)} documentos inseridos na coleção '{collection_name}'.")         
+        if operations:
+            logging.info("Executando bulk write (upsert) para a database.")
+            result = collection.bulk_write(operations)
+            logging.info(f"Load do ETL concluído: {result.upserted_count} novos documentos inseridos e {result.modified_count} documentos atualizados. na coleção '{collection_name}' ")         
         else:
-            logging.error("Nenhum dado para inserir.")
+            logging.error("Nenhuma operação de upsert para executar.")
+
     except Exception as e:
         logging.error(f"Erro durante o Load para o MongoDB: {e}")
+
     finally:
         if 'client' in locals() and client:
             client.close()
             logging.info("Conexão com o MongoDB fechada.")    
 
 def main():
+    load_dotenv()
+
     base_path = Path(__file__).resolve().parents[1]
     data_path = base_path / "data/processed/escolas_processado.parquet"
 
     if not os.path.exists(data_path):
         logging.error(f"Arquivo '{data_path}' não encontrado.")
         return
+    
     else:
         try:
             logging.info(f"Lendo o arquivo parquet em'{data_path}'...")
@@ -61,12 +76,16 @@ def main():
                 lambda x: {**x, 'coordinates': x['coordinates'].tolist()} 
                 if isinstance(x['coordinates'], np.ndarray) else x)
             
-            uri_mongo = "mongodb+srv://alpargatas_user:hGJZbmrO46NPksBb@alpargatas-insights-clu.2iuzc4b.mongodb.net/?retryWrites=true&w=majority&appName=alpargatas-insights-cluster"
+            uri_mongo = os.getenv("MONGO_URI")
             db_mongo = "teste_load"
             collection_mongo = "teste1"
-
-            logging.info("Inserindo os dados no MongoDB")
-            load_to_mongo(df = df_escolas, db_name=db_mongo, collection_name=collection_mongo, uri=uri_mongo)
+            
+            if uri_mongo:
+                logging.info("Inserindo os dados no MongoDB")
+                load_to_mongo(df = df_escolas, db_name=db_mongo, collection_name=collection_mongo, uri=uri_mongo)
+            
+            else:
+                logging.error("URI do MongoDB não encontrada no arquivo .env")
         except Exception as e:
             logging.error(f"Ocorreu um erro ao processar o arquivo: {e}")
 
