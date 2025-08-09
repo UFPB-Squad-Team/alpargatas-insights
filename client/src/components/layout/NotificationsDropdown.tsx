@@ -8,7 +8,7 @@ const NotificationsDropdown = ({ isOpen }: NotificationsDropdownProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="absolute top-full right-0 mt-2 w-80 bg-white rounded-lg shadow-xl z-20 border">
+    <div className="absolute z-[9999] top-full right-0 mt-2 w-80 bg-white rounded-lg shadow-xl  border">
       <div className="p-4 border-b">
         <h3 className="font-semibold text-brand-text-primary">Notificações</h3>
       </div>

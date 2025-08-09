@@ -1,24 +1,23 @@
-import z from "zod";
-import { GetSchoolsByDependenciaAdministrativa } from "../../../../../application/UseCases/SchoolUseCases/GetSchoolsByDependenciaAdmnistrativaUseCase/GetSchoolsByDependenciaAdministrativaUseCase";
+import z from 'zod';
+import { GetSchoolsByDependenciaAdministrativa } from '../../../../../application/UseCases/SchoolUseCases/GetSchoolsByDependenciaAdmnistrativaUseCase/GetSchoolsByDependenciaAdministrativaUseCase';
 
-import { Request, Response } from "express"
-import { dependenciaAdministrativa } from "../../../../../domain/enums/enumDependenciaAdministrativa";
+import { Request, Response } from 'express';
+import { dependenciaAdministrativa } from '../../../../../domain/enums/enumDependenciaAdministrativa';
 
-export class GetSchoolsByDependenciaAdministrativaController{
-    constructor(
-        private getSchoolsByDependenciaAdministrativaUseCase: GetSchoolsByDependenciaAdministrativa
-    ){}
+export class GetSchoolsByDependenciaAdministrativaController {
+  constructor(
+    private getSchoolsByDependenciaAdministrativaUseCase: GetSchoolsByDependenciaAdministrativa,
+  ) {}
 
-    async getByDependenciaAdm(req: Request, res: Response){
+  async getByDependenciaAdm(req: Request, res: Response) {
+    const paramSchema = z.object({
+      dependenciaAdm: z.enum(dependenciaAdministrativa),
+    });
 
-        const paramSchema = z.object({
-            dependenciaAdm: z.enum(dependenciaAdministrativa)
-        })
+    const { dependenciaAdm } = paramSchema.parse(req.params);
 
-        const { dependenciaAdm } = paramSchema.parse(req.params)
+      const school = await this.getSchoolsByDependenciaAdministrativaUseCase.execute({ dependenciaAdm })
 
-        const school = await this.getSchoolsByDependenciaAdministrativaUseCase.execute({ dependenciaAdm })
-
-        res.status(200).json(school.length > 0 ? school : [])
+      res.status(200).json(school.length > 0 ? school : [])
     }
 }
