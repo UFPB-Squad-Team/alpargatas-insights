@@ -16,6 +16,6 @@ export class GetSchoolDetailsController {
 
     const details = await this.getSchoolDetailsUseCase.execute({ id });
 
-    res.status(200).json(details)
+    res.status(200).json(details);
   }
 }

@@ -16,8 +16,11 @@ export class GetSchoolsByDependenciaAdministrativaController {
 
     const { dependenciaAdm } = paramSchema.parse(req.params);
 
-      const school = await this.getSchoolsByDependenciaAdministrativaUseCase.execute({ dependenciaAdm })
+    const school =
+      await this.getSchoolsByDependenciaAdministrativaUseCase.execute({
+        dependenciaAdm,
+      });
 
-      res.status(200).json(school.length > 0 ? school : [])
-    }
+    res.status(200).json(school.length > 0 ? school : []);
+  }
 }

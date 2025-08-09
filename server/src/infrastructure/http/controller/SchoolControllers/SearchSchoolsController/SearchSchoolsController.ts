@@ -13,10 +13,14 @@ export class SearchSchoolsController {
       limit: z.number().gt(0, { message: 'Limit need be greater than 0' }),
     });
 
-    const { term, page, limit } = querySchema.parse(req.query)
+    const { term, page, limit } = querySchema.parse(req.query);
 
-    const searchResult = await this.searchSchoolsUseCase.execute({ term, page, limit })
+    const searchResult = await this.searchSchoolsUseCase.execute({
+      term,
+      page,
+      limit,
+    });
 
-    res.status(200).json(searchResult)
+    res.status(200).json(searchResult);
   }
 }
