@@ -3,6 +3,7 @@ from pymongo import MongoClient, UpdateOne
 import pandas as pd
 import os
 from pathlib import Path
+
 import numpy as np
 from dotenv import load_dotenv
 
@@ -12,8 +13,7 @@ logging.basicConfig(
 )
 
 
-def load_to_mongo (df: pd.DataFrame, db_name: str, collection_name: str, uri: str):
-    
+def load_to_mongo(df: pd.DataFrame, db_name: str, collection_name: str, uri: str):
     """Carrega um DataFrame do Pandas para uma coleção do MongoDB."""
 
     try:
@@ -50,9 +50,10 @@ def load_to_mongo (df: pd.DataFrame, db_name: str, collection_name: str, uri: st
         logging.error(f"Erro durante o Load para o MongoDB: {e}")
 
     finally:
-        if 'client' in locals() and client:
+        if "client" in locals() and client:
             client.close()
-            logging.info("Conexão com o MongoDB fechada.")    
+            logging.info("Conexão com o MongoDB fechada.")
+
 
 def main():
     load_dotenv()
@@ -63,7 +64,6 @@ def main():
     if not os.path.exists(data_path):
         logging.error(f"Arquivo '{data_path}' não encontrado.")
         return
-    
     else:
         try:
             logging.info(f"Lendo o arquivo parquet em'{data_path}'...")
@@ -83,13 +83,10 @@ def main():
             if uri_mongo:
                 logging.info("Inserindo os dados no MongoDB")
                 load_to_mongo(df = df_escolas, db_name=db_mongo, collection_name=collection_mongo, uri=uri_mongo)
-            
             else:
                 logging.error("URI do MongoDB não encontrada no arquivo .env")
         except Exception as e:
             logging.error(f"Ocorreu um erro ao processar o arquivo: {e}")
 
+
 main()
-
-
-    
