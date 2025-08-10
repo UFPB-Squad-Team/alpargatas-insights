@@ -32,7 +32,7 @@ def load_to_mongo(df: pd.DataFrame, db_name: str, collection_name: str, uri: str
 
         operations = [
             UpdateOne(
-                {"escola_id_inep": doc["escola_id_inep"]}, {"$set": doc}, upsert=True
+                {"escolaIdInep": doc["escolaIdInep"]}, {"$set": doc}, upsert=True
             )
             for doc in data_to_load
         ]
@@ -81,8 +81,8 @@ def main():
             )
 
             uri_mongo = os.getenv("MONGO_URI")
-            db_mongo = "teste_load"
-            collection_mongo = "teste1"
+            db_mongo = "alpargatasdb"
+            collection_mongo = "schools"
 
             if uri_mongo:
                 logging.info("Inserindo os dados no MongoDB")
