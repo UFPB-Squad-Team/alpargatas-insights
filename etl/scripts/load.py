@@ -31,9 +31,7 @@ def load_to_mongo(df: pd.DataFrame, db_name: str, collection_name: str, uri: str
         data_to_load = df.to_dict(orient="records")
 
         operations = [
-            UpdateOne(
-                {"escolaIdInep": doc["escolaIdInep"]}, {"$set": doc}, upsert=True
-            )
+            UpdateOne({"escolaIdInep": doc["escolaIdInep"]}, {"$set": doc}, upsert=True)
             for doc in data_to_load
         ]
 
