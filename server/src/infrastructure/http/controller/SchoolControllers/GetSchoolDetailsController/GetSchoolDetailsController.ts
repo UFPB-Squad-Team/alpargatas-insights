@@ -9,8 +9,8 @@ export class GetSchoolDetailsController {
   async getDetails(req: Request, res: Response) {
     const paramSchema = z.object({
       id: z.string().refine((val) => Types.ObjectId.isValid(val), {
-      message: "Invalid MongoDB ObjectId",
-    }),
+        message: 'Invalid MongoDB ObjectId',
+      }),
     });
 
     const { id } = paramSchema.parse(req.params);
