@@ -118,7 +118,7 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
   }> {
     const query = {
       $or: [
-        { $text: { $search: term } },
+        { $text: { $search: `"${term}"` } },
         { municipioIdIbge: { $regex: term, $options: 'i' } },
         { estadoSigla: term.toUpperCase() },
       ],
