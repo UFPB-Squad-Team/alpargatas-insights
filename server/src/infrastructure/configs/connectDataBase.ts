@@ -3,7 +3,7 @@ import { config } from './app';
 
 const connectDataBase = async () => {
   try {
-    await mongoose.connect(config.MONGO_URI);
+    await mongoose.connect(config.MONGO_URI, { dbName: 'alpargatasdb' });
     console.log('MongoDB connected successfully.');
   } catch (error) {
     process.exit(1);
