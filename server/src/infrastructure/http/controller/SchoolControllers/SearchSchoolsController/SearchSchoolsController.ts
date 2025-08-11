@@ -10,7 +10,9 @@ export class SearchSchoolsController {
     const querySchema = z.object({
       term: z.string().min(1, { message: 'Term need min 1 caracter' }),
       page: z.coerce.number().gt(0, { message: 'Page need be greater than 0' }),
-      limit: z.coerce.number().gt(0, { message: 'Limit need be greater than 0' }),
+      limit: z.coerce
+        .number()
+        .gt(0, { message: 'Limit need be greater than 0' }),
     });
 
     const { term, page, limit } = querySchema.parse(req.query);

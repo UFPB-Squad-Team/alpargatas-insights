@@ -24,7 +24,6 @@ schoolRoutes.get(
   ),
 );
 
-
 schoolRoutes.get(
   '/api/v1/schools/details/:dependenciaAdm',
   schoolControllers.getSchoolsByDependenciaAdministrativaController.getByDependenciaAdm.bind(
