@@ -11,13 +11,6 @@ schoolRoutes.get(
 );
 
 schoolRoutes.get(
-  '/api/v1/schools/:id',
-  schoolControllers.getSchoolDetailsController.getDetails.bind(
-    schoolControllers.getSchoolDetailsController,
-  ),
-);
-
-schoolRoutes.get(
   '/api/v1/schools',
   schoolControllers.searchSchoolsController.searchSchools.bind(
     schoolControllers.searchSchoolsController,
@@ -25,7 +18,14 @@ schoolRoutes.get(
 );
 
 schoolRoutes.get(
-  '/api/v1/schools/:dependenciaAdm',
+  '/api/v1/schools/:id',
+  schoolControllers.getSchoolDetailsController.getDetails.bind(
+    schoolControllers.getSchoolDetailsController,
+  ),
+);
+
+schoolRoutes.get(
+  '/api/v1/schools/details/:dependenciaAdm',
   schoolControllers.getSchoolsByDependenciaAdministrativaController.getByDependenciaAdm.bind(
     schoolControllers.getSchoolsByDependenciaAdministrativaController,
   ),

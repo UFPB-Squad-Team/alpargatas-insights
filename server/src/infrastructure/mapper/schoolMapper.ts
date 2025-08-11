@@ -17,7 +17,7 @@ export class SchoolMapper {
         indicadores: schoolDoc.indicadores,
         infraestrutura: schoolDoc.infraestrutura,
       },
-      schoolDoc._id,
+      schoolDoc._id.toString(),
     );
   }
 
@@ -38,7 +38,7 @@ export class SchoolMapper {
             indicadores: school.indicadores,
             infraestrutura: school.infraestrutura,
           },
-          school._id,
+          school._id.toString(),
         ),
     );
   }
