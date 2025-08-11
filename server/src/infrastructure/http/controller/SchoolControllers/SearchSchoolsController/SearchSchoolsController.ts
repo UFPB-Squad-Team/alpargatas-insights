@@ -9,8 +9,8 @@ export class SearchSchoolsController {
   async searchSchools(req: Request, res: Response) {
     const querySchema = z.object({
       term: z.string().min(1, { message: 'Term need min 1 caracter' }),
-      page: z.number().gt(0, { message: 'Page need be greater than 0' }),
-      limit: z.number().gt(0, { message: 'Limit need be greater than 0' }),
+      page: z.coerce.number().gt(0, { message: 'Page need be greater than 0' }),
+      limit: z.coerce.number().gt(0, { message: 'Limit need be greater than 0' }),
     });
 
     const { term, page, limit } = querySchema.parse(req.query);

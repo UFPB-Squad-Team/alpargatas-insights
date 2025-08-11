@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document, Types } from 'mongoose';
 import { UF } from '../../../domain/enums/enumUnidadesFederativas';
 import { dependenciaAdministrativa } from '../../../domain/enums/enumDependenciaAdministrativa';
 import { tipoLocalizacao } from '../../../domain/enums/enumTipoLocalizacao';
@@ -6,7 +6,7 @@ import { LocationCoordinates } from '../../../domain/entities/school';
 import { randomUUID } from 'node:crypto';
 
 export interface ISchoolDocument extends Document {
-  _id: string;
+  _id: Types.ObjectId;
   municipioIdIbge: string;
   escolaIdInep: number;
   escolaNome: string;
@@ -26,9 +26,9 @@ export interface ISchoolDocument extends Document {
 }
 
 const schoolSchema: Schema = new Schema({
-  _id: { type: String, default: () => randomUUID() },
+  _id: { type: Schema.Types.ObjectId, auto: true },
   municipioIdIbge: { type: String, required: true },
-  escolaIdInep: { type: Number, required: true, unique: true },
+  escolaIdInep: { type: Number, required: true },
   escolaNome: { type: String, required: true },
   municipioNome: { type: String, required: true },
   estadoSigla: { type: String, enum: Object.values(UF), required: true },
