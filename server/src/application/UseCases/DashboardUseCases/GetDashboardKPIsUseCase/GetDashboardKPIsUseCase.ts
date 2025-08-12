@@ -15,7 +15,16 @@ export class GetDashboardKPIsUseCase {
 
     const HIGH_RISK_THRESHOLD: number = 0.75;
 
-    const theHighMunicipalitiesRisk = new Map<string, number>();
+    const theHighMunicipalitiesRisk: Record<
+      string,
+      { totalRisk: number; schoolCount: number }
+    > = {};
+
+    const highestRiskMunicipality: {
+      id: string;
+      nome: string;
+      averageRisk: number;
+    } = { id: '', nome: '', averageRisk: 0 };
 
     let lackCountMax: number = 0;
 
@@ -36,19 +45,37 @@ export class GetDashboardKPIsUseCase {
         localizacao: school.localizacao,
       }));
 
-    schoolsWithHighInfraestructureRisk.forEach((schools) => {
-      const count = theHighMunicipalitiesRisk.get(schools.municipioIdIbge) || 0;
-
-      theHighMunicipalitiesRisk.set(schools.municipioIdIbge, count + 1);
-    });
-
-    const municipalitiesWithMostSchoolsInHighRisk = municipalities.filter(
-      (municipality) => {
-        const count = theHighMunicipalitiesRisk.get(municipality.id) || 0;
-
-        return count >= 5;
+    const municipalityRiskStats = schoolsWithHighInfraestructureRisk.reduce(
+      (acc, school) => {
+        if (!acc[school.municipioIdIbge]) {
+          acc[school.municipioIdIbge] = {
+            name: school.municipioNome,
+            totalRisk: 0,
+            schoolCount: 0,
+          };
+        }
+        acc[school.municipioIdIbge].totalRisk += school.scoreRisco;
+        acc[school.municipioIdIbge].schoolCount += 1;
+        return acc;
       },
+      {} as Record<
+        string,
+        { name: string; totalRisk: number; schoolCount: number }
+      >,
     );
+
+    const municipalitiesWithAverageRisk = Object.entries(
+      municipalityRiskStats,
+    ).map(([idIbge, stats]) => ({
+      idIbge,
+      name: stats.name,
+      averageRisk: stats.totalRisk / stats.schoolCount,
+      schoolsCount: stats.schoolCount,
+    }));
+
+    const highestAverageRiskMunicipality = municipalitiesWithAverageRisk.sort(
+      (a, b) => b.averageRisk - a.averageRisk,
+    )[0];
 
     const countDocuments = schools.length;
 
@@ -74,8 +101,9 @@ export class GetDashboardKPIsUseCase {
 
     return {
       schools: countDocuments,
-      schoolsWithHighInfraestructureRisk,
-      municipalitiesWithMostSchoolsInHighRisk,
+      schoolsWithHighInfraestructureRisk:
+        schoolsWithHighInfraestructureRisk.length,
+      municipalitiesWithMostAverageRisk: highestAverageRiskMunicipality,
       lackName,
     };
   }

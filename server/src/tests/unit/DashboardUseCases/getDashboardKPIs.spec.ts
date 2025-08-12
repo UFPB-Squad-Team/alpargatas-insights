@@ -102,36 +102,13 @@ describe('GetDashboardKPIsUseCase', () => {
 
     expect(await getDashboardKPIsUseCase.execute()).toEqual({
       schools: 2,
-      schoolsWithHighInfraestructureRisk: [
-        {
-          id: 'esc-001',
-          municipioIdIbge: 'mun-002',
-          escolaIdInep: 12345678,
-          escolaNome: 'Escola Municipal Professora Ana Silva',
-          municipioNome: 'João Pessoa',
-          estadoSigla: 'PB',
-          dependenciaAdm: 'municipal',
-          localizacao: {
-            type: 'Point',
-            coordinates: [-34.8811, -7.1195],
-          },
-          scoreRisco: 0.82,
-          infraestrutura: {
-            possui_biblioteca: false,
-            possui_laboratorio_informatica: false,
-            possui_quadra_esportes: true,
-            possui_sala_professores: true,
-            possui_refeitorio: false,
-            possui_saneamento_basico: true,
-            possui_acesso_internet: false,
-            possui_energia_eletrica: true,
-            possui_agua_potavel: true,
-            possui_ar_condicionado: false,
-            possui_esgoto: false,
-          },
-        },
-      ],
-      municipalitiesWithMostSchoolsInHighRisk: [],
+      schoolsWithHighInfraestructureRisk: 1,
+      municipalitiesWithMostAverageRisk: {
+        averageRisk: 0.82,
+        idIbge: 'mun-002',
+        name: 'João Pessoa',
+        schoolsCount: 1,
+      },
       lackName: 'possui_ar_condicionado',
     });
   });
