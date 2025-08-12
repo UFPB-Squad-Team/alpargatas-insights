@@ -8,50 +8,50 @@ export class MoongoseMunicipalityRepository implements IMunicipalityRepository {
   async findByIbgeCode(codigoIbge: string): Promise<Municipality | null> {
     const school = await SchoolModel.findOne({ municipioIdIbge: codigoIbge });
 
-        if(!school){
-            return null
-        }
-
-        const pipeline = [
-            {
-                $match: { municipioIdIbge: codigoIbge }
-            },
-
-            {
-                $group: { 
-                    _id: {
-                        nome: "$municipioNome",
-                        uf: "$estadoSigla"
-                    },
-                    totalEscolas: { $sum: 1 },
-                    riscoMedio: { $avg: "$scoreRisco" }
-                }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    totalEscolas: 1,
-                    riscoMedio: { $round: ["$riscoMedio", 2] }
-                }
-            }
-        ]
-
-        const [schoolStats] = await SchoolModel.aggregate(pipeline)
-
-        return{
-            id: school.municipioIdIbge,
-            codigoIbge: school.municipioIdIbge,
-            nome: school.municipioNome,
-            uf: school.estadoSigla,
-            ...schoolStats,
-            ...(!schoolStats && {
-                totalEscolas: 0,
-                riscoMedio: 0,
-                populacao: 0,
-                estatisticasInfraestrutura: {}
-            })
-        }
+    if (!school) {
+      return null;
     }
+
+    const pipeline = [
+      {
+        $match: { municipioIdIbge: codigoIbge },
+      },
+
+      {
+        $group: {
+          _id: {
+            nome: '$municipioNome',
+            uf: '$estadoSigla',
+          },
+          totalEscolas: { $sum: 1 },
+          riscoMedio: { $avg: '$scoreRisco' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          totalEscolas: 1,
+          riscoMedio: { $round: ['$riscoMedio', 2] },
+        },
+      },
+    ];
+
+    const [schoolStats] = await SchoolModel.aggregate(pipeline);
+
+    return {
+      id: school.municipioIdIbge,
+      codigoIbge: school.municipioIdIbge,
+      nome: school.municipioNome,
+      uf: school.estadoSigla,
+      ...schoolStats,
+      ...(!schoolStats && {
+        totalEscolas: 0,
+        riscoMedio: 0,
+        populacao: 0,
+        estatisticasInfraestrutura: {},
+      }),
+    };
+  }
   async findByName(name: string): Promise<Municipality | null> {
     const school = await SchoolModel.findOne({ municipioNome: name });
 
@@ -64,28 +64,28 @@ export class MoongoseMunicipalityRepository implements IMunicipalityRepository {
         $match: { municipioNome: name },
       },
 
-            {
-                $group: { 
-                    _id: {
-                        codigoIbge: "$municipioIdIbge",
-                        nome: "$municipioNome"
-                    },
-                    uf: { $first: "$estadoSigla" },
-                    totalEscolas: { $sum: 1 },
-                    riscoMedio: { $avg: "$scoreRisco" }
-                }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    id: "$_id.codigoIbge",
-                    codigoIbge: "$_id.codigoIbge",
-                    nome: "$_id.nome",
-                    totalEscolas: 1,
-                    riscoMedio: { $round: ["$riscoMedio", 2] }
-                }
-            }
-        ]
+      {
+        $group: {
+          _id: {
+            codigoIbge: '$municipioIdIbge',
+            nome: '$municipioNome',
+          },
+          uf: { $first: '$estadoSigla' },
+          totalEscolas: { $sum: 1 },
+          riscoMedio: { $avg: '$scoreRisco' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          id: '$_id.codigoIbge',
+          codigoIbge: '$_id.codigoIbge',
+          nome: '$_id.nome',
+          totalEscolas: 1,
+          riscoMedio: { $round: ['$riscoMedio', 2] },
+        },
+      },
+    ];
 
     const [schoolStats] = await SchoolModel.aggregate(pipeline);
 
@@ -128,7 +128,7 @@ export class MoongoseMunicipalityRepository implements IMunicipalityRepository {
           codigoIbge: '$_id.codigoIbge',
           nome: '$_id.nome',
           totalEscolas: 1,
-          riscoMedio: { $round: ['$riscoMedio', 2] }
+          riscoMedio: { $round: ['$riscoMedio', 2] },
         },
       },
 
@@ -137,10 +137,11 @@ export class MoongoseMunicipalityRepository implements IMunicipalityRepository {
       },
     ];
 
-    const municipality = await SchoolModel.aggregate<Municipality>(pipeline).exec();
+    const municipality =
+      await SchoolModel.aggregate<Municipality>(pipeline).exec();
 
-    return municipality
-}
+    return municipality;
+  }
 
   async findAll(): Promise<Municipality[]> {
     const pipeline: PipelineStage[] = [
@@ -170,7 +171,7 @@ export class MoongoseMunicipalityRepository implements IMunicipalityRepository {
           codigoIbge: '$_id.codigoIbge',
           nome: '$_id.nome',
           totalEscolas: 1,
-          riscoMedio: { $round: ['$riscoMedio', 2] }
+          riscoMedio: { $round: ['$riscoMedio', 2] },
         },
       },
 
