@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { ResponsiveContainer, Treemap, Tooltip } from 'recharts';
-import { getTopDeficiencies } from '@/mocks/services/getTopDeficiencies';
-import Spinner from '@/components/common/Spinner';
 import { SquareChartGantt } from 'lucide-react';
+import { getTopDeficiencies } from '@/shared/mocks/services/getTopDeficiencies';
+import Spinner from '@/ui/components/common/Spinner';
 
 const CustomizedContent = (props: any) => {
   const { x, y, width, height, index, name, escolas_afetadas } = props;

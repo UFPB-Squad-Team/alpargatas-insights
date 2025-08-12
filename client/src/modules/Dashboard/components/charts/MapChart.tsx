@@ -9,8 +9,8 @@ import '@changey/react-leaflet-markercluster/dist/styles.min.css';
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
-import { SchoolForMap } from '@/mocks/services/getSchoolsForMap';
 import CustomPopup from '../custom/CustomPopup';
+import { SchoolForMap } from '@/shared/mocks/services/getSchoolsForMap';
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({ iconRetinaUrl, iconUrl, shadowUrl });

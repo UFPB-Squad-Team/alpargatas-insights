@@ -34,7 +34,7 @@ const menuItems: MenuItem[] = [
     path: '/escolas',
     Icon: School,
     group: 'Análises',
-    disabled: true,
+    disabled: false,
   },
   {
     id: 3,
