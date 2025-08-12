@@ -33,8 +33,7 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
       },
       {
         $project: {
-          _id: 0,
-          id: '$_id',
+          id: { $toString: '$_id' },
           municipioIdIbge: 1,
           escolaIdInep: 1,
           escolaNome: 1,
@@ -60,8 +59,7 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
       },
       {
         $project: {
-          _id: 0,
-          id: '$_id',
+          id: { $toString: '$_id' },
           municipioIdIbge: 1,
           escolaIdInep: 1,
           escolaNome: 1,
@@ -89,8 +87,7 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
       },
       {
         $project: {
-          _id: 0,
-          id: '$_id',
+          id: { $toString: '$_id' },
           municipioIdIbge: 1,
           escolaIdInep: 1,
           escolaNome: 1,
@@ -151,8 +148,7 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
     const pipeline = [
       {
         $project: {
-          _id: 0,
-          id: '$_id',
+          id: { $toString: '$_id' },
           escolaNome: 1,
           localizacao: 1,
           scoreRisco: 1,
@@ -169,8 +165,7 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
     const pipeline = [
       {
         $project: {
-          _id: 0,
-          id: '$_id',
+          id: { $toString: '$_id' },
           municipioIdIbge: 1,
           escolaIdInep: 1,
           escolaNome: 1,
