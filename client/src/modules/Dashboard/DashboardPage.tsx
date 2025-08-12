@@ -2,21 +2,22 @@ import { useState, useEffect } from 'react';
 import KpiCard from './components/cards/KpiCard';
 import { School, Building, AlertTriangle, Library, Map } from 'lucide-react';
 import HighRiskSchoolsList from './components/cards/HighRiskSchoolsList';
-import {
-  DashboardKpis,
-  getDashboardKPIs,
-} from '@/mocks/services/getDashboardKPIs';
-import {
-  getSchoolsForMap,
-  SchoolForMap,
-} from '@/mocks/services/getSchoolsForMap';
+
 import MapChart from './components/charts/MapChart';
-import Spinner from '@/components/common/Spinner';
-import RiskLegend from '@/components/common/RiskLegend';
-import { useDashboard } from '@/context/DashboardContext';
+import { useDashboard } from '@/ui/context/DashboardContext';
 import TopDeficienciesChart from './components/charts/TopDeficienciesChart';
 import RiskDistributionChart from './components/charts/RiskDistributionChart';
 import TopMunicipalitiesChart from './components/charts/TopMunicipalitiesChart';
+import {
+  DashboardKpis,
+  getDashboardKPIs,
+} from '@/shared/mocks/services/getDashboardKPIs';
+import {
+  SchoolForMap,
+  getSchoolsForMap,
+} from '@/shared/mocks/services/getSchoolsForMap';
+import RiskLegend from '@/ui/components/common/RiskLegend';
+import Spinner from '@/ui/components/common/Spinner';
 
 const DashboardPage = () => {
   const [kpis, setKpis] = useState<DashboardKpis | null>(null);

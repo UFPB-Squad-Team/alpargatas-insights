@@ -1,6 +1,6 @@
 import React from 'react';
 import { X } from 'lucide-react';
-import { useClickOutside } from '@/hooks/useClickOutside';
+import { useClickOutside } from '@/ui/hooks/useClickOutside';
 
 interface ModalProps {
   isOpen: boolean;

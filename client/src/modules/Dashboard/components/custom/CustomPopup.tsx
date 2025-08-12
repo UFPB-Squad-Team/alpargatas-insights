@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, School } from 'lucide-react';
-import { SchoolForMap } from '@/mocks/services/getSchoolsForMap';
+import { SchoolForMap } from '@/shared/mocks/services/getSchoolsForMap';
 
 interface CustomPopupProps {
   school: SchoolForMap;

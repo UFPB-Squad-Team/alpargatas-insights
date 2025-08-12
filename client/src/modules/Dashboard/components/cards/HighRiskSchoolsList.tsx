@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import SchoolListItem from './SchoolListItem';
-import {
-  getHighRiskSchools,
-  HighRiskSchool,
-} from '@/mocks/services/getHighRiskSchools';
+
 import { BadgeAlert } from 'lucide-react';
-import Spinner from '@/components/common/Spinner';
+import { HighRiskSchool, getHighRiskSchools } from '@/shared/mocks/services/getHighRiskSchools';
+import Spinner from '@/ui/components/common/Spinner';
 
 interface HighRiskSchoolsListProps {
   onSelectSchool: (school: HighRiskSchool) => void;
