@@ -3,18 +3,7 @@ import { School } from '../../../../domain/entities/school';
 
 export interface GetDashboardKPIsDTO {
   schools: number;
-  schoolsWithHighInfraestructureRisk: Pick<
-    School,
-    | 'id'
-    | 'escolaIdInep'
-    | 'escolaNome'
-    | 'municipioNome'
-    | 'municipioIdIbge'
-    | 'scoreRisco'
-    | 'localizacao'
-    | 'dependenciaAdm'
-    | 'infraestrutura'
-  >[];
-  municipalitiesWithMostSchoolsInHighRisk: Municipality[];
+  schoolsWithHighInfraestructureRisk: number;
+  municipalitiesWithMostAverageRisk: { idIbge: string; name: string; averageRisk: number; schoolsCount: number };
   lackName: string;
 }
