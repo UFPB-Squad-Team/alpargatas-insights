@@ -1,3 +1,3 @@
 export interface GetMunicipalityWithIbgeCodeDTO {
-  codigoIbge: number;
+  codigoIbge: string;
 }

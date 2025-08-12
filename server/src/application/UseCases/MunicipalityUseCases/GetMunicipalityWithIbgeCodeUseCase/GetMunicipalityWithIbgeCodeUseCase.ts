@@ -6,8 +6,8 @@ export class GetMunicipalityWithIbgeCodeUseCase {
   constructor(private municipalityRepository: IMunicipalityRepository) {}
 
   async execute({ codigoIbge }: GetMunicipalityWithIbgeCodeDTO) {
-    if (!codigoIbge || typeof codigoIbge !== 'number') {
-      throw new AppError('This code need be a number');
+    if (!codigoIbge || typeof codigoIbge !== 'string') {
+      throw new AppError('This code need be a string');
     }
 
     const municipality =
