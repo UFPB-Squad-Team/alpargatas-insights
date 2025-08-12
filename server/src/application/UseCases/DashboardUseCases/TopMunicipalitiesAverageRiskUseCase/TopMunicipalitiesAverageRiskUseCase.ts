@@ -1,14 +1,13 @@
-import { IMunicipalityRepository } from "../../../../domain/repositories/municipalityRepository";
-import { ISchoolRepository } from "../../../../domain/repositories/schoolRepository";
+import { IMunicipalityRepository } from '../../../../domain/repositories/municipalityRepository';
+import { ISchoolRepository } from '../../../../domain/repositories/schoolRepository';
 
-export class TopMunicipalitiesAverageRiskUseCase{
-    constructor(
-        private schoolRepository: ISchoolRepository,
-        private municipalityRepository: IMunicipalityRepository
-    ){}
+export class TopMunicipalitiesAverageRiskUseCase {
+  constructor(
+    private schoolRepository: ISchoolRepository,
+    private municipalityRepository: IMunicipalityRepository,
+  ) {}
 
-    async execute(){
-
+  async execute() {
     const schools = await this.schoolRepository.findAll();
 
     const municipalities = await this.municipalityRepository.findAll();
@@ -47,8 +46,7 @@ export class TopMunicipalitiesAverageRiskUseCase{
     );
 
     return {
-        municipalitiesWithMostSchoolsInHighRisk
-    }
-    
-    }
+      municipalitiesWithMostSchoolsInHighRisk,
+    };
+  }
 }

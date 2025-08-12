@@ -28,7 +28,7 @@ app.use(
 
 app.use(schoolRoutes);
 
-app.use(dashboardRoutes)
+app.use(dashboardRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.status(200).json({

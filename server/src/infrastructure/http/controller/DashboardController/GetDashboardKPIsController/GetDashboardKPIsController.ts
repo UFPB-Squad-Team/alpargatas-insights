@@ -1,16 +1,13 @@
-import { GetDashboardKPIsUseCase } from "../../../../../application/UseCases/DashboardUseCases/GetDashboardKPIsUseCase/GetDashboardKPIsUseCase";
+import { GetDashboardKPIsUseCase } from '../../../../../application/UseCases/DashboardUseCases/GetDashboardKPIsUseCase/GetDashboardKPIsUseCase';
 
-import { Request, Response } from "express"
+import { Request, Response } from 'express';
 
-export class GetDashboardKPIsController{
-    constructor(
-        private getDashboardKPIsUseCase: GetDashboardKPIsUseCase
-    ){}
+export class GetDashboardKPIsController {
+  constructor(private getDashboardKPIsUseCase: GetDashboardKPIsUseCase) {}
 
-    async getKpis(req: Request, res: Response){
+  async getKpis(req: Request, res: Response) {
+    const getKpis = await this.getDashboardKPIsUseCase.execute();
 
-        const getKpis = await this.getDashboardKPIsUseCase.execute()
-
-        res.status(200).json(getKpis)
-    }
+    res.status(200).json(getKpis);
+  }
 }
