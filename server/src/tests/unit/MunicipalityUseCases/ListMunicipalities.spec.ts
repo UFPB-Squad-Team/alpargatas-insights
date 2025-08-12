@@ -3,7 +3,6 @@ import { ListMunicipalitiesUseCase } from '../../../application/UseCases/Municip
 describe('ListMunicipalitiesUseCase', () => {
   it('List municipality without errors', async () => {
     const mockMunicipalityRepository = {
-      findById: jest.fn().mockResolvedValue(null),
       findByIbgeCode: jest.fn().mockResolvedValue(null),
       findByName: jest.fn().mockResolvedValue(null),
       findByUf: jest.fn().mockResolvedValue(null),
@@ -14,9 +13,6 @@ describe('ListMunicipalitiesUseCase', () => {
         },
       ]),
       findAll: jest.fn().mockResolvedValue(null),
-      delete: jest.fn(),
-      update: jest.fn(),
-      save: jest.fn(),
     };
 
     const listMunicipalitiesUseCase = new ListMunicipalitiesUseCase(
@@ -33,15 +29,11 @@ describe('ListMunicipalitiesUseCase', () => {
 
   it('List a empty array', async () => {
     const mockMunicipalityRepository = {
-      findById: jest.fn().mockResolvedValue(null),
       findByIbgeCode: jest.fn().mockResolvedValue(null),
       findByName: jest.fn().mockResolvedValue(null),
       findByUf: jest.fn().mockResolvedValue(null),
       findAllForDropdown: jest.fn().mockResolvedValue(null),
       findAll: jest.fn().mockResolvedValue(null),
-      delete: jest.fn(),
-      update: jest.fn(),
-      save: jest.fn(),
     };
 
     const listMunicipalitiesUseCase = new ListMunicipalitiesUseCase(
