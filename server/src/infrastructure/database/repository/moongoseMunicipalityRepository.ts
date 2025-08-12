@@ -1,223 +1,221 @@
-import { PipelineStage } from "mongoose";
-import { Municipality } from "../../../domain/entities/municipality";
-import { UF } from "../../../domain/enums/enumUnidadesFederativas";
-import { IMunicipalityRepository } from "../../../domain/repositories/municipalityRepository";
-import { SchoolModel } from "../../configs/models/moongoseDatabaseSchema";
+import { PipelineStage } from 'mongoose';
+import { Municipality } from '../../../domain/entities/municipality';
+import { UF } from '../../../domain/enums/enumUnidadesFederativas';
+import { IMunicipalityRepository } from '../../../domain/repositories/municipalityRepository';
+import { SchoolModel } from '../../configs/models/moongoseDatabaseSchema';
 
-export class MoongoseMunicipalityRepository implements IMunicipalityRepository{
-    async findByIbgeCode(codigoIbge: string): Promise<Municipality | null> {
-        
-        const school = await SchoolModel.findOne({ municipioIdIbge: codigoIbge})
+export class MoongoseMunicipalityRepository implements IMunicipalityRepository {
+  async findByIbgeCode(codigoIbge: string): Promise<Municipality | null> {
+    const school = await SchoolModel.findOne({ municipioIdIbge: codigoIbge });
 
-        if(!school){
-            return null
-        }
-
-        const pipeline = [
-            {
-                $match: { municipioIdIbge: codigoIbge }
-            },
-
-            {
-                $group: { 
-                    _id: {
-                        nome: "$municipioNome",
-                        uf: "$estadoSigla"
-                    },
-                    totalEscolas: { $sum: 1 },
-                    riscoMedio: { $avg: "$scoreRisco" }
-                }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    totalEscolas: 1,
-                    riscoMedio: { $round: ["$riscoMedio", 2] },
-                    populacao: 0,
-                    estatisticasInfraestrutura: 0
-                }
-            }
-        ]
-
-        const [schoolStats] = await SchoolModel.aggregate(pipeline)
-
-        return{
-            id: school.municipioIdIbge,
-            codigoIbge: school.municipioIdIbge,
-            nome: school.municipioNome,
-            uf: school.estadoSigla,
-            ...schoolStats,
-            ...(!schoolStats && {
-                totalEscolas: 0,
-                riscoMedio: 0,
-                populacao: 0,
-                estatisticasInfraestrutura: {}
-            })
-        }
+    if (!school) {
+      return null;
     }
 
-    async findByName(name: string): Promise<Municipality | null> {
-        const school = await SchoolModel.findOne({ municipioNome: name})
+    const pipeline = [
+      {
+        $match: { municipioIdIbge: codigoIbge },
+      },
 
-        if(!school){
-            return null
-        }
+      {
+        $group: {
+          _id: {
+            nome: '$municipioNome',
+            uf: '$estadoSigla',
+          },
+          totalEscolas: { $sum: 1 },
+          riscoMedio: { $avg: '$scoreRisco' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          totalEscolas: 1,
+          riscoMedio: { $round: ['$riscoMedio', 2] },
+          populacao: 0,
+          estatisticasInfraestrutura: 0,
+        },
+      },
+    ];
 
-        const pipeline = [
-            {
-                $match: { municipioNome: name }
-            },
+    const [schoolStats] = await SchoolModel.aggregate(pipeline);
 
-            {
-                $group: { 
-                    _id: {
-                        nome: "$municipioNome",
-                        uf: "$estadoSigla"
-                    },
-                    totalEscolas: { $sum: 1 },
-                    riscoMedio: { $avg: "$scoreRisco" }
-                }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    totalEscolas: 1,
-                    riscoMedio: { $round: ["$riscoMedio", 2] },
-                    populacao: 0,
-                    estatisticasInfraestrutura: 0
-                }
-            }
-        ]
+    return {
+      id: school.municipioIdIbge,
+      codigoIbge: school.municipioIdIbge,
+      nome: school.municipioNome,
+      uf: school.estadoSigla,
+      ...schoolStats,
+      ...(!schoolStats && {
+        totalEscolas: 0,
+        riscoMedio: 0,
+        populacao: 0,
+        estatisticasInfraestrutura: {},
+      }),
+    };
+  }
 
-        const [schoolStats] = await SchoolModel.aggregate(pipeline)
+  async findByName(name: string): Promise<Municipality | null> {
+    const school = await SchoolModel.findOne({ municipioNome: name });
 
-        return{
-            id: school.municipioIdIbge,
-            codigoIbge: school.municipioIdIbge,
-            nome: school.municipioNome,
-            uf: school.estadoSigla,
-            ...schoolStats,
-            ...(!schoolStats && {
-                totalEscolas: 0,
-                riscoMedio: 0,
-                populacao: 0,
-                estatisticasInfraestrutura: {}
-            })
-        }
+    if (!school) {
+      return null;
     }
 
-    async findByUf(uf: UF): Promise<Municipality[]> {
-        const pipeline: PipelineStage[] = [
-            {
-                $match: { estadoSigla: uf }
-            },
+    const pipeline = [
+      {
+        $match: { municipioNome: name },
+      },
 
-            {
-                $group: { 
-                    _id: {
-                        codigoIbge: "$municipioIdIbge",
-                        nome: "$municipioNome"
-                    },
-                    uf: { $first: "$estadoSigla" },
-                    totalEscolas: { $sum: 1 },
-                    riscoMedio: { $avg: "$scoreRisco" }
-                }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    id: "$_id.codigoIbge",
-                    codigoIbge: "$_id.codigoIbge",
-                    nome: "$_id.nome",
-                    totalEscolas: 1,
-                    riscoMedio: { $round: ["$riscoMedio", 2] },
-                    populacao: 0,
-                    estatisticasInfraestrutura: 0
-                }
+      {
+        $group: {
+          _id: {
+            nome: '$municipioNome',
+            uf: '$estadoSigla',
+          },
+          totalEscolas: { $sum: 1 },
+          riscoMedio: { $avg: '$scoreRisco' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          totalEscolas: 1,
+          riscoMedio: { $round: ['$riscoMedio', 2] },
+          populacao: 0,
+          estatisticasInfraestrutura: 0,
+        },
+      },
+    ];
 
-            },
+    const [schoolStats] = await SchoolModel.aggregate(pipeline);
 
-            {
-                $sort: { nome: 1 }
-            }
-        ]
+    return {
+      id: school.municipioIdIbge,
+      codigoIbge: school.municipioIdIbge,
+      nome: school.municipioNome,
+      uf: school.estadoSigla,
+      ...schoolStats,
+      ...(!schoolStats && {
+        totalEscolas: 0,
+        riscoMedio: 0,
+        populacao: 0,
+        estatisticasInfraestrutura: {},
+      }),
+    };
+  }
 
-        const municipality =  await SchoolModel.aggregate<Municipality>(pipeline).exec()
+  async findByUf(uf: UF): Promise<Municipality[]> {
+    const pipeline: PipelineStage[] = [
+      {
+        $match: { estadoSigla: uf },
+      },
 
-        return municipality
-    }
+      {
+        $group: {
+          _id: {
+            codigoIbge: '$municipioIdIbge',
+            nome: '$municipioNome',
+          },
+          uf: { $first: '$estadoSigla' },
+          totalEscolas: { $sum: 1 },
+          riscoMedio: { $avg: '$scoreRisco' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          id: '$_id.codigoIbge',
+          codigoIbge: '$_id.codigoIbge',
+          nome: '$_id.nome',
+          totalEscolas: 1,
+          riscoMedio: { $round: ['$riscoMedio', 2] },
+          populacao: 0,
+          estatisticasInfraestrutura: 0,
+        },
+      },
 
-    async findAll(): Promise<Municipality[]> {
-        const pipeline: PipelineStage[] = [
-            {
-                $match: { 
-                    municipioIdIbge: { $exists: true, $ne: null },
+      {
+        $sort: { nome: 1 },
+      },
+    ];
 
-                    municipioNome: { $exists: true, $ne: null }
-             }
-            },
+    const municipality =
+      await SchoolModel.aggregate<Municipality>(pipeline).exec();
 
-            {
-                $group: { 
-                    _id: {
-                        codigoIbge: "$municipioIdIbge",
-                        nome: "$municipioNome"
-                    },
-                    uf: { $first: "$estadoSigla" },
-                    totalEscolas: { $sum: 1 },
-                    riscoMedio: { $avg: "$scoreRisco" }
-                }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    id: "$_id.codigoIbge",
-                    codigoIbge: "$_id.codigoIbge",
-                    nome: "$_id.nome",
-                    totalEscolas: 1,
-                    riscoMedio: { $round: ["$riscoMedio", 2] },
-                    populacao: 0,
-                    estatisticasInfraestrutura: 0
-                }
+    return municipality;
+  }
 
-            },
+  async findAll(): Promise<Municipality[]> {
+    const pipeline: PipelineStage[] = [
+      {
+        $match: {
+          municipioIdIbge: { $exists: true, $ne: null },
 
-            {
-                $sort: { nome: 1 }
-            }
-        ]
+          municipioNome: { $exists: true, $ne: null },
+        },
+      },
 
-        const municipality =  await SchoolModel.aggregate<Municipality>(pipeline).exec()
+      {
+        $group: {
+          _id: {
+            codigoIbge: '$municipioIdIbge',
+            nome: '$municipioNome',
+          },
+          uf: { $first: '$estadoSigla' },
+          totalEscolas: { $sum: 1 },
+          riscoMedio: { $avg: '$scoreRisco' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          id: '$_id.codigoIbge',
+          codigoIbge: '$_id.codigoIbge',
+          nome: '$_id.nome',
+          totalEscolas: 1,
+          riscoMedio: { $round: ['$riscoMedio', 2] },
+          populacao: 0,
+          estatisticasInfraestrutura: 0,
+        },
+      },
 
-        return municipality
-    }
+      {
+        $sort: { nome: 1 },
+      },
+    ];
 
-    async findAllForDropdown(): Promise<Pick<Municipality, "id" | "nome">[]> {
-                const pipeline: PipelineStage[] = [
-            {
-                $match: { 
-                    municipioIdIbge: { $exists: true, $ne: null },
+    const municipality =
+      await SchoolModel.aggregate<Municipality>(pipeline).exec();
 
-                    municipioNome: { $exists: true, $ne: null }
-             }
-            },
+    return municipality;
+  }
 
-            {
-                $project: {
-                    _id: 0,
-                    id: "municipioIdIbge",
-                    nome: "municipioNome",
-                }
+  async findAllForDropdown(): Promise<Pick<Municipality, 'id' | 'nome'>[]> {
+    const pipeline: PipelineStage[] = [
+      {
+        $match: {
+          municipioIdIbge: { $exists: true, $ne: null },
 
-            },
+          municipioNome: { $exists: true, $ne: null },
+        },
+      },
 
-            {
-                $sort: { nome: 1 },
-            }
-        ]
+      {
+        $project: {
+          _id: 0,
+          id: 'municipioIdIbge',
+          nome: 'municipioNome',
+        },
+      },
 
-        const municipality =  await SchoolModel.aggregate(pipeline).exec()
+      {
+        $sort: { nome: 1 },
+      },
+    ];
 
-        return municipality
-    }
+    const municipality = await SchoolModel.aggregate(pipeline).exec();
+
+    return municipality;
+  }
 }
