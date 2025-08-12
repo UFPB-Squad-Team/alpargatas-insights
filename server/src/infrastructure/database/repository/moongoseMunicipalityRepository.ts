@@ -32,9 +32,7 @@ export class MoongoseMunicipalityRepository implements IMunicipalityRepository{
                 $project: {
                     _id: 0,
                     totalEscolas: 1,
-                    riscoMedio: { $round: ["$riscoMedio", 2] },
-                    populacao: 0,
-                    estatisticasInfraestrutura: 0
+                    riscoMedio: { $round: ["$riscoMedio", 2] }
                 }
             }
         ]
@@ -82,9 +80,7 @@ export class MoongoseMunicipalityRepository implements IMunicipalityRepository{
                 $project: {
                     _id: 0,
                     totalEscolas: 1,
-                    riscoMedio: { $round: ["$riscoMedio", 2] },
-                    populacao: 0,
-                    estatisticasInfraestrutura: 0
+                    riscoMedio: { $round: ["$riscoMedio", 2] }
                 }
             }
         ]
@@ -130,9 +126,7 @@ export class MoongoseMunicipalityRepository implements IMunicipalityRepository{
                     codigoIbge: "$_id.codigoIbge",
                     nome: "$_id.nome",
                     totalEscolas: 1,
-                    riscoMedio: { $round: ["$riscoMedio", 2] },
-                    populacao: 0,
-                    estatisticasInfraestrutura: 0
+                    riscoMedio: { $round: ["$riscoMedio", 2] }
                 }
 
             },
@@ -175,9 +169,7 @@ export class MoongoseMunicipalityRepository implements IMunicipalityRepository{
                     codigoIbge: "$_id.codigoIbge",
                     nome: "$_id.nome",
                     totalEscolas: 1,
-                    riscoMedio: { $round: ["$riscoMedio", 2] },
-                    populacao: 0,
-                    estatisticasInfraestrutura: 0
+                    riscoMedio: { $round: ["$riscoMedio", 2] }
                 }
 
             },
