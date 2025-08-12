@@ -102,13 +102,13 @@ describe('GetDashboardKPIsUseCase', () => {
 
     expect(await getDashboardKPIsUseCase.execute()).toEqual({
       schools: 2,
-      schoolsWithHighInfraestructureRisk:1,
-        municipalitiesWithMostAverageRisk: { 
-          "averageRisk": 0.82,
-          "idIbge": "mun-002",
-          "name": "João Pessoa",
-          "schoolsCount": 1,
-        },
+      schoolsWithHighInfraestructureRisk: 1,
+      municipalitiesWithMostAverageRisk: {
+        averageRisk: 0.82,
+        idIbge: 'mun-002',
+        name: 'João Pessoa',
+        schoolsCount: 1,
+      },
       lackName: 'possui_ar_condicionado',
     });
   });
