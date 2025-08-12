@@ -1,5 +1,8 @@
-import { Municipality } from "../../../../domain/entities/municipality";
+import { Municipality } from '../../../../domain/entities/municipality';
 
-export interface TopMunicipalitiesAverageRiskDTO{
-    municipalitiesWithMostSchoolsInHighRisk: Pick<Municipality, 'codigoIbge' | 'nome' | 'riscoMedio' | 'totalEscolas'>
+export interface TopMunicipalitiesAverageRiskDTO {
+  municipalitiesWithMostSchoolsInHighRisk: Pick<
+    Municipality,
+    'codigoIbge' | 'nome' | 'riscoMedio' | 'totalEscolas'
+  >;
 }

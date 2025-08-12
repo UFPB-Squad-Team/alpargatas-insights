@@ -12,7 +12,8 @@ const schoolRepository = new MoongoseSchoolRepository();
 
 const getAllSchoolsUseCase = new GetAllSchoolsUseCase(schoolRepository);
 const getSchoolDetailsUseCase = new GetSchoolDetailsUseCase(schoolRepository);
-const getSchoolsByDependenciaAdministrativaUseCase = new GetSchoolsByDependenciaAdministrativa(schoolRepository);
+const getSchoolsByDependenciaAdministrativaUseCase =
+  new GetSchoolsByDependenciaAdministrativa(schoolRepository);
 const searchSchoolsUseCase = new SearchSchoolsUseCase(schoolRepository);
 
 export const getAllSchoolsController = new GetAllSchoolsController(
