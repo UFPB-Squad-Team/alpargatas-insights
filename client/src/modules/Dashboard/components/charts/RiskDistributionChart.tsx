@@ -1,8 +1,6 @@
-import Spinner from '@/components/common/Spinner';
-import {
-  getRiskDistribution,
-  RiskDistribution,
-} from '@/mocks/services/getRiskDistribution';
+
+import { RiskDistribution, getRiskDistribution } from '@/shared/mocks/services/getRiskDistribution';
+import Spinner from '@/ui/components/common/Spinner';
 import { ChartBar } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import {

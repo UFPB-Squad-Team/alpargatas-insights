@@ -1,5 +1,5 @@
-import RiskIndicator from '@/components/common/RiskIndicator';
-import { HighRiskSchool } from '@/mocks/services/getHighRiskSchools';
+import { HighRiskSchool } from "@/shared/mocks/services/getHighRiskSchools";
+import RiskIndicator from "@/ui/components/common/RiskIndicator";
 
 interface SchoolListItemProps {
   school: HighRiskSchool;

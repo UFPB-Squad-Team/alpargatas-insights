@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 import SettingsModal from './SettingsModal';
-import { useClickOutside } from '../../hooks/useClickOutside';
+import { useClickOutside } from '@/ui/hooks/useClickOutside';
 
 const Layout = () => {
   const [isSettingsOpen, setSettingsOpen] = useState(false);

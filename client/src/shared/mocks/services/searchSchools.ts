@@ -1,5 +1,5 @@
 import { SchoolProps } from '@/domain/entities/School';
-import { mockSchools } from '@/mocks/data/school.mock';
+import { mockSchools } from '../data/school.mock';
 
 const USE_MOCKS = import.meta.env.VITE_USE_MOCKS === 'true';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;

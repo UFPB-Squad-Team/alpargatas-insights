@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
-import Spinner from '@/components/common/Spinner';
-import {
-  getTopMunicipalitiesByRisk,
-  MunicipalityRisk,
-} from '@/mocks/services/getTopMunicipalitiesByRisk';
+
 import { Building2 } from 'lucide-react';
+import { MunicipalityRisk, getTopMunicipalitiesByRisk } from '@/shared/mocks/services/getTopMunicipalitiesByRisk';
+import Spinner from '@/ui/components/common/Spinner';
 
 const getRiskInfo = (score: number) => {
   if (score >= 0.9) return { color: 'text-orange-900', text: 'Alerta Máximo' };
