@@ -81,7 +81,6 @@ describe('GetDashboardKPIsUseCase', () => {
     };
 
     const mockMunicipalityRepository = {
-      findById: jest.fn().mockResolvedValue(null),
       findByIbgeCode: jest.fn().mockResolvedValue(null),
       findByName: jest.fn().mockResolvedValue(null),
       findByUf: jest.fn().mockResolvedValue(null),
@@ -94,9 +93,6 @@ describe('GetDashboardKPIsUseCase', () => {
           uf: 'PB',
         },
       ]),
-      delete: jest.fn(),
-      update: jest.fn(),
-      save: jest.fn(),
     };
 
     const getDashboardKPIsUseCase = new GetDashboardKPIsUseCase(
