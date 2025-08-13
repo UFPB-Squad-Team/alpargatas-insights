@@ -13,7 +13,7 @@ export class GetMunicipalityStatisticsUseCase {
     if (!municipioIdIbge || typeof municipioIdIbge !== 'string') {
       throw new AppError('This code need be a string');
     }
-      
+
     const schools = await this.schoolRepository.findByIbgeCode(municipioIdIbge);
 
     if (schools.length === 0) {
