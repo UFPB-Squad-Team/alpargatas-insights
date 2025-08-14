@@ -32,4 +32,8 @@ dashboardRoutes.get(
   ),
 );
 
+dashboardRoutes.get("/api/v1/dashboard/risk-distribution", dashboardController.riskDistributionDashboardController.getRiskDistribution.bind(dashboardController.riskDistributionDashboardController))
+
+dashboardRoutes.get("/api/v1/dashboard/top-deficiencies", dashboardController.topDeficienciesController.getTopDeficienciesInSchools.bind(dashboardController.topDeficienciesController))
+
 export { dashboardRoutes };
