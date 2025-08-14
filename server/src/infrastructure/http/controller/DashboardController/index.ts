@@ -8,6 +8,10 @@ import { HighRiskSchoolUseCase } from '../../../../application/UseCases/Dashboar
 import { HighRiskSchoolController } from './HighRiskSchoolListController/HighRiskSchoolController';
 import { TopMunicipalitiesAverageRiskUseCase } from '../../../../application/UseCases/DashboardUseCases/TopMunicipalitiesAverageRiskUseCase/TopMunicipalitiesAverageRiskUseCase';
 import { TopMunicipalitiesAverageRiskController } from './TopMunicipalitiesAverageRiskController/TopMunicipalitiesAverageRiskController';
+import { RiskDistributionDashboardUseCase } from '../../../../application/UseCases/DashboardUseCases/RiskDistributionDashboardUseCase/RiskDistributionDashboardUseCase';
+import { RiskDistributionDashboardController } from './RiskDistributionDashboardController/RiskDistributionDashboardController';
+import { TopDeficienciesUseCase } from '../../../../application/UseCases/DashboardUseCases/TopDeficienciesUseCase/TopDeficienciesUseCase';
+import { TopDeficienciesController } from './TopDeficienciesController/TopDeficienciesController';
 
 const municipalityRepository = new MoongoseMunicipalityRepository();
 
@@ -28,6 +32,12 @@ const topMunicipalitiesAverageRiskUseCase =
     municipalityRepository,
   );
 
+const riskDistributionDashboardUseCase = new RiskDistributionDashboardUseCase(
+  schoolRepository,
+);
+
+const topDeficienciesUseCase = new TopDeficienciesUseCase(schoolRepository);
+
 export const getDashboardKPIsController = new GetDashboardKPIsController(
   getDashboardKPIsUseCase,
 );
@@ -44,3 +54,10 @@ export const topMunicipalitiesAverageRiskController =
   new TopMunicipalitiesAverageRiskController(
     topMunicipalitiesAverageRiskUseCase,
   );
+
+export const riskDistributionDashboardController =
+  new RiskDistributionDashboardController(riskDistributionDashboardUseCase);
+
+export const topDeficienciesController = new TopDeficienciesController(
+  topDeficienciesUseCase,
+);
