@@ -6,7 +6,11 @@ import { SchoolModel } from '../../configs/models/moongoseDatabaseSchema';
 
 export class MoongoseMunicipalityRepository implements IMunicipalityRepository {
   async findByIbgeCode(codigoIbge: string): Promise<Municipality | null> {
-    const school = await SchoolModel.findOne({ municipioIdIbge: codigoIbge });
+    const school = await SchoolModel.findOne({
+      $expr: {
+        $eq: [{ $toString: '$municipioIdIbge' }, String(codigoIbge)],
+      },
+    });
 
     if (!school) {
       return null;
@@ -14,7 +18,11 @@ export class MoongoseMunicipalityRepository implements IMunicipalityRepository {
 
     const pipeline = [
       {
-        $match: { municipioIdIbge: codigoIbge },
+        $match: {
+          $expr: {
+            $eq: [{ $toDouble: '$municipioIdIbge' }, { $toDouble: codigoIbge }],
+          },
+        },
       },
 
       {
@@ -197,10 +205,19 @@ export class MoongoseMunicipalityRepository implements IMunicipalityRepository {
       },
 
       {
+        $group: {
+          _id: {
+            codigoIbge: '$municipioIdIbge',
+            nome: '$municipioNome',
+          },
+        },
+      },
+
+      {
         $project: {
           _id: 0,
-          id: 'municipioIdIbge',
-          nome: 'municipioNome',
+          id: '$_id.codigoIbge',
+          nome: '$_id.nome',
         },
       },
 

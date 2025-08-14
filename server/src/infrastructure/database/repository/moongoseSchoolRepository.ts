@@ -29,7 +29,14 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
   async findByIbgeCode(municipioIdIbge: string): Promise<School[]> {
     const pipeline = [
       {
-        $match: { municipioIdIbge },
+        $match: {
+          $expr: {
+            $eq: [
+              { $toDouble: '$municipioIdIbge' },
+              { $toDouble: municipioIdIbge },
+            ],
+          },
+        },
       },
       {
         $project: {
