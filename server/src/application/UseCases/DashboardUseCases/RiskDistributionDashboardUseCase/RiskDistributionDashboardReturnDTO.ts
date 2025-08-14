@@ -1,6 +1,5 @@
-
-export interface RiskDistributionDashboardReturnDTO{
-    schoolsWithHighInfraestructureRisk: number
-    schoolsWithLowInfraestructureRisk: number
-    schoolsWithMediumInfraestructureRisk:  number
+export interface RiskDistributionDashboardReturnDTO {
+  schoolsWithHighInfraestructureRisk: number;
+  schoolsWithLowInfraestructureRisk: number;
+  schoolsWithMediumInfraestructureRisk: number;
 }

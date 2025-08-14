@@ -1,4 +1,3 @@
-
-export interface TopDeficienciesReturnDTO{
-    topDeficiencies: {deficit: string, schools: number}[]
+export interface TopDeficienciesReturnDTO {
+  topDeficiencies: { deficit: string; schools: number }[];
 }

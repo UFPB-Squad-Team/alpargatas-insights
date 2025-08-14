@@ -1,16 +1,16 @@
-import { RiskDistributionDashboardUseCase } from "../../../../../application/UseCases/DashboardUseCases/RiskDistributionDashboardUseCase/RiskDistributionDashboardUseCase";
+import { RiskDistributionDashboardUseCase } from '../../../../../application/UseCases/DashboardUseCases/RiskDistributionDashboardUseCase/RiskDistributionDashboardUseCase';
 
-import { Request, Response } from "express"
+import { Request, Response } from 'express';
 
-export class RiskDistributionDashboardController{
-    constructor(
-        private riskDistributionDashboardUseCase: RiskDistributionDashboardUseCase
-    ){}
+export class RiskDistributionDashboardController {
+  constructor(
+    private riskDistributionDashboardUseCase: RiskDistributionDashboardUseCase,
+  ) {}
 
-    async getRiskDistribution(req: Request, res: Response){
+  async getRiskDistribution(req: Request, res: Response) {
+    const riskDistribution =
+      await this.riskDistributionDashboardUseCase.execute();
 
-        const riskDistribution = await this.riskDistributionDashboardUseCase.execute()
-
-        res.status(200).json(riskDistribution)
-    }
+    res.status(200).json(riskDistribution);
+  }
 }

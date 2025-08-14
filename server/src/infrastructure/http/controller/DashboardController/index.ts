@@ -32,9 +32,11 @@ const topMunicipalitiesAverageRiskUseCase =
     municipalityRepository,
   );
 
-const riskDistributionDashboardUseCase = new RiskDistributionDashboardUseCase(schoolRepository)
+const riskDistributionDashboardUseCase = new RiskDistributionDashboardUseCase(
+  schoolRepository,
+);
 
-const topDeficienciesUseCase = new TopDeficienciesUseCase(schoolRepository)
+const topDeficienciesUseCase = new TopDeficienciesUseCase(schoolRepository);
 
 export const getDashboardKPIsController = new GetDashboardKPIsController(
   getDashboardKPIsUseCase,
@@ -53,7 +55,9 @@ export const topMunicipalitiesAverageRiskController =
     topMunicipalitiesAverageRiskUseCase,
   );
 
+export const riskDistributionDashboardController =
+  new RiskDistributionDashboardController(riskDistributionDashboardUseCase);
 
-export const riskDistributionDashboardController = new RiskDistributionDashboardController(riskDistributionDashboardUseCase)
-
-export const topDeficienciesController = new TopDeficienciesController(topDeficienciesUseCase)
+export const topDeficienciesController = new TopDeficienciesController(
+  topDeficienciesUseCase,
+);
