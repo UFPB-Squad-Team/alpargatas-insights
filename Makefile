@@ -1,47 +1,53 @@
-.PHONY: help build rebuild run run-d stop logs clean restart shell-api shell-etl etl-extract etl-transform etl-load
+.PHONY: help build rebuild run run-d stop logs clean restart shell-etl \
+        etl-run-escolas etl-run-professor \
+        etl-extract etl-transform etl-validate etl-load
 
-build: ## Build the Docker containers
+build: ## Builds Docker images for all services
 	docker-compose build
 
-run: ## Start the containers in foreground
+run: ## Starts containers in the foreground (showing logs)
 	docker-compose up
 
-stop: ## Stop and remove the containers
+stop: ## Stops and removes containers
 	docker-compose down
 
-run-d: ## Start the containers in detached mode
+run-d: ## Starts containers in detached mode (in the background)
 	docker-compose up -d
 
-rebuild: ## Rebuild the containers without using cache
+rebuild: ## Rebuilds images without using cache
 	docker-compose build --no-cache
 
-logs: ## Follow the logs from all containers
+logs: ## Follows logs from all containers
 	docker-compose logs -f
 
-clean: ## Remove containers, volumes, local images and orphans
+clean: ## Removes containers, volumes, and local images
 	docker-compose down -v --rmi local --remove-orphans
 
-restart: ## Restart all containers
-	docker-compose down && docker-compose up -d
+restart: ## Restarts all containers
+	docker-compose stop && docker-compose up -d
 
-shell-api: ## Open a shell in the API container
-	docker-compose exec api /bin/sh
-
-shell-etl: ## Open a shell in the ETL container
+shell-etl: ## Opens an interactive terminal in the ETL container
 	docker-compose exec etl /bin/sh
 
-etl-extract: ## Run the extract step of the ETL process
-	docker-compose run --rm etl python scripts/extract.py
+etl-run-escolas: ## Runs the main schools pipeline (Extract -> Transform -> Validate -> Load)
+	docker-compose run --rm etl python -m src.jobs.escolas_pipeline.main
 
-etl-transform: ## Run the transform step of the ETL process
-	docker-compose run --rm etl python scripts/transform.py
+etl-run-enrich: ## Runs the enrichment pipeline (Professor)
+	docker-compose run --rm etl python -m src.jobs.enriquecimento_pipeline.main
 
-etl-data-inspector: ## Run the Data Inspector script of the ETL process data
-	docker-compose run --rm etl python scripts/validate_processed_data.py
+etl-extract: ## Runs ONLY the extraction stage of the schools pipeline
+	docker-compose run --rm etl python -m src.jobs.escolas_pipeline.extract
 
-etl-load: ## Run the load step of the ETL process
-	docker-compose run --rm etl python scripts/load.py
+etl-transform: ## Runs ONLY the transformation stage of the schools pipeline
+	docker-compose run --rm etl python -m src.jobs.escolas_pipeline.transform
 
-help: ## Show available commands
+etl-validate: ## Runs ONLY the validation stage of the schools pipeline
+	docker-compose run --rm etl python -m src.jobs.escolas_pipeline.validate
+
+etl-load: ## Runs ONLY the loading stage of the schools pipeline
+	docker-compose run --rm etl python -m src.jobs.escolas_pipeline.load
+
+
+help: 
 	@echo "Available commands:"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-25s\033[0m %s\n", $$1, $$2}'

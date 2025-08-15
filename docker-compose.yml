@@ -21,10 +21,13 @@ services:
 
   etl:
     build:
-      context: ./etl
+      context: ./etl  
       dockerfile: Dockerfile
     container_name: alpargatas_etl
     env_file:
       - .env
     volumes:
       - ./etl/data:/app/data
+      - ./etl/src:/app/src
+      - ./etl/config:/app/config
+    command: tail -f /dev/null
