@@ -1,6 +1,9 @@
 import logging
 import pandas as pd
 from pathlib import Path
+
+import pandas as pd
+
 from src.common.utils import load_config
 
 BASE_DIR = Path(__file__).resolve().parents[3]
@@ -9,6 +12,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - [%(levelname)s] - %(message)s",
 )
+
 
 def _rename_initial_columns(df: pd.DataFrame, column_map: dict) -> pd.DataFrame:
     logging.info("Renomeando colunas para o padrão do projeto...")
@@ -21,17 +25,33 @@ def _enrich_with_coordinates(df_escolas: pd.DataFrame, df_municipios: pd.DataFra
     df_escolas["municipio_id_ibge"] = pd.to_numeric(df_escolas["municipio_id_ibge"], errors="coerce")
     df_coords["codigo_ibge"] = pd.to_numeric(df_coords["codigo_ibge"], errors="coerce")
     df_merged = pd.merge(
-        df_escolas, df_coords, left_on="municipio_id_ibge", right_on="codigo_ibge", how="left"
+        df_escolas,
+        df_coords,
+        left_on="municipio_id_ibge",
+        right_on="codigo_ibge",
+        how="left",
     )
     df_merged.drop(columns=["codigo_ibge"], inplace=True)
-    df_merged[["latitude", "longitude"]] = df_merged[["latitude", "longitude"]].fillna(0)
+    df_merged[["latitude", "longitude"]] = df_merged[["latitude", "longitude"]].fillna(
+        0
+    )
     return df_merged
+
 
 def _map_categorical_values(df: pd.DataFrame, categorical_maps: dict) -> pd.DataFrame:
     logging.info("Mapeando valores de colunas categóricas...")
-    df["dependencia_adm"] = df["dependencia_adm"].map(categorical_maps['dependencia_adm']).fillna("Desconhecida")
-    df["tipo_localizacao"] = df["tipo_localizacao"].map(categorical_maps['tipo_localizacao']).fillna("Desconhecida")
+    df["dependencia_adm"] = (
+        df["dependencia_adm"]
+        .map(categorical_maps["dependencia_adm"])
+        .fillna("Desconhecida")
+    )
+    df["tipo_localizacao"] = (
+        df["tipo_localizacao"]
+        .map(categorical_maps["tipo_localizacao"])
+        .fillna("Desconhecida")
+    )
     return df
+
 
 def _process_infra_columns(df: pd.DataFrame) -> pd.DataFrame:
     logging.info("Processando e limpando colunas de infraestrutura...")
@@ -42,6 +62,7 @@ def _process_infra_columns(df: pd.DataFrame) -> pd.DataFrame:
     for col in infra_cols:
         df[col] = df[col].fillna(0).astype(bool)
     return df
+
 
 def _calculate_risk_score(row: pd.Series, weights: dict) -> float:
     pontos = 0
@@ -55,6 +76,7 @@ def _calculate_risk_score(row: pd.Series, weights: dict) -> float:
     score_final = pontos / weights['pontuacao_maxima']
     return min(round(score_final, 4), 1.0)
 
+
 def _structure_for_nosql(df: pd.DataFrame) -> pd.DataFrame:
     logging.info("Estruturando colunas em sub-documentos (infraestrutura, localizacao)...")
     df["total_alunos"] = pd.to_numeric(df["total_alunos"], errors="coerce").fillna(0)
@@ -62,10 +84,14 @@ def _structure_for_nosql(df: pd.DataFrame) -> pd.DataFrame:
     df["infraestrutura"] = df[infra_cols_final].to_dict(orient="records")
     df["indicadores"] = df[["total_alunos"]].to_dict(orient="records")
     df["localizacao"] = df.apply(
-        lambda row: {"type": "Point", "coordinates": [row["longitude"], row["latitude"]]},
-        axis=1
+        lambda row: {
+            "type": "Point",
+            "coordinates": [row["longitude"], row["latitude"]],
+        },
+        axis=1,
     )
     return df
+
 
 def _finalize_schema(df: pd.DataFrame) -> pd.DataFrame:
     logging.info("Finalizando o schema: renomeando para camelCase e ordenando colunas...")
@@ -77,27 +103,38 @@ def _finalize_schema(df: pd.DataFrame) -> pd.DataFrame:
     }
     df_renamed = df.rename(columns=rename_map)
     final_columns = [
-        "escolaIdInep", "escolaNome", "municipioIdIbge", "municipioNome",
-        "estadoSigla", "dependenciaAdm", "tipoLocalizacao", "infraestrutura",
-        "indicadores", "localizacao", "scoreRisco"
+        "escolaIdInep",
+        "escolaNome",
+        "municipioIdIbge",
+        "municipioNome",
+        "estadoSigla",
+        "dependenciaAdm",
+        "tipoLocalizacao",
+        "infraestrutura",
+        "indicadores",
+        "localizacao",
+        "scoreRisco",
     ]
     return df_renamed[final_columns]
+
 
 def run():
     """Orquestra a execução do job de transformação."""
     logging.info("--- INICIANDO JOB DE TRANSFORMAÇÃO (PIPELINE DE ESCOLAS) ---")
     
     config = load_config()
-    paths = config['paths']
-    transform_config = config['escolas_pipeline']['transform']
+    paths = config["paths"]
+    transform_config = config["escolas_pipeline"]["transform"]
 
     try:
-        df_escolas = pd.read_parquet(BASE_DIR / paths['raw_escolas_paraiba'])
-        df_municipios = pd.read_csv(BASE_DIR / paths['raw_municipios_brasileiros'])
+        df_escolas = pd.read_parquet(BASE_DIR / paths["raw_escolas_paraiba"])
+        df_municipios = pd.read_csv(BASE_DIR / paths["raw_municipios_brasileiros"])
 
-        df_renamed = _rename_initial_columns(df_escolas, transform_config['column_map'])
+        df_renamed = _rename_initial_columns(df_escolas, transform_config["column_map"])
         df_with_coords = _enrich_with_coordinates(df_renamed, df_municipios)
-        df_mapped = _map_categorical_values(df_with_coords, transform_config['categorical_maps'])
+        df_mapped = _map_categorical_values(
+            df_with_coords, transform_config["categorical_maps"]
+        )
         df_infra_processed = _process_infra_columns(df_mapped)
         df_structured = _structure_for_nosql(df_infra_processed)
         
@@ -107,18 +144,20 @@ def run():
             lambda row: _calculate_risk_score(row, risk_weights), axis=1
         )
 
+
         df_final = _finalize_schema(df_structured)
 
-        output_path = BASE_DIR / paths['processed_escolas']
+        output_path = BASE_DIR / paths["processed_escolas"]
         output_path.parent.mkdir(parents=True, exist_ok=True)
         df_final.to_parquet(output_path, index=False)
-        
+
         logging.info(f"Dados transformados salvos com sucesso em {output_path}")
         logging.info("\n--- JOB DE TRANSFORMAÇÃO FINALIZADO COM SUCESSO ---")
 
     except Exception as e:
         logging.error(f"Falha na execução do job de transformação: {e}", exc_info=True)
         raise
+
 
 if __name__ == "__main__":
     run()
