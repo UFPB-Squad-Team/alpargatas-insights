@@ -1,6 +1,5 @@
-import pandas as pd
 import logging
-
+import pandas as pd
 from pathlib import Path
 from src.common.utils import load_config
 
@@ -12,19 +11,15 @@ logging.basicConfig(
 )
 
 def _rename_initial_columns(df: pd.DataFrame, column_map: dict) -> pd.DataFrame:
-    """Renomeia as colunas iniciais do DataFrame bruto."""
     logging.info("Renomeando colunas para o padrão do projeto...")
     valid_column_map = {k: v for k, v in column_map.items() if k in df.columns}
     return df.rename(columns=valid_column_map)
 
 def _enrich_with_coordinates(df_escolas: pd.DataFrame, df_municipios: pd.DataFrame) -> pd.DataFrame:
-    """Enriquece os dados das escolas com coordenadas a partir do Código IBGE."""
     logging.info("Enriquecendo dados com coordenadas dos municípios...")
     df_coords = df_municipios[["codigo_ibge", "latitude", "longitude"]].copy()
-
     df_escolas["municipio_id_ibge"] = pd.to_numeric(df_escolas["municipio_id_ibge"], errors="coerce")
     df_coords["codigo_ibge"] = pd.to_numeric(df_coords["codigo_ibge"], errors="coerce")
-
     df_merged = pd.merge(
         df_escolas, df_coords, left_on="municipio_id_ibge", right_on="codigo_ibge", how="left"
     )
@@ -33,28 +28,22 @@ def _enrich_with_coordinates(df_escolas: pd.DataFrame, df_municipios: pd.DataFra
     return df_merged
 
 def _map_categorical_values(df: pd.DataFrame, categorical_maps: dict) -> pd.DataFrame:
-    """Mapeia valores numéricos de colunas categóricas para strings descritivas."""
     logging.info("Mapeando valores de colunas categóricas...")
     df["dependencia_adm"] = df["dependencia_adm"].map(categorical_maps['dependencia_adm']).fillna("Desconhecida")
     df["tipo_localizacao"] = df["tipo_localizacao"].map(categorical_maps['tipo_localizacao']).fillna("Desconhecida")
     return df
 
 def _process_infra_columns(df: pd.DataFrame) -> pd.DataFrame:
-    """Converte colunas de infraestrutura para booleano e cria a coluna de acessibilidade."""
     logging.info("Processando e limpando colunas de infraestrutura...")
     infra_cols = [col for col in df.columns if col.startswith("possui_")]
-    
     if "acessibilidade_inexistente" in df.columns:
         infra_cols.append("acessibilidade_inexistente")
         df["possui_acessibilidade_pcd"] = ~df["acessibilidade_inexistente"].fillna(0).astype(bool)
-        
     for col in infra_cols:
         df[col] = df[col].fillna(0).astype(bool)
-        
     return df
 
 def _calculate_risk_score(row: pd.Series, weights: dict) -> float:
-    """Calcula o score de risco para uma única linha (escola), baseado nos pesos."""
     pontos = 0
     infra = row.get("infraestrutura", {})
     if not infra.get("possui_saneamento_basico", True): pontos += weights['saneamento_basico']
@@ -63,15 +52,12 @@ def _calculate_risk_score(row: pd.Series, weights: dict) -> float:
     if not infra.get("possui_internet", True): pontos += weights['internet']
     if not infra.get("possui_quadra_esportes", True): pontos += weights['quadra_esportes']
     if not infra.get("possui_acessibilidade_pcd", True): pontos += weights['acessibilidade_pcd']
-    
     score_final = pontos / weights['pontuacao_maxima']
     return min(round(score_final, 4), 1.0)
 
 def _structure_for_nosql(df: pd.DataFrame) -> pd.DataFrame:
-    """Estrutura colunas em sub-documentos para compatibilidade com NoSQL (MongoDB)."""
     logging.info("Estruturando colunas em sub-documentos (infraestrutura, localizacao)...")
     df["total_alunos"] = pd.to_numeric(df["total_alunos"], errors="coerce").fillna(0)
-    
     infra_cols_final = [col for col in df.columns if col.startswith("possui_")]
     df["infraestrutura"] = df[infra_cols_final].to_dict(orient="records")
     df["indicadores"] = df[["total_alunos"]].to_dict(orient="records")
@@ -82,16 +68,14 @@ def _structure_for_nosql(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 def _finalize_schema(df: pd.DataFrame) -> pd.DataFrame:
-    """Renomeia colunas para camelCase e seleciona/ordena o schema final."""
     logging.info("Finalizando o schema: renomeando para camelCase e ordenando colunas...")
     rename_map = {
         "escola_id_inep": "escolaIdInep", "escola_nome": "escolaNome",
         "municipio_id_ibge": "municipioIdIbge", "municipio_nome": "municipioNome",
         "estado_sigla": "estadoSigla", "dependencia_adm": "dependenciaAdm",
-        "tipo_localizacao": "tipoLocalizacao", "scoreRisco": "scoreRisco"
+        "tipo_localizacao": "tipoLocalizacao", "score_de_risco": "scoreRisco"
     }
     df_renamed = df.rename(columns=rename_map)
-    
     final_columns = [
         "escolaIdInep", "escolaNome", "municipioIdIbge", "municipioNome",
         "estadoSigla", "dependenciaAdm", "tipoLocalizacao", "infraestrutura",
@@ -101,7 +85,7 @@ def _finalize_schema(df: pd.DataFrame) -> pd.DataFrame:
 
 def run():
     """Orquestra a execução do job de transformação."""
-    logging.info("INICIANDO JOB DE TRANSFORMAÇÃO (PIPELINE DE ESCOLAS)")
+    logging.info("--- INICIANDO JOB DE TRANSFORMAÇÃO (PIPELINE DE ESCOLAS) ---")
     
     config = load_config()
     paths = config['paths']
@@ -118,10 +102,11 @@ def run():
         df_structured = _structure_for_nosql(df_infra_processed)
         
         risk_weights = transform_config['risk_score_weights']
-        df_structured['scoreRisco'] = df_structured.apply(
+        
+        df_structured['score_de_risco'] = df_structured.apply(
             lambda row: _calculate_risk_score(row, risk_weights), axis=1
         )
-        
+
         df_final = _finalize_schema(df_structured)
 
         output_path = BASE_DIR / paths['processed_escolas']
@@ -129,7 +114,7 @@ def run():
         df_final.to_parquet(output_path, index=False)
         
         logging.info(f"Dados transformados salvos com sucesso em {output_path}")
-        logging.info("\n JOB DE TRANSFORMAÇÃO FINALIZADO COM SUCESSO ")
+        logging.info("\n--- JOB DE TRANSFORMAÇÃO FINALIZADO COM SUCESSO ---")
 
     except Exception as e:
         logging.error(f"Falha na execução do job de transformação: {e}", exc_info=True)
@@ -137,4 +122,3 @@ def run():
 
 if __name__ == "__main__":
     run()
-
