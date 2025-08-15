@@ -1,5 +1,4 @@
 import logging
-import pandas as pd
 from pathlib import Path
 
 import pandas as pd
@@ -19,10 +18,15 @@ def _rename_initial_columns(df: pd.DataFrame, column_map: dict) -> pd.DataFrame:
     valid_column_map = {k: v for k, v in column_map.items() if k in df.columns}
     return df.rename(columns=valid_column_map)
 
-def _enrich_with_coordinates(df_escolas: pd.DataFrame, df_municipios: pd.DataFrame) -> pd.DataFrame:
+
+def _enrich_with_coordinates(
+    df_escolas: pd.DataFrame, df_municipios: pd.DataFrame
+) -> pd.DataFrame:
     logging.info("Enriquecendo dados com coordenadas dos municípios...")
     df_coords = df_municipios[["codigo_ibge", "latitude", "longitude"]].copy()
-    df_escolas["municipio_id_ibge"] = pd.to_numeric(df_escolas["municipio_id_ibge"], errors="coerce")
+    df_escolas["municipio_id_ibge"] = pd.to_numeric(
+        df_escolas["municipio_id_ibge"], errors="coerce"
+    )
     df_coords["codigo_ibge"] = pd.to_numeric(df_coords["codigo_ibge"], errors="coerce")
     df_merged = pd.merge(
         df_escolas,
@@ -58,7 +62,9 @@ def _process_infra_columns(df: pd.DataFrame) -> pd.DataFrame:
     infra_cols = [col for col in df.columns if col.startswith("possui_")]
     if "acessibilidade_inexistente" in df.columns:
         infra_cols.append("acessibilidade_inexistente")
-        df["possui_acessibilidade_pcd"] = ~df["acessibilidade_inexistente"].fillna(0).astype(bool)
+        df["possui_acessibilidade_pcd"] = ~df["acessibilidade_inexistente"].fillna(
+            0
+        ).astype(bool)
     for col in infra_cols:
         df[col] = df[col].fillna(0).astype(bool)
     return df
@@ -67,18 +73,26 @@ def _process_infra_columns(df: pd.DataFrame) -> pd.DataFrame:
 def _calculate_risk_score(row: pd.Series, weights: dict) -> float:
     pontos = 0
     infra = row.get("infraestrutura", {})
-    if not infra.get("possui_saneamento_basico", True): pontos += weights['saneamento_basico']
-    if not infra.get("possui_agua_potavel", True): pontos += weights['agua_potavel']
-    if not infra.get("possui_biblioteca", True): pontos += weights['biblioteca']
-    if not infra.get("possui_internet", True): pontos += weights['internet']
-    if not infra.get("possui_quadra_esportes", True): pontos += weights['quadra_esportes']
-    if not infra.get("possui_acessibilidade_pcd", True): pontos += weights['acessibilidade_pcd']
-    score_final = pontos / weights['pontuacao_maxima']
+    if not infra.get("possui_saneamento_basico", True):
+        pontos += weights["saneamento_basico"]
+    if not infra.get("possui_agua_potavel", True):
+        pontos += weights["agua_potavel"]
+    if not infra.get("possui_biblioteca", True):
+        pontos += weights["biblioteca"]
+    if not infra.get("possui_internet", True):
+        pontos += weights["internet"]
+    if not infra.get("possui_quadra_esportes", True):
+        pontos += weights["quadra_esportes"]
+    if not infra.get("possui_acessibilidade_pcd", True):
+        pontos += weights["acessibilidade_pcd"]
+    score_final = pontos / weights["pontuacao_maxima"]
     return min(round(score_final, 4), 1.0)
 
 
 def _structure_for_nosql(df: pd.DataFrame) -> pd.DataFrame:
-    logging.info("Estruturando colunas em sub-documentos (infraestrutura, localizacao)...")
+    logging.info(
+        "Estruturando colunas em sub-documentos (infraestrutura, localizacao)..."
+    )
     df["total_alunos"] = pd.to_numeric(df["total_alunos"], errors="coerce").fillna(0)
     infra_cols_final = [col for col in df.columns if col.startswith("possui_")]
     df["infraestrutura"] = df[infra_cols_final].to_dict(orient="records")
@@ -94,12 +108,18 @@ def _structure_for_nosql(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def _finalize_schema(df: pd.DataFrame) -> pd.DataFrame:
-    logging.info("Finalizando o schema: renomeando para camelCase e ordenando colunas...")
+    logging.info(
+        "Finalizando o schema: renomeando para camelCase e ordenando colunas..."
+    )
     rename_map = {
-        "escola_id_inep": "escolaIdInep", "escola_nome": "escolaNome",
-        "municipio_id_ibge": "municipioIdIbge", "municipio_nome": "municipioNome",
-        "estado_sigla": "estadoSigla", "dependencia_adm": "dependenciaAdm",
-        "tipo_localizacao": "tipoLocalizacao", "score_de_risco": "scoreRisco"
+        "escola_id_inep": "escolaIdInep",
+        "escola_nome": "escolaNome",
+        "municipio_id_ibge": "municipioIdIbge",
+        "municipio_nome": "municipioNome",
+        "estado_sigla": "estadoSigla",
+        "dependencia_adm": "dependenciaAdm",
+        "tipo_localizacao": "tipoLocalizacao",
+        "score_de_risco": "scoreRisco",
     }
     df_renamed = df.rename(columns=rename_map)
     final_columns = [
@@ -121,7 +141,7 @@ def _finalize_schema(df: pd.DataFrame) -> pd.DataFrame:
 def run():
     """Orquestra a execução do job de transformação."""
     logging.info("--- INICIANDO JOB DE TRANSFORMAÇÃO (PIPELINE DE ESCOLAS) ---")
-    
+
     config = load_config()
     paths = config["paths"]
     transform_config = config["escolas_pipeline"]["transform"]
@@ -137,13 +157,12 @@ def run():
         )
         df_infra_processed = _process_infra_columns(df_mapped)
         df_structured = _structure_for_nosql(df_infra_processed)
-        
-        risk_weights = transform_config['risk_score_weights']
-        
-        df_structured['score_de_risco'] = df_structured.apply(
+
+        risk_weights = transform_config["risk_score_weights"]
+
+        df_structured["score_de_risco"] = df_structured.apply(
             lambda row: _calculate_risk_score(row, risk_weights), axis=1
         )
-
 
         df_final = _finalize_schema(df_structured)
 
