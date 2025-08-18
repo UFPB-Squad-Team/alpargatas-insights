@@ -1,19 +1,27 @@
 import logging
+import sys
 from pathlib import Path
 
 import pandas as pd
 import pandera.pandas as pa
 from pandera.errors import SchemaError
 
+from src.common.utils import load_config
+
+BASE_DIR = Path(__file__).resolve().parents[3]
+
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - [%(levelname)s] - %(message)s"
 )
 
 
-def define_data_schema() -> pa.DataFrameSchema:
-    """Define o contrato de qualidade dos nossos dados processados."""
-    schema = pa.DataFrameSchema(
-        {
+def _define_schema() -> pa.DataFrameSchema:
+    """
+    Define e retorna o schema de validação (o "contrato") para os dados processados.
+    Esta função centraliza a definição da estrutura esperada dos dados.
+    """
+    return pa.DataFrameSchema(
+        columns={
             "escolaIdInep": pa.Column(int, required=True),
             "escolaNome": pa.Column(str, required=True),
             "municipioIdIbge": pa.Column(int, required=True),
@@ -37,45 +45,48 @@ def define_data_schema() -> pa.DataFrameSchema:
         strict=True,
         ordered=True,
     )
-    return schema
 
 
-def main():
-    logging.info(
-        "INICIANDO O SCRIPT DE VALIDAÇÃO DE DADOS (validate_processed_data.py)"
-    )
+def run():
+    """
+    Orquestra o job de validação dos dados processados.
+    """
+    logging.info("INICIANDO JOB DE VALIDAÇÃO DE DADOS (PIPELINE DE ESCOLAS)")
 
-    base_path = Path(__file__).resolve().parents[1]
-    processed_data_path = base_path / "data/processed/escolas_processado.parquet"
+    config = load_config()
+    processed_path = BASE_DIR / config["paths"]["processed_escolas"]
 
     try:
-        logging.info(f"Carregando dados processados de {processed_data_path}...")
-        df_processed = pd.read_parquet(processed_data_path)
+        logging.info(f"Carregando dados processados de: {processed_path}")
+        df_processed = pd.read_parquet(processed_path)
 
         logging.info("Definindo o schema de validação dos dados...")
-        schema = define_data_schema()
+        schema = _define_schema()
 
         logging.info("Validando os dados contra o schema...")
         schema.validate(df_processed)
 
         logging.info(
-            "Boa! Deu tudo certo. Os dados processados sáo válidos e seguem o contrato de qualidade."
+            " SUCESSO: Os dados processados são válidos e seguem o contrato de qualidade."
         )
 
     except FileNotFoundError:
         logging.error(
-            "ERRO: o arquivo de dados processados não foi encontrado. Execute o ETL primeiro."
+            f"ERRO: Arquivo de dados processados não encontrado em '{processed_path}'. Execute o job de transformação primeiro."
         )
-        exit(1)
-    except SchemaError:
+        sys.exit(1)
+    except SchemaError as err:
         logging.error(
-            "Falha na validação: Os dados não seguem o contrato de qualidade."
+            " FALHA NA VALIDAÇÃO: Os dados não seguem o contrato de qualidade."
         )
-        exit(1)
+        logging.error(f"Detalhes do erro:\n{err}")
+        sys.exit(1)
     except Exception as e:
-        logging.error(f"Um erro inesperado ocorreu: {e}.")
-        exit(1)
+        logging.error(f"Um erro inesperado ocorreu: {e}", exc_info=True)
+        sys.exit(1)
+
+    logging.info(" JOB DE VALIDAÇÃO FINALIZADO ")
 
 
 if __name__ == "__main__":
-    main()
+    run()
