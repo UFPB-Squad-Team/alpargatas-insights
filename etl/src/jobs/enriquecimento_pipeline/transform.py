@@ -1,16 +1,9 @@
 import logging
-from pathlib import Path
-
 import pandas as pd
+from dotenv import load_dotenv
+from src.common.utils import get_s3_storage_options, load_config, normalize_text_for_matching
 
-from src.common.utils import load_config, normalize_text_for_matching
-
-BASE_DIR = Path(__file__).resolve().parents[3]
-
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - [%(levelname)s] - %(message)s"
-)
-
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - [%(levelname)s] - %(message)s")
 
 def _process_extracted_data(
     df_dtb: pd.DataFrame, df_ia: pd.DataFrame, df_ideb: pd.DataFrame, config: dict
@@ -36,7 +29,6 @@ def _process_extracted_data(
     df_ideb_processed = df_ideb[df_ideb["rede"] == "Pública"].copy()
     return df_dtb_processed, df_ia_processed, df_ideb_processed
 
-
 def _create_municipal_summary(
     df_dtb: pd.DataFrame, df_ia: pd.DataFrame, df_ideb: pd.DataFrame
 ) -> pd.DataFrame:
@@ -45,6 +37,9 @@ def _create_municipal_summary(
 
     df_merged = pd.merge(df_ia, df_dtb, on=["ds_mun_normalized", "ds_uf"], how="inner")
 
+    df_merged['id_mundv'] = pd.to_numeric(df_merged['id_mundv'], errors='coerce')
+    df_ideb['id_mundv'] = pd.to_numeric(df_ideb['id_mundv'], errors='coerce')
+    
     df_merged = pd.merge(df_merged, df_ideb, on="id_mundv", how="left")
 
     df_agg = (
@@ -59,26 +54,18 @@ def _create_municipal_summary(
     df_agg.rename(columns={"id_mundv": "municipioIdIbge"}, inplace=True)
     return df_agg
 
-
 def _enrich_school_data(
     df_escolas: pd.DataFrame, df_municipal: pd.DataFrame, weights: dict
 ) -> pd.DataFrame:
     """Enriquece os dados das escolas com os indicadores municipais e o score contextualizado."""
     logging.info("Enriquecendo dados das escolas com o contexto municipal...")
 
-    df_escolas["municipioIdIbge"] = pd.to_numeric(df_escolas["municipioIdIbge"]).astype(
-        "int64"
-    )
-    df_municipal["municipioIdIbge"] = pd.to_numeric(
-        df_municipal["municipioIdIbge"]
-    ).astype("int64")
+    df_escolas["municipioIdIbge"] = pd.to_numeric(df_escolas["municipioIdIbge"]).astype("int64")
+    df_municipal["municipioIdIbge"] = pd.to_numeric(df_municipal["municipioIdIbge"]).astype("int64")
 
     df_enriched = pd.merge(df_escolas, df_municipal, on="municipioIdIbge", how="left")
 
-    df_enriched["risco_ideb_municipio"] = 1 - (
-        df_enriched["municipioMediaIdeb2023"] / 10
-    )
-
+    df_enriched["risco_ideb_municipio"] = 1 - (df_enriched["municipioMediaIdeb2023"] / 10)
     df_enriched["scoreRiscoContextualizado"] = (
         weights["base_score_peso"] * df_enriched["scoreRisco"]
         + weights["ideb_score_peso"] * df_enriched["risco_ideb_municipio"]
@@ -86,33 +73,54 @@ def _enrich_school_data(
 
     return df_enriched
 
+def run():
+    """Orquestra a transformação e enriquecimento lendo e escrevendo no S3."""
+    logging.info("--- INICIANDO TRANSFORMAÇÃO (PIPELINE DE ENRIQUECIMENTO) DO S3 ---")
 
-def run(df_dtb: pd.DataFrame, df_ia: pd.DataFrame, df_ideb: pd.DataFrame):
-    """Orquestra a transformação e enriquecimento dos dados das escolas."""
-    logging.info(" INICIANDO TRANSFORMAÇÃO (PIPELINE DE ENRIQUECIMENTO)")
-
+    load_dotenv()
     config = load_config()
+    s3_config = config["s3"]
     paths = config["paths"]
     transform_config = config["professor_pipeline"]["transform"]
+    storage_options = get_s3_storage_options()
+    
+    bucket = s3_config['bucket_name']
 
-    df_dtb_p, df_ia_p, df_ideb_p = _process_extracted_data(
-        df_dtb, df_ia, df_ideb, transform_config
-    )
+    try:
+        logging.info("Lendo arquivos intermediários do S3...")
+        df_dtb = pd.read_parquet(f"s3://{bucket}/{paths['intermediate_professor_dtb']}", storage_options=storage_options)
+        df_ideb = pd.read_parquet(f"s3://{bucket}/{paths['intermediate_professor_ideb']}", storage_options=storage_options)
+        df_ia = pd.read_parquet(f"s3://{bucket}/{paths['intermediate_professor_ia']}", storage_options=storage_options)
+        
+        df_dtb_p, df_ia_p, df_ideb_p = _process_extracted_data(
+            df_dtb, df_ia, df_ideb, transform_config
+        )
 
-    df_municipal_summary = _create_municipal_summary(df_dtb_p, df_ia_p, df_ideb_p)
-    path_auditoria = BASE_DIR / paths["processed_professor_auditoria"]
-    path_auditoria.parent.mkdir(parents=True, exist_ok=True)
-    df_municipal_summary.to_parquet(path_auditoria, index=False)
-    logging.info(f"Arquivo de auditoria municipal salvo em: {path_auditoria}")
+        df_municipal_summary = _create_municipal_summary(df_dtb_p, df_ia_p, df_ideb_p)
+        
+        path_auditoria = f"s3://{bucket}/{paths['audit_professor_municipal_summary']}"
+        logging.info(f"Salvando arquivo de auditoria municipal no S3 em: {path_auditoria}")
+        df_municipal_summary.to_parquet(path_auditoria, index=False, storage_options=storage_options)
+        
+        escolas_base_path = f"s3://{bucket}/{paths['processed_escolas']}"
+        logging.info(f"Lendo base de escolas processadas de: {escolas_base_path}")
+        df_escolas_base = pd.read_parquet(escolas_base_path, storage_options=storage_options)
 
-    df_escolas_base = pd.read_parquet(BASE_DIR / paths["processed_escolas"])
-    df_final = _enrich_school_data(
-        df_escolas=df_escolas_base,
-        df_municipal=df_municipal_summary,
-        weights=transform_config["contextualized_score_weights"],
-    )
+        df_final = _enrich_school_data(
+            df_escolas=df_escolas_base,
+            df_municipal=df_municipal_summary,
+            weights=transform_config["contextualized_score_weights"],
+        )
 
-    path_final = BASE_DIR / paths["processed_professor_final"]
-    df_final.to_parquet(path_final, index=False)
-    logging.info(f"Dataset final enriquecido salvo em: {path_final}")
-    logging.info(" TRANSFORMAÇÃO (PIPELINE DE ENRIQUECIMENTO) FINALIZADA ")
+        path_final = f"s3://{bucket}/{paths['processed_professor_final']}"
+        logging.info(f"Salvando dataset final enriquecido no S3 em: {path_final}")
+        df_final.to_parquet(path_final, index=False, storage_options=storage_options)
+        
+        logging.info("--- TRANSFORMAÇÃO (PIPELINE DE ENRIQUECIMENTO) FINALIZADA ---")
+
+    except Exception as e:
+        logging.error(f"Falha na execução do job de transformação do professor: {e}", exc_info=True)
+        raise
+
+if __name__ == "__main__":
+    run()
