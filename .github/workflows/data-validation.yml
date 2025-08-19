@@ -29,12 +29,15 @@ jobs:
       - name: Prepare Data Files for CI
         run: |
           curl -L "https://github.com/kelvins/Municipios-Brasileiros/raw/main/csv/municipios.csv" -o "./etl/data/municipios_brasileiros.csv"
-          mv ./etl/data/raw/escolas_paraiba_sample.parquet ./etl/data/raw/escolas_paraiba.parquet
+          zip ./etl/data/censo_2023.zip ./etl/data/raw/escolas_paraiba_sample.parquet
 
-      - name: Run ETL Step Transform Data
-        run: poetry run python scripts/transform.py
+      - name: Run ETL - Escolas Pipeline
+        run: |
+          poetry run python -m src.jobs.escolas_pipeline.extract
+          poetry run python -m src.jobs.escolas_pipeline.transform
+          poetry run python -m src.jobs.escolas_pipeline.validate
         working-directory: ./etl
 
-      - name: Run ETL Final Step Validate Data Quality
-        run: poetry run python scripts/validate_processed_data.py
+      - name: Run ETL - Professor (Enrichment) Pipeline
+        run: poetry run python -m src.jobs.enriquecimento_pipeline.main
         working-directory: ./etl
