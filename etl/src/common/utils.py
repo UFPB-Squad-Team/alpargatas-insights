@@ -1,16 +1,18 @@
+import io
 import logging
 import os
 import zipfile
-import io
+from pathlib import Path
+from typing import Dict
+
 import boto3
 import pandas as pd
 import yaml
-from pathlib import Path
-from typing import Dict
-from unidecode import unidecode
 from dotenv import load_dotenv
+from unidecode import unidecode
 
 load_dotenv()
+
 
 def load_config(config_path: str = "config/pipeline_config.yml") -> dict:
     """
@@ -49,6 +51,7 @@ def normalize_text_for_matching(df: pd.DataFrame, column_name: str) -> pd.DataFr
     df_copy[f"{column_name}_normalized"] = temp_series
     return df_copy
 
+
 def get_s3_storage_options() -> Dict:
     """Retorna um dicionário com as credenciais da AWS para o Pandas."""
     return {
@@ -56,29 +59,36 @@ def get_s3_storage_options() -> Dict:
         "secret": os.getenv("AWS_SECRET_ACCESS_KEY"),
     }
 
-def read_zipped_file_from_s3(bucket_name: str, s3_zip_key: str, target_filename: str, read_params: dict) -> pd.DataFrame:
+
+def read_zipped_file_from_s3(
+    bucket_name: str, s3_zip_key: str, target_filename: str, read_params: dict
+) -> pd.DataFrame:
     """Baixa um arquivo ZIP do S3, encontra um arquivo específico e o carrega em um DataFrame."""
     logging.info(f"Lendo '{target_filename}' de dentro do ZIP '{s3_zip_key}'...")
-    
+
     s3 = boto3.client(
-        's3',
+        "s3",
         aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
         aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
-        region_name=os.getenv("AWS_DEFAULT_REGION")
+        region_name=os.getenv("AWS_DEFAULT_REGION"),
     )
-    
+
     zip_obj = s3.get_object(Bucket=bucket_name, Key=s3_zip_key)
     buffer = io.BytesIO(zip_obj["Body"].read())
-    
+
     with zipfile.ZipFile(buffer) as zf:
-        full_target_path = next((s for s in zf.namelist() if target_filename in s), None)
+        full_target_path = next(
+            (s for s in zf.namelist() if target_filename in s), None
+        )
         if not full_target_path:
-            raise FileNotFoundError(f"Arquivo '{target_filename}' não encontrado dentro do ZIP '{s3_zip_key}'")
+            raise FileNotFoundError(
+                f"Arquivo '{target_filename}' não encontrado dentro do ZIP '{s3_zip_key}'"
+            )
 
         with zf.open(full_target_path) as target_file:
-            if target_filename.lower().endswith('.csv'):
+            if target_filename.lower().endswith(".csv"):
                 return pd.read_csv(target_file, **read_params)
-            elif target_filename.lower().endswith(('.xls', '.xlsx')):
+            elif target_filename.lower().endswith((".xls", ".xlsx")):
                 return pd.read_excel(target_file, **read_params)
             else:
                 raise ValueError("Formato de arquivo não suportado.")

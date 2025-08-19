@@ -1,10 +1,12 @@
 import logging
 import os
+from typing import List
+
 import numpy as np
 import pandas as pd
-from typing import List
 from dotenv import load_dotenv
 from pymongo import UpdateOne
+
 from src.common.database import MongoLoader
 from src.common.utils import get_s3_storage_options, load_config
 
@@ -12,6 +14,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - [%(levelname)s] - %(message)s",
 )
+
 
 def _prepare_data_for_mongo(df: pd.DataFrame) -> pd.DataFrame:
     """Converte estruturas de dados do Pandas/Numpy para tipos compatíveis com o MongoDB."""
@@ -23,6 +26,7 @@ def _prepare_data_for_mongo(df: pd.DataFrame) -> pd.DataFrame:
         )
     return df
 
+
 def _prepare_bulk_upsert_operations(df: pd.DataFrame) -> List[UpdateOne]:
     """Converte um DataFrame em uma lista de operações UpdateOne para o MongoDB."""
     logging.info("Preparando operações de 'upsert' em lote para os dados finais...")
@@ -30,6 +34,7 @@ def _prepare_bulk_upsert_operations(df: pd.DataFrame) -> List[UpdateOne]:
         UpdateOne({"escolaIdInep": doc["escolaIdInep"]}, {"$set": doc}, upsert=True)
         for doc in df.to_dict(orient="records")
     ]
+
 
 def run():
     """
@@ -52,7 +57,9 @@ def run():
 
     loader = None
     try:
-        final_data_s3_path = f"s3://{s3_config['bucket_name']}/{paths['processed_professor_final']}"
+        final_data_s3_path = (
+            f"s3://{s3_config['bucket_name']}/{paths['processed_professor_final']}"
+        )
         logging.info(f"Lendo dados finais enriquecidos de: {final_data_s3_path}")
         df_final = pd.read_parquet(final_data_s3_path, storage_options=storage_options)
 
@@ -67,11 +74,14 @@ def run():
         logging.info("--- JOB DE CARREGAMENTO FINALIZADO COM SUCESSO ---")
 
     except Exception as e:
-        logging.error(f"Falha na execução do job de carregamento final: {e}", exc_info=True)
+        logging.error(
+            f"Falha na execução do job de carregamento final: {e}", exc_info=True
+        )
         raise
     finally:
         if loader:
             loader.close_connection()
+
 
 if __name__ == "__main__":
     run()

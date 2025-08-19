@@ -1,6 +1,8 @@
 import logging
+
 import pandas as pd
 from dotenv import load_dotenv
+
 from src.common.utils import get_s3_storage_options, load_config
 
 logging.basicConfig(
@@ -8,11 +10,13 @@ logging.basicConfig(
     format="%(asctime)s - [%(levelname)s] - %(message)s",
 )
 
+
 def _rename_initial_columns(df: pd.DataFrame, column_map: dict) -> pd.DataFrame:
     """Renomeia as colunas iniciais do DataFrame bruto."""
     logging.info("Renomeando colunas para o padrão do projeto...")
     valid_column_map = {k: v for k, v in column_map.items() if k in df.columns}
     return df.rename(columns=valid_column_map)
+
 
 def _enrich_with_coordinates(
     df_escolas: pd.DataFrame, df_municipios: pd.DataFrame
@@ -37,6 +41,7 @@ def _enrich_with_coordinates(
     )
     return df_merged
 
+
 def _map_categorical_values(df: pd.DataFrame, categorical_maps: dict) -> pd.DataFrame:
     """Mapeia valores numéricos de colunas categóricas para strings descritivas."""
     logging.info("Mapeando valores de colunas categóricas...")
@@ -52,6 +57,7 @@ def _map_categorical_values(df: pd.DataFrame, categorical_maps: dict) -> pd.Data
     )
     return df
 
+
 def _process_infra_columns(df: pd.DataFrame) -> pd.DataFrame:
     """Converte colunas de infraestrutura para booleano e cria a coluna de acessibilidade."""
     logging.info("Processando e limpando colunas de infraestrutura...")
@@ -64,6 +70,7 @@ def _process_infra_columns(df: pd.DataFrame) -> pd.DataFrame:
     for col in infra_cols:
         df[col] = df[col].fillna(0).astype(bool)
     return df
+
 
 def _calculate_risk_score(row: pd.Series, weights: dict) -> float:
     """Calcula o score de risco para uma única linha (escola), baseado nos pesos."""
@@ -84,6 +91,7 @@ def _calculate_risk_score(row: pd.Series, weights: dict) -> float:
     score_final = pontos / weights["pontuacao_maxima"]
     return min(round(score_final, 4), 1.0)
 
+
 def _structure_for_nosql(df: pd.DataFrame) -> pd.DataFrame:
     """Estrutura colunas em sub-documentos para compatibilidade com NoSQL (MongoDB)."""
     logging.info(
@@ -101,6 +109,7 @@ def _structure_for_nosql(df: pd.DataFrame) -> pd.DataFrame:
         axis=1,
     )
     return df
+
 
 def _finalize_schema(df: pd.DataFrame) -> pd.DataFrame:
     """Renomeia colunas para camelCase e seleciona/ordena o schema final."""
@@ -133,50 +142,58 @@ def _finalize_schema(df: pd.DataFrame) -> pd.DataFrame:
     ]
     return df_renamed[final_columns]
 
+
 def run():
     """Orquestra a execução do job de transformação lendo e escrevendo no S3."""
     logging.info("--- INICIANDO JOB DE TRANSFORMAÇÃO (PIPELINE DE ESCOLAS) DO S3 ---")
-    
+
     load_dotenv()
     config = load_config()
-    s3_config = config['s3']
-    paths = config['paths']
-    transform_config = config['escolas_pipeline']['transform']
+    s3_config = config["s3"]
+    paths = config["paths"]
+    transform_config = config["escolas_pipeline"]["transform"]
     storage_options = get_s3_storage_options()
 
     try:
-        escolas_path = f"s3://{s3_config['bucket_name']}/{paths['intermediate_escolas_paraiba']}"
-        municipios_path = f"s3://{s3_config['bucket_name']}/{paths['raw_municipios_brasileiros']}"
-        
+        escolas_path = (
+            f"s3://{s3_config['bucket_name']}/{paths['intermediate_escolas_paraiba']}"
+        )
+        municipios_path = (
+            f"s3://{s3_config['bucket_name']}/{paths['raw_municipios_brasileiros']}"
+        )
+
         logging.info(f"Lendo dados de escolas de: {escolas_path}")
         df_escolas = pd.read_parquet(escolas_path, storage_options=storage_options)
-        
+
         logging.info(f"Lendo dados de municípios de: {municipios_path}")
         df_municipios = pd.read_csv(municipios_path, storage_options=storage_options)
-        
+
         # A lógica de transformação não muda
-        df_renamed = _rename_initial_columns(df_escolas, transform_config['column_map'])
+        df_renamed = _rename_initial_columns(df_escolas, transform_config["column_map"])
         df_with_coords = _enrich_with_coordinates(df_renamed, df_municipios)
-        df_mapped = _map_categorical_values(df_with_coords, transform_config['categorical_maps'])
+        df_mapped = _map_categorical_values(
+            df_with_coords, transform_config["categorical_maps"]
+        )
         df_infra_processed = _process_infra_columns(df_mapped)
         df_structured = _structure_for_nosql(df_infra_processed)
-        
-        risk_weights = transform_config['risk_score_weights']
-        df_structured['score_de_risco'] = df_structured.apply(
+
+        risk_weights = transform_config["risk_score_weights"]
+        df_structured["score_de_risco"] = df_structured.apply(
             lambda row: _calculate_risk_score(row, risk_weights), axis=1
         )
-        
+
         df_final = _finalize_schema(df_structured)
 
         output_path = f"s3://{s3_config['bucket_name']}/{paths['processed_escolas']}"
         logging.info(f"Salvando dados transformados no S3 em: {output_path}")
         df_final.to_parquet(output_path, index=False, storage_options=storage_options)
-        
+
         logging.info("\n--- JOB DE TRANSFORMAÇÃO (S3) FINALIZADO COM SUCESSO ---")
 
     except Exception as e:
         logging.error(f"Falha na execução do job de transformação: {e}", exc_info=True)
         raise
+
 
 if __name__ == "__main__":
     run()
