@@ -25,6 +25,11 @@ describe('GetDashboardKPIsUseCase', () => {
             coordinates: [-34.8811, -7.1195],
           },
           scoreRisco: 0.82,
+          municipioSomaProjetos: null,
+          municipioSomaBeneficiados: null,
+          municipioMediaIdeb2023: null,
+          riscoIdebMunicipio: null,
+          scoreRiscoContextualizado: 0.82,
           indicadores: {
             total_alunos: 450,
           },
@@ -56,6 +61,11 @@ describe('GetDashboardKPIsUseCase', () => {
             coordinates: [-35.9187, -7.2306],
           },
           scoreRisco: 0.45,
+          municipioSomaProjetos: null,
+          municipioSomaBeneficiados: null,
+          municipioMediaIdeb2023: null,
+          riscoIdebMunicipio: null,
+          scoreRiscoContextualizado: 0.45,
           indicadores: {
             total_alunos: 820,
           },
@@ -104,12 +114,14 @@ describe('GetDashboardKPIsUseCase', () => {
       schools: 2,
       schoolsWithHighInfraestructureRisk: 1,
       municipalitiesWithMostAverageRisk: {
-        averageRisk: 0.82,
+        averageRisk: 0.64,
         idIbge: 'mun-002',
         name: 'João Pessoa',
-        schoolsCount: 1,
+        schoolsCount: 2,
+        municipioSomaProjetos: 0
       },
       lackName: 'possui_ar_condicionado',
+      bestMunicipalityOpportunity: 'João Pessoa'
     });
   });
 });
