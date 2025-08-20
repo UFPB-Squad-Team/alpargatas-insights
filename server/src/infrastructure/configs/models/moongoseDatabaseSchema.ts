@@ -19,6 +19,17 @@ export interface ISchoolDocument extends Document {
     coordinates: LocationCoordinates;
   };
   scoreRisco: number;
+  
+  municipioSomaProjetos: number
+
+  municipioSomaBeneficiados: number
+
+  municipioMediaIdeb2023: number
+
+  riscoIdebMunicipio: number
+
+  scoreRiscoContextualizado: number
+
   indicadores: {
     total_alunos: number;
   };
@@ -54,6 +65,17 @@ const schoolSchema: Schema = new Schema({
     },
   },
   scoreRisco: { type: Number, required: true },
+  
+  municipioSomaProjetos: { type: Number, required: true },
+
+  municipioSomaBeneficiados: { type: Number, required: true },
+
+  municipioMediaIdeb2023: { type: Number, required: true },
+  
+  riscoIdebMunicipio: { type: Number, required: true },
+
+  scoreRiscoContextualizado: { type: Number, required: true },
+
   indicadores: {
     total_alunos: { type: Number, required: true },
   },
@@ -70,6 +92,6 @@ schoolSchema.index({ municipioIdIbge: 1 });
 schoolSchema.index({ scoreRisco: 1 });
 
 export const SchoolModel = mongoose.model<ISchoolDocument>(
-  'School',
+  'Escola',
   schoolSchema,
 );
