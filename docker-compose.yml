@@ -27,7 +27,6 @@ services:
     env_file:
       - .env
     volumes:
-      - ./etl/data:/app/data
       - ./etl/src:/app/src
       - ./etl/config:/app/config
     command: tail -f /dev/null
