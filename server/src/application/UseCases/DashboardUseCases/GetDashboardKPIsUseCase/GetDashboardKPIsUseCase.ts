@@ -18,7 +18,9 @@ export class GetDashboardKPIsUseCase {
     let lackName: string = 'No lacks identify';
 
     const schoolsWithHighInfraestructureRisk = schools
-      .filter((school) => school.scoreRiscoContextualizado >= HIGH_RISK_THRESHOLD)
+      .filter(
+        (school) => school.scoreRiscoContextualizado >= HIGH_RISK_THRESHOLD,
+      )
       .map((school) => ({
         id: school.id,
         escolaIdInep: school.escolaIdInep,
@@ -44,17 +46,24 @@ export class GetDashboardKPIsUseCase {
             name: school.municipioNome,
             totalRisk: 0,
             schoolCount: 0,
-            municipioSomaProjetos: 0
+            municipioSomaProjetos: 0,
           };
         }
-        acc[school.municipioIdIbge].totalRisk += school.scoreRiscoContextualizado;
+        acc[school.municipioIdIbge].totalRisk +=
+          school.scoreRiscoContextualizado;
         acc[school.municipioIdIbge].schoolCount += 1;
-        acc[school.municipioIdIbge].municipioSomaProjetos = school.municipioSomaProjetos ?? 0
+        acc[school.municipioIdIbge].municipioSomaProjetos =
+          school.municipioSomaProjetos ?? 0;
         return acc;
       },
       {} as Record<
         string,
-        { name: string; totalRisk: number; schoolCount: number, municipioSomaProjetos: number }
+        {
+          name: string;
+          totalRisk: number;
+          schoolCount: number;
+          municipioSomaProjetos: number;
+        }
       >,
     );
 
@@ -65,7 +74,9 @@ export class GetDashboardKPIsUseCase {
       name: stats.name,
       averageRisk: Number((stats.totalRisk / stats.schoolCount).toFixed(2)),
       schoolsCount: stats.schoolCount,
-      municipioSomaProjetos: isNaN(stats.municipioSomaProjetos) ? 0 : stats.municipioSomaProjetos
+      municipioSomaProjetos: isNaN(stats.municipioSomaProjetos)
+        ? 0
+        : stats.municipioSomaProjetos,
     }));
 
     const highestAverageRiskMunicipality = municipalitiesWithAverageRisk.sort(
@@ -94,20 +105,25 @@ export class GetDashboardKPIsUseCase {
       }
     });
 
-    const municipalitiesWithAverageRiskAndTotalProjects = Object.entries(municipalityRiskStats).map(([idIbge, stats]) => ({
+    const municipalitiesWithAverageRiskAndTotalProjects = Object.entries(
+      municipalityRiskStats,
+    ).map(([idIbge, stats]) => ({
       idIbge,
       name: stats.name,
       averageRisk: Number((stats.totalRisk / stats.schoolCount).toFixed(2)),
-      totalProjects: isNaN(stats.municipioSomaProjetos) ? 0 : stats.municipioSomaProjetos
-    }))
+      totalProjects: isNaN(stats.municipioSomaProjetos)
+        ? 0
+        : stats.municipioSomaProjetos,
+    }));
 
-    const bestMunicipalityOpportunity = municipalitiesWithAverageRiskAndTotalProjects.sort((a, b) => {
-      if( b.averageRisk !== a.averageRisk){
-        return b.averageRisk - a.averageRisk
-      }
+    const bestMunicipalityOpportunity =
+      municipalitiesWithAverageRiskAndTotalProjects.sort((a, b) => {
+        if (b.averageRisk !== a.averageRisk) {
+          return b.averageRisk - a.averageRisk;
+        }
 
-      return a.totalProjects - b.totalProjects
-    })[0]
+        return a.totalProjects - b.totalProjects;
+      })[0];
 
     return {
       schools: countDocuments,
@@ -115,7 +131,7 @@ export class GetDashboardKPIsUseCase {
         schoolsWithHighInfraestructureRisk.length,
       municipalitiesWithMostAverageRisk: highestAverageRiskMunicipality,
       lackName,
-      bestMunicipalityOpportunity: bestMunicipalityOpportunity.name
+      bestMunicipalityOpportunity: bestMunicipalityOpportunity.name,
     };
   }
 }
