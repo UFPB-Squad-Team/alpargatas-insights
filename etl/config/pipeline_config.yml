@@ -1,27 +1,38 @@
-# ===================================================================
-# ARQUIVO DE CONFIGURAÇÃO CENTRAL DO PIPELINE ALPargatas Insight
-# ===================================================================
-# Este arquivo contém todos os parâmetros, caminhos, e mapeamentos
-# utilizados pelos jobs de ETL.
+s3:
+  bucket_name: "alpargatas-insights-datalake"
+  raw_folder: "raw"
+  intermediate_folder: "intermediate"
+  processed_folder: "processed"
 
-# --- 1. Caminhos de Dados (Relativos à raiz do projeto 'etl/') ---
+ingestion_sources:
+  censo_escolar:
+    url: "https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2023.zip"
+    output_filename: "censo_2023.zip"
+    target_filename_in_zip: "microdados_ed_basica_2023.csv"
+  ideb:
+    url: "https://download.inep.gov.br/ideb/resultados/divulgacao_anos_iniciais_municipios_2023.zip"
+    output_filename: "divulgacao_anos_iniciais_municipios_2023.zip"
+    target_filename_in_zip: "divulgacao_anos_iniciais_municipios_2023.xlsx"
+  dtb_ibge:
+    url: "https://geoftp.ibge.gov.br/organizacao_do_territorio/estrutura_territorial/divisao_territorial/2024/DTB_2024.zip"
+    output_filename: "DTB_2024.zip"
+    target_filename_in_zip: "RELATORIO_DTB_BRASIL_2024_MUNICIPIOS.xls"
+
+
 paths:
-  # Fontes de dados brutos
-  raw_censo_escolar_zip: "data/censo_2023.zip"
-  raw_municipios_brasileiros: "data/municipios_brasileiros.csv"
+  raw_municipios_brasileiros: "raw/municipios_brasileiros.csv"
+  
+  intermediate_escolas_paraiba: "intermediate/escolas_paraiba.parquet"
+  intermediate_professor_dtb: "intermediate/professor_dtb.parquet"
+  intermediate_professor_ideb: "intermediate/professor_ideb.parquet"
+  intermediate_professor_ia: "intermediate/professor_ia.parquet"
+  intermediate_professor_municipios: "intermediate/professor_municipios.parquet"
 
-  # Fontes de dados brutos (pipeline do professor)
-  raw_professor_dtb: "data/raw_professor/RELATORIO_DTB_BRASIL_2024_MUNICIPIOS.xls"
-  raw_professor_ia_projetos: "data/raw_professor/Projetos_de_Atuac807a771o_-_IA_-_2020_a_2025.xlsx"
-  raw_professor_ideb: "data/raw_professor/divulgacao_anos_iniciais_municipios_2023.xlsx"
+  processed_escolas: "processed/escolas_processado.parquet"
+  processed_professor_final: "processed/ENTREGAVEL_escolas_enriquecidas.parquet"
 
-  # Artefatos intermediários (camada "raw" do data lake)
-  raw_escolas_paraiba: "data/raw/escolas_paraiba.parquet"
+  audit_professor_municipal_summary: "audit/municipal_summary.parquet"
 
-  # Artefatos processados (camada "processed" do data lake)
-  processed_escolas: "data/processed/escolas_processado.parquet"
-  processed_professor_auditoria: "data/processed/dados_temporais_para_auditoria.parquet"
-  processed_professor_final: "data/processed/ENTREGAVEL_escolas_enriquecidas.parquet"
 
 # --- 2. Configurações do Banco de Dados ---
 database:

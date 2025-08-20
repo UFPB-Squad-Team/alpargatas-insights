@@ -9,14 +9,17 @@ logging.basicConfig(
 
 def run_pipeline():
     """
-    Executa o pipeline completo de enriquecimento de dados (Pipeline do Professor).
+    Executa o pipeline completo de enriquecimento de dados (Pipeline do Professor),
+    com etapas desacopladas via S3.
     """
     try:
-        logging.info("INICIANDO PIPELINE DE ENRIQUECIMENTO DE DADOS")
+        logging.info(
+            "== INICIANDO PIPELINE DE ENRIQUECIMENTO DE DADOS (PROFESSOR)   =="
+        )
 
-        df_dtb, df_ia, df_ideb = extract.run()
+        extract.run()
 
-        transform.run(df_dtb=df_dtb, df_ia=df_ia, df_ideb=df_ideb)
+        transform.run()
 
     except Exception as e:
         logging.error(
