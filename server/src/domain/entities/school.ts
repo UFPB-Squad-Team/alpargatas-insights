@@ -28,15 +28,15 @@ export type SchoolProps = {
 
   scoreRisco: number;
 
-  municipioSomaProjetos: number
+  municipioSomaProjetos: number;
 
-  municipioSomaBeneficiados: number
+  municipioSomaBeneficiados: number;
 
-  municipioMediaIdeb2023: number
+  municipioMediaIdeb2023: number;
 
-  riscoIdebMunicipio: number
+  riscoIdebMunicipio: number;
 
-  scoreRiscoContextualizado: number
+  scoreRiscoContextualizado: number;
 
   indicadores: {
     total_alunos: number;
@@ -109,15 +109,15 @@ export class School {
 
     this.scoreRisco = props.scoreRisco;
 
-    this.municipioSomaProjetos = props.municipioSomaProjetos
+    this.municipioSomaProjetos = props.municipioSomaProjetos;
 
-    this.municipioSomaBeneficiados = props.municipioSomaBeneficiados
+    this.municipioSomaBeneficiados = props.municipioSomaBeneficiados;
 
-    this.municipioMediaIdeb2023 = props.municipioMediaIdeb2023
+    this.municipioMediaIdeb2023 = props.municipioMediaIdeb2023;
 
-    this.riscoIdebMunicipio = props.riscoIdebMunicipio
+    this.riscoIdebMunicipio = props.riscoIdebMunicipio;
 
-    this.scoreRiscoContextualizado = props.scoreRiscoContextualizado
+    this.scoreRiscoContextualizado = props.scoreRiscoContextualizado;
 
     this.indicadores = props.indicadores;
 

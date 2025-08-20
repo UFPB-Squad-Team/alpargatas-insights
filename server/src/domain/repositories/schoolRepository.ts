@@ -19,7 +19,10 @@ export interface ISchoolRepository {
     currentPage: number;
   }>;
   findAllForMap(): Promise<
-    Pick<School, 'id' | 'escolaNome' | 'localizacao' | 'scoreRiscoContextualizado'>[]
+    Pick<
+      School,
+      'id' | 'escolaNome' | 'localizacao' | 'scoreRiscoContextualizado'
+    >[]
   >;
   findAll(): Promise<School[]>;
   delete(id: string): Promise<void>;

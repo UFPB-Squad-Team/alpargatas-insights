@@ -165,7 +165,10 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
   }
 
   async findAllForMap(): Promise<
-    Pick<School, 'id' | 'escolaNome' | 'localizacao' | 'scoreRiscoContextualizado'>[]
+    Pick<
+      School,
+      'id' | 'escolaNome' | 'localizacao' | 'scoreRiscoContextualizado'
+    >[]
   > {
     const pipeline = [
       {

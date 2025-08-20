@@ -19,16 +19,16 @@ export interface ISchoolDocument extends Document {
     coordinates: LocationCoordinates;
   };
   scoreRisco: number;
-  
-  municipioSomaProjetos: number
 
-  municipioSomaBeneficiados: number
+  municipioSomaProjetos: number;
 
-  municipioMediaIdeb2023: number
+  municipioSomaBeneficiados: number;
 
-  riscoIdebMunicipio: number
+  municipioMediaIdeb2023: number;
 
-  scoreRiscoContextualizado: number
+  riscoIdebMunicipio: number;
+
+  scoreRiscoContextualizado: number;
 
   indicadores: {
     total_alunos: number;
@@ -65,13 +65,13 @@ const schoolSchema: Schema = new Schema({
     },
   },
   scoreRisco: { type: Number, required: true },
-  
+
   municipioSomaProjetos: { type: Number, required: true },
 
   municipioSomaBeneficiados: { type: Number, required: true },
 
   municipioMediaIdeb2023: { type: Number, required: true },
-  
+
   riscoIdebMunicipio: { type: Number, required: true },
 
   scoreRiscoContextualizado: { type: Number, required: true },
