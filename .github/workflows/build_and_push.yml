@@ -1,4 +1,4 @@
-name: Build and Push API Image to AWS ECR
+name: Build, Push, and Deploy API
 
 on:
   push:
@@ -6,48 +6,40 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-push-api:
-    name: Build & Push API to ECR
+  build-push-and-deploy:
+    name: Build, Push & Deploy API
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
 
     steps:
-      - name: 1. Checkout do Código
+      - name: 1. Code Checkout
         uses: actions/checkout@v4
 
-      - name: 2. Configurar Credenciais da AWS
+      - name: 2. Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::960196766146:role/GitHubActions-ECR-Access-Role
-          aws-region: us-east-2 # A região do seu repositório ECR
+          aws-region: us-east-2
 
-      - name: 3. Fazer Login no Amazon ECR
+      - name: 3. Login in Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: 4. Definir Variáveis de Imagem
-        id: image-vars
-        run: |
-          echo "ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}" >> $GITHUB_ENV
-          echo "ECR_REPOSITORY=alpargatas-api" >> $GITHUB_ENV
-          echo "IMAGE_TAG=${{ github.sha }}" >> $GITHUB_ENV
-
-      - name: 5. Construir, Taguear e Enviar Imagem para o ECR
+      - name: 4. Build and push image to ECR
         uses: docker/build-push-action@v5
         with:
           context: ./server
           push: true
-          tags: |
-            ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
-            ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
+          tags: 960196766146.dkr.ecr.us-east-2.amazonaws.com/alpargatas-api:latest
 
-      - name: 6. Scan da Imagem no ECR com Trivy
-        uses: aquasecurity/trivy-action@master
+      - name: 5. Deploy in EC2 Server
+        uses: appleboy/ssh-action@master
         with:
-          image-ref: "${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest"
-          format: "table"
-          exit-code: "1"
-          ignore-unfixed: true
-          severity: "CRITICAL,HIGH"
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu
+            ./deploy.sh
