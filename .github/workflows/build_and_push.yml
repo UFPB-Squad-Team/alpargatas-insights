@@ -1,4 +1,4 @@
-name: Build and Push Docker Images
+name: Build, Push, and Deploy API
 
 on:
   push:
@@ -6,52 +6,40 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-push-images:
-    name: Build & Push
+  build-push-and-deploy:
+    name: Build, Push & Deploy API
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write
+      id-token: write
 
     steps:
       - name: 1. Code Checkout
         uses: actions/checkout@v4
 
-      - name: 2. Login in Github Container Registry (GHCR)
-        uses: docker/login-action@v3
+      - name: 2. Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          role-to-assume: arn:aws:iam::960196766146:role/GitHubActions-ECR-Access-Role
+          aws-region: us-east-2
 
-      - name: 3. Build and Push Backend Docker Image (API)
+      - name: 3. Login in Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: 4. Build and push image to ECR
         uses: docker/build-push-action@v5
         with:
           context: ./server
           push: true
-          tags: ghcr.io/ufpb-squad-team/alpargatas-api:latest
+          tags: 960196766146.dkr.ecr.us-east-2.amazonaws.com/alpargatas-api:latest
 
-      - name: 4. Scan Backend Image for Vulnerabilities
-        uses: aquasecurity/trivy-action@master
+      - name: 5. Deploy in EC2 Server
+        uses: appleboy/ssh-action@master
         with:
-          image-ref: "ghcr.io/ufpb-squad-team/alpargatas-api:latest"
-          format: "table"
-          exit-code: "1"
-          ignore-unfixed: true
-          severity: "CRITICAL,HIGH"
-
-      - name: 5. Build and Push Frontend Image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./client
-          push: true
-          tags: ghcr.io/ufpb-squad-team/alpargatas-frontend:latest
-
-      - name: 6. Scan Frontend Image for Vulnerabilities
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: "ghcr.io/ufpb-squad-team/alpargatas-frontend:latest"
-          format: "table"
-          exit-code: "1"
-          ignore-unfixed: true
-          severity: "CRITICAL,HIGH"
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu
+            ./deploy.sh
