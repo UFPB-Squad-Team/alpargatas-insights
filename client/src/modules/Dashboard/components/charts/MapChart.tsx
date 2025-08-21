@@ -10,7 +10,7 @@ import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 import CustomPopup from '../custom/CustomPopup';
-import { SchoolForMap } from '@/shared/mocks/services/getSchoolsForMap';
+import { SchoolForMap } from '@/domain/entities/School/SchoolForMap';
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({ iconRetinaUrl, iconUrl, shadowUrl });
@@ -70,10 +70,10 @@ const MapMarkers = ({ schools, selectedSchoolId }: MapChartProps) => {
   useEffect(() => {
     if (!selectedSchoolId) return;
 
-    const school = schools.find((s) => s.escola_id_inep === selectedSchoolId);
+    const school = schools.find((s) => s.id === selectedSchoolId);
     if (!school) return;
 
-    const coords = school.localizacao.coordinates;
+    const coords = school.coordenadas;
 
     if (coords.length >= 2) {
       const latLng: [number, number] = [coords[1], coords[0]];
@@ -90,14 +90,11 @@ const MapMarkers = ({ schools, selectedSchoolId }: MapChartProps) => {
     <>
       {schools.map((school) => (
         <Marker
-          key={school.escola_id_inep}
-          position={[
-            school.localizacao.coordinates[1],
-            school.localizacao.coordinates[0],
-          ]}
-          icon={createCustomIcon(school.score_de_risco)}
+          key={school.id}
+          position={[school.coordenadas[1], school.coordenadas[0]]}
+          icon={createCustomIcon(school.scoreRiscoContextualizado)}
           ref={(ref) => {
-            if (ref) markerRefs.current[school.escola_id_inep] = ref;
+            if (ref) markerRefs.current[school.id] = ref;
           }}
         >
           <Popup>

@@ -1,4 +1,4 @@
-import { SchoolProps } from '@/domain/entities/School';
+import { SchoolProps } from '@/domain/entities/School/School';
 import { mockSchools } from '../data/school.mock';
 
 export type HighRiskSchool = Pick<

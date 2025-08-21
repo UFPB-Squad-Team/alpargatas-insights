@@ -1,4 +1,4 @@
-import { SchoolProps } from '@/domain/entities/School';
+import { SchoolProps } from '@/domain/entities/School/School';
 import { mockSchools } from '../data/school.mock';
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));

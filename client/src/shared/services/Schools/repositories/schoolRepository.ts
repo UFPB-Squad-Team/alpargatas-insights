@@ -1,13 +1,19 @@
-import { School, SchoolFromApi } from '@/domain/entities/SchoolProps';
+import { School, SchoolFromApi } from '@/domain/entities/School/SchoolProps';
 import { apiClient } from '@/shared/lib/axios';
-import { mapSchoolFromApiToDomain } from './mappers/schoolMapper';
+import {
+  mapSchoolForMapFromApiToDomain,
+  mapSchoolFromApiToDomain,
+} from './mappers/schoolMapper';
 import { PaginatedResponse } from '@/domain/entities/PaginatedResponse';
+import {
+  SchoolForMap,
+  SchoolForMapFromApi,
+} from '@/domain/entities/School/SchoolForMap';
 
 type PaginatedSchoolFromApi = {
   schools: SchoolFromApi[];
   total: number;
-  currentPage: number; // o backend retorna currentPage, vamos mapear para page
-  // o backend não retorna o limit, mas podemos adicioná-lo se necessário
+  currentPage: number;
 };
 
 export interface ISchoolRepository {
@@ -16,18 +22,32 @@ export interface ISchoolRepository {
     page?: number,
     limit?: number,
   ): Promise<PaginatedResponse<School>>;
+  listForMap(): Promise<SchoolForMap[]>;
 }
+
+const listForMap = async (): Promise<SchoolForMap[]> => {
+  try {
+    const { data } = await apiClient.get<SchoolForMapFromApi[]>(
+      '/api/v1/dashboard/map-data',
+    );
+
+    return data.map(mapSchoolForMapFromApiToDomain);
+  } catch (error) {
+    console.error('Erro no repositório ao buscar dados para o mapa:', error);
+    throw error;
+    // TODO: Implements new errors for this repository
+  }
+};
 
 const search = async (
   searchTerm: string,
   page = 1,
-  limit = 20, // Aumentando o limite para ter mais resultados
+  limit = 20,
 ): Promise<PaginatedResponse<School>> => {
   try {
     const { data } = await apiClient.get<PaginatedSchoolFromApi>(
       '/api/v1/schools',
       {
-        // ===== CORREÇÃO DA IDA (REQUISIÇÃO) =====
         params: {
           term: searchTerm,
           page,
@@ -36,19 +56,15 @@ const search = async (
       },
     );
 
-    // ===== CORREÇÃO DA VOLTA (RESPOSTA) =====
-    // 1. Pegamos o array de dentro da propriedade 'schools'
     const schoolsFromApi = data.schools;
 
-    // 2. Mapeamos os dados brutos para o nosso modelo de domínio limpo
     const mappedSchools = schoolsFromApi.map(mapSchoolFromApiToDomain);
 
-    // 3. Retornamos o objeto de paginação completo com os dados tratados
     return {
       data: mappedSchools,
       total: data.total,
       page: data.currentPage,
-      limit, // Retornamos o limite que usamos na busca
+      limit,
     };
   } catch (error) {
     console.error('Erro no repositório ao buscar escolas:', error);
@@ -58,4 +74,5 @@ const search = async (
 
 export const schoolRepository: ISchoolRepository = {
   search,
+  listForMap,
 };

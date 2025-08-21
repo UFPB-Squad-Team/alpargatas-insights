@@ -1,4 +1,4 @@
-import { SchoolProps } from '@/domain/entities/School';
+import { SchoolProps } from '@/domain/entities/School/School';
 import { dependenciaAdministrativa } from '@/domain/enums/enumDependenciaAdministrativa';
 import { tipoLocalizacao } from '@/domain/enums/enumTipoLocalizacao';
 import { UF } from '@/domain/enums/enumUnidadesFederativas';
@@ -42,7 +42,7 @@ export const mockSchools: SchoolProps[] = [
       possui_saneamento_basico: true,
       possui_energia_publica: true,
       possui_quadra_esportes: true,
-      possui_acessibilidade_pcd: false, 
+      possui_acessibilidade_pcd: false,
     },
     score_de_risco: 0.15,
   },
@@ -63,7 +63,7 @@ export const mockSchools: SchoolProps[] = [
       possui_saneamento_basico: true,
       possui_energia_publica: true,
       possui_quadra_esportes: false,
-      possui_acessibilidade_pcd: false, 
+      possui_acessibilidade_pcd: false,
     },
     score_de_risco: 0.45,
   },
@@ -141,13 +141,13 @@ export const mockSchools: SchoolProps[] = [
     localizacao: { type: 'Point', coordinates: [-36.28, -7.49] },
     indicadores: { total_alunos: 35 },
     infraestrutura: {
-      possui_biblioteca: false, 
-      possui_internet: false, 
-      possui_agua_potavel: false, 
-      possui_saneamento_basico: false, 
-      possui_energia_publica: false, 
-      possui_quadra_esportes: false, 
-      possui_acessibilidade_pcd: false, 
+      possui_biblioteca: false,
+      possui_internet: false,
+      possui_agua_potavel: false,
+      possui_saneamento_basico: false,
+      possui_energia_publica: false,
+      possui_quadra_esportes: false,
+      possui_acessibilidade_pcd: false,
     },
     score_de_risco: 0.98,
   },
