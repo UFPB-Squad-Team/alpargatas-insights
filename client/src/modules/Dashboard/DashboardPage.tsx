@@ -12,17 +12,19 @@ import {
   DashboardKpis,
   getDashboardKPIs,
 } from '@/shared/mocks/services/getDashboardKPIs';
-import {
-  SchoolForMap,
-  getSchoolsForMap,
-} from '@/shared/mocks/services/getSchoolsForMap';
 import RiskLegend from '@/ui/components/common/RiskLegend';
 import Spinner from '@/ui/components/common/Spinner';
+import { listSchoolsForMapUseCase } from './services/logic/listSchoolsForMapUseCase';
+import { useQuery } from '@tanstack/react-query';
 
 const DashboardPage = () => {
   const [kpis, setKpis] = useState<DashboardKpis | null>(null);
-  const [mapData, setMapData] = useState<SchoolForMap[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const { data: mapData = [], isLoading: isLoadingMap } = useQuery({
+    queryKey: ['schools-for-map'],
+    queryFn: () => listSchoolsForMapUseCase.execute(),
+  });
 
   const { selectedSchoolId, setSelectedSchoolId } = useDashboard();
 
@@ -30,12 +32,8 @@ const DashboardPage = () => {
     const fetchAllDashboardData = async () => {
       setIsLoading(true);
       try {
-        const [kpisData, schoolsData] = await Promise.all([
-          getDashboardKPIs(),
-          getSchoolsForMap(),
-        ]);
+        const [kpisData] = await Promise.all([getDashboardKPIs()]);
         setKpis(kpisData);
-        setMapData(schoolsData);
       } catch (error) {
         console.error('Erro ao buscar dados do dashboard:', error);
       } finally {
@@ -45,7 +43,7 @@ const DashboardPage = () => {
     fetchAllDashboardData();
   }, []);
 
-  if (isLoading) {
+  if (isLoading || isLoadingMap) {
     return (
       <div className="flex justify-center items-center h-full">
         <Spinner />

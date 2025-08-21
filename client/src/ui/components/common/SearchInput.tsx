@@ -6,7 +6,7 @@ import { searchSchoolsUseCase } from '@/shared/services/Schools/logic/searchScho
 import { useDashboard } from '@/ui/context/DashboardContext';
 import { useDebounce } from '@/ui/hooks/useDebounce';
 import { useQuery } from '@tanstack/react-query';
-import { School } from '@/domain/entities/SchoolProps';
+import { School } from '@/domain/entities/School/SchoolProps';
 import { useNavigate } from 'react-router-dom';
 
 const SearchInput = () => {

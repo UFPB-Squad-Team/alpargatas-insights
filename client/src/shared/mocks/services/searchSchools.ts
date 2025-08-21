@@ -1,4 +1,4 @@
-import { SchoolProps } from '@/domain/entities/School';
+import { SchoolProps } from '@/domain/entities/School/School';
 import { mockSchools } from '../data/school.mock';
 
 const USE_MOCKS = import.meta.env.VITE_USE_MOCKS === 'true';

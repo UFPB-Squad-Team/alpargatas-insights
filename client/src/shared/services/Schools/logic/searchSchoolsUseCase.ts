@@ -1,6 +1,6 @@
 import { PaginatedResponse } from '@/domain/entities/PaginatedResponse';
 import { schoolRepository } from '../repositories/schoolRepository';
-import { School } from '@/domain/entities/SchoolProps';
+import { School } from '@/domain/entities/School/SchoolProps';
 
 export const searchSchoolsUseCase = {
   async execute(searchTerm: string): Promise<PaginatedResponse<School>> {

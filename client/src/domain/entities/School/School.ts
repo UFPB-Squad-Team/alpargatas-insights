@@ -1,6 +1,6 @@
-import { UF } from '../enums/enumUnidadesFederativas'; // Supondo que você tenha esses enums
-import { dependenciaAdministrativa } from '../enums/enumDependenciaAdministrativa';
-import { tipoLocalizacao } from '../enums/enumTipoLocalizacao';
+import { UF } from '../../enums/enumUnidadesFederativas'; // Supondo que você tenha esses enums
+import { dependenciaAdministrativa } from '../../enums/enumDependenciaAdministrativa';
+import { tipoLocalizacao } from '../../enums/enumTipoLocalizacao';
 
 type LocationCoordinates = [number, number];
 

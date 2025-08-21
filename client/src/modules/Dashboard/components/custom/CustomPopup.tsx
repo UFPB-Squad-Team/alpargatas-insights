@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, School } from 'lucide-react';
-import { SchoolForMap } from '@/shared/mocks/services/getSchoolsForMap';
+import { SchoolForMap } from '@/domain/entities/School/SchoolForMap';
 
 interface CustomPopupProps {
   school: SchoolForMap;
@@ -14,16 +14,14 @@ const getRiskInfo = (score: number) => {
 };
 
 const CustomPopup = ({ school }: CustomPopupProps) => {
-  const riskInfo = getRiskInfo(school.score_de_risco);
-  const scorePercentage = (school.score_de_risco * 100).toFixed(0);
+  const riskInfo = getRiskInfo(school.scoreRiscoContextualizado);
+  const scorePercentage = (school.scoreRiscoContextualizado * 100).toFixed(0);
 
   return (
     <div className="font-sans w-60 space-y-4 text-sm text-brand-text-primary">
       <div className="flex items-center gap-2">
         <School className="h-5 w-5 text-brand-orange-dark flex-shrink-0" />
-        <p className="font-bold text-base leading-tight">
-          {school.escola_nome}
-        </p>
+        <p className="font-bold text-base leading-tight">{school.nome}</p>
       </div>
 
       <div>
@@ -57,7 +55,7 @@ const CustomPopup = ({ school }: CustomPopupProps) => {
       </div>
 
       <Link
-        to={`/escolas/${school.escola_id_inep}`}
+        to={`/escolas/${school.id}`}
         className="flex items-center justify-center gap-2 bg-brand-orange-dark hover:bg-brand-orange-contrast !text-brand-text-primary transition-colors py-2 px-4 rounded-lg w-full"
       >
         Ver Detalhes da Escola
