@@ -11,27 +11,16 @@ export class GetDashboardKPIsUseCase {
   async execute(): Promise<GetDashboardKPIsDTO> {
     const schools = await this.schoolRepository.findAll();
 
-    const municipalities = await this.municipalityRepository.findAll();
-
     const HIGH_RISK_THRESHOLD: number = 0.75;
-
-    const theHighMunicipalitiesRisk: Record<
-      string,
-      { totalRisk: number; schoolCount: number }
-    > = {};
-
-    const highestRiskMunicipality: {
-      id: string;
-      nome: string;
-      averageRisk: number;
-    } = { id: '', nome: '', averageRisk: 0 };
 
     let lackCountMax: number = 0;
 
     let lackName: string = 'No lacks identify';
 
     const schoolsWithHighInfraestructureRisk = schools
-      .filter((school) => school.scoreRisco >= HIGH_RISK_THRESHOLD)
+      .filter(
+        (school) => school.scoreRiscoContextualizado >= HIGH_RISK_THRESHOLD,
+      )
       .map((school) => ({
         id: school.id,
         escolaIdInep: school.escolaIdInep,
@@ -41,26 +30,40 @@ export class GetDashboardKPIsUseCase {
         dependenciaAdm: school.dependenciaAdm,
         estadoSigla: school.estadoSigla,
         scoreRisco: school.scoreRisco,
+        municipioSomaProjetos: school.municipioSomaProjetos,
+        municipioSomaBeneficiados: school.municipioSomaBeneficiados,
+        municipioMediaIdeb2023: school.municipioMediaIdeb2023,
+        riscoIdebMunicipio: school.riscoIdebMunicipio,
+        scoreRiscoContextualizado: school.scoreRiscoContextualizado,
         infraestrutura: school.infraestrutura,
         localizacao: school.localizacao,
       }));
 
-    const municipalityRiskStats = schoolsWithHighInfraestructureRisk.reduce(
+    const municipalityRiskStats = schools.reduce(
       (acc, school) => {
         if (!acc[school.municipioIdIbge]) {
           acc[school.municipioIdIbge] = {
             name: school.municipioNome,
             totalRisk: 0,
             schoolCount: 0,
+            municipioSomaProjetos: 0,
           };
         }
-        acc[school.municipioIdIbge].totalRisk += school.scoreRisco;
+        acc[school.municipioIdIbge].totalRisk +=
+          school.scoreRiscoContextualizado;
         acc[school.municipioIdIbge].schoolCount += 1;
+        acc[school.municipioIdIbge].municipioSomaProjetos =
+          school.municipioSomaProjetos ?? 0;
         return acc;
       },
       {} as Record<
         string,
-        { name: string; totalRisk: number; schoolCount: number }
+        {
+          name: string;
+          totalRisk: number;
+          schoolCount: number;
+          municipioSomaProjetos: number;
+        }
       >,
     );
 
@@ -69,8 +72,11 @@ export class GetDashboardKPIsUseCase {
     ).map(([idIbge, stats]) => ({
       idIbge,
       name: stats.name,
-      averageRisk: stats.totalRisk / stats.schoolCount,
+      averageRisk: Number((stats.totalRisk / stats.schoolCount).toFixed(2)),
       schoolsCount: stats.schoolCount,
+      municipioSomaProjetos: isNaN(stats.municipioSomaProjetos)
+        ? 0
+        : stats.municipioSomaProjetos,
     }));
 
     const highestAverageRiskMunicipality = municipalitiesWithAverageRisk.sort(
@@ -99,12 +105,33 @@ export class GetDashboardKPIsUseCase {
       }
     });
 
+    const municipalitiesWithAverageRiskAndTotalProjects = Object.entries(
+      municipalityRiskStats,
+    ).map(([idIbge, stats]) => ({
+      idIbge,
+      name: stats.name,
+      averageRisk: Number((stats.totalRisk / stats.schoolCount).toFixed(2)),
+      totalProjects: isNaN(stats.municipioSomaProjetos)
+        ? 0
+        : stats.municipioSomaProjetos,
+    }));
+
+    const bestMunicipalityOpportunity =
+      municipalitiesWithAverageRiskAndTotalProjects.sort((a, b) => {
+        if (b.averageRisk !== a.averageRisk) {
+          return b.averageRisk - a.averageRisk;
+        }
+
+        return a.totalProjects - b.totalProjects;
+      })[0];
+
     return {
       schools: countDocuments,
       schoolsWithHighInfraestructureRisk:
         schoolsWithHighInfraestructureRisk.length,
       municipalitiesWithMostAverageRisk: highestAverageRiskMunicipality,
       lackName,
+      bestMunicipalityOpportunity: bestMunicipalityOpportunity.name,
     };
   }
 }
