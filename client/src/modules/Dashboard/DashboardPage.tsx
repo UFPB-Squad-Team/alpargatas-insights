@@ -14,7 +14,7 @@ import {
 } from '@/shared/mocks/services/getDashboardKPIs';
 import RiskLegend from '@/ui/components/common/RiskLegend';
 import Spinner from '@/ui/components/common/Spinner';
-import { listSchoolsForMapUseCase } from './services/logic/listSchoolsForMapUseCase';
+import { listSchoolsForMapUseCase } from './services/logic/School/listSchoolsForMapUseCase';
 import { useQuery } from '@tanstack/react-query';
 
 const DashboardPage = () => {
