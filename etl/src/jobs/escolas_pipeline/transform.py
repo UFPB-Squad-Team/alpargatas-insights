@@ -1,5 +1,6 @@
 import logging
-
+import numpy as np
+import math
 import pandas as pd
 from dotenv import load_dotenv
 
@@ -71,6 +72,23 @@ def _process_infra_columns(df: pd.DataFrame) -> pd.DataFrame:
         df[col] = df[col].fillna(0).astype(bool)
     return df
 
+def add_jitter_to_coordinates(df: pd.DataFrame) -> pd.DataFrame:
+    """Adiciona jitter às coordenadas geográficas para evitar sobreposição."""
+    logging.info("Adicionando jitter às coordenadas geográficas...")
+
+    MAX_JITTER_KM = 2.5 # Jitter radius in kilometers
+    KM_PER_DEGREE = 111.32 # Degrees to kilometers conversion factor 
+
+    df['jitter_radius_km'] = np.random.uniform(0, MAX_JITTER_KM, size=len(df))
+    df['jitter_angle_rad'] = np.random.uniform(0, 2 * math.pi, size=len(df))
+
+    delta_x_km = df['jitter_radius_km'] * np.cos(df['jitter_angle_rad'])
+    delta_y_km = df['jitter_radius_km'] * np.sin(df['jitter_angle_rad'])
+
+    df['longitude'] = df['longitude'] + delta_x_km / (KM_PER_DEGREE * np.cos(np.radians(df['latitude'])))
+    df['latitude'] = df['latitude'] + delta_y_km / KM_PER_DEGREE
+
+    return df
 
 def _calculate_risk_score(row: pd.Series, weights: dict) -> float:
     """Calcula o score de risco para uma única linha (escola), baseado nos pesos."""
@@ -168,12 +186,13 @@ def run():
         logging.info(f"Lendo dados de municípios de: {municipios_path}")
         df_municipios = pd.read_csv(municipios_path, storage_options=storage_options)
 
-        # A lógica de transformação não muda
+
         df_renamed = _rename_initial_columns(df_escolas, transform_config["column_map"])
         df_with_coords = _enrich_with_coordinates(df_renamed, df_municipios)
         df_mapped = _map_categorical_values(
             df_with_coords, transform_config["categorical_maps"]
         )
+        df_jittered = add_jitter_to_coordinates(df_mapped)
         df_infra_processed = _process_infra_columns(df_mapped)
         df_structured = _structure_for_nosql(df_infra_processed)
 
