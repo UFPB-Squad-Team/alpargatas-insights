@@ -1,25 +1,32 @@
-import { useState, useEffect } from 'react';
 import KpiCard from './components/cards/KpiCard';
-import { School, Building, AlertTriangle, Library, Map } from 'lucide-react';
+import {
+  School,
+  Building,
+  AlertTriangle,
+  Map,
+  Target,
+  Layers,
+  Lightbulb,
+  ShieldAlert,
+  Medal,
+} from 'lucide-react';
 import HighRiskSchoolsList from './components/cards/HighRiskSchoolsList';
-
 import MapChart from './components/charts/MapChart';
 import { useDashboard } from '@/ui/context/DashboardContext';
 import TopDeficienciesChart from './components/charts/TopDeficienciesChart';
 import RiskDistributionChart from './components/charts/RiskDistributionChart';
 import TopMunicipalitiesChart from './components/charts/TopMunicipalitiesChart';
-import {
-  DashboardKpis,
-  getDashboardKPIs,
-} from '@/shared/mocks/services/getDashboardKPIs';
 import RiskLegend from '@/ui/components/common/RiskLegend';
 import Spinner from '@/ui/components/common/Spinner';
 import { listSchoolsForMapUseCase } from './services/logic/School/listSchoolsForMapUseCase';
 import { useQuery } from '@tanstack/react-query';
+import { getDashboardKPIsUseCase } from './services/logic/getDashboardKPIsUseCase';
 
 const DashboardPage = () => {
-  const [kpis, setKpis] = useState<DashboardKpis | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: kpis, isLoading: isLoadingKpis } = useQuery({
+    queryKey: ['dashboard-kpis'],
+    queryFn: getDashboardKPIsUseCase.execute,
+  });
 
   const { data: mapData = [], isLoading: isLoadingMap } = useQuery({
     queryKey: ['schools-for-map'],
@@ -28,22 +35,7 @@ const DashboardPage = () => {
 
   const { selectedSchoolId, setSelectedSchoolId } = useDashboard();
 
-  useEffect(() => {
-    const fetchAllDashboardData = async () => {
-      setIsLoading(true);
-      try {
-        const [kpisData] = await Promise.all([getDashboardKPIs()]);
-        setKpis(kpisData);
-      } catch (error) {
-        console.error('Erro ao buscar dados do dashboard:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchAllDashboardData();
-  }, []);
-
-  if (isLoading || isLoadingMap) {
+  if (isLoadingKpis || isLoadingMap) {
     return (
       <div className="flex justify-center items-center h-full">
         <Spinner />
@@ -60,25 +52,29 @@ const DashboardPage = () => {
               title="Total de Escolas"
               value={kpis.totalEscolas}
               icon={School}
+              icon_secondary={Layers}
               description="Escolas públicas ativas na Paraíba"
             />
             <KpiCard
               title="Escolas em Alto Risco"
               value={kpis.escolasAltoRisco}
               icon={AlertTriangle}
-              description="Com score de risco superior a 0.75"
+              icon_secondary={ShieldAlert}
+              description="Com score contextualizado superior a 75"
             />
             <KpiCard
               title="Município Destaque"
               value={kpis.municipioMaiorRisco}
               icon={Building}
-              description="Com a maior média de risco"
+              icon_secondary={Medal}
+              description="Com a maior média de risco contextualizado"
             />
             <KpiCard
-              title="Principal Carência"
-              value={kpis.principalCarencia}
-              icon={Library}
-              description="Infraestrutura mais ausente"
+              title="Município de Oportunidade"
+              value={kpis.municipioOportunidade}
+              icon={Target}
+              icon_secondary={Lightbulb}
+              description="Maior risco com menor nº de projetos do IA"
             />
           </>
         )}

@@ -1,8 +1,6 @@
-
-import { RiskDistribution, getRiskDistribution } from '@/shared/mocks/services/getRiskDistribution';
 import Spinner from '@/ui/components/common/Spinner';
+import { useQuery } from '@tanstack/react-query';
 import { ChartBar } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import {
   Bar,
   BarChart,
@@ -12,28 +10,17 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import { getRiskDistributionUseCase } from '../../services/logic/School/getRiskDistributionUseCase';
 
 const RiskDistribuitonChart = () => {
-  const [data, setData] = useState<RiskDistribution[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await getRiskDistribution();
-        setData(result);
-      } catch (error) {
-        console.error('Erro ao buscar dados de distribuilçao de risco', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+  const { data = [], isLoading } = useQuery({
+    queryKey: ['risk-distribution'],
+    queryFn: getRiskDistributionUseCase.execute,
+  });
 
   if (isLoading) {
     return (
-      <div className="h-64 flex items-center justify-center">
+      <div className="h-full flex items-center justify-center">
         <Spinner />
       </div>
     );

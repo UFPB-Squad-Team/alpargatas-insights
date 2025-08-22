@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-
 import { Building2 } from 'lucide-react';
-import { MunicipalityRisk, getTopMunicipalitiesByRisk } from '@/shared/mocks/services/getTopMunicipalitiesByRisk';
 import Spinner from '@/ui/components/common/Spinner';
+import { useQuery } from '@tanstack/react-query';
+import { getTopMunicipalitiesByRiskUseCase } from '../../services/logic/Municipality/getTopMunicipalitiesByRiskUseCase';
+import { MunicipalityRisk } from '@/domain/entities/Municipality/Municipality';
 
 const getRiskInfo = (score: number) => {
   if (score >= 0.9) return { color: 'text-orange-900', text: 'Alerta Máximo' };
@@ -12,30 +12,14 @@ const getRiskInfo = (score: number) => {
 };
 
 const TopMunicipalitiesChart = () => {
-  const [data, setData] = useState<MunicipalityRisk[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: municipalities = [], isLoading } = useQuery({
+    queryKey: ['top-municipalities-by-risk'],
+    queryFn: getTopMunicipalitiesByRiskUseCase.execute,
+  });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await getTopMunicipalitiesByRisk();
-        setData(result);
-      } catch (error) {
-        console.error('Erro ao buscar top municípios:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
-  if (isLoading) {
-    return (
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex items-center justify-center h-full">
-        <Spinner />
-      </div>
-    );
-  }
+  const sortedMunicipalities = [...municipalities]
+    .sort((a, b) => b.riscoMedio - a.riscoMedio)
+    .slice(0, 8);
 
   return (
     <div className="bg-brand-background p-6 rounded-2xl shadow-sm border border-gray-200">
@@ -47,45 +31,58 @@ const TopMunicipalitiesChart = () => {
           Municípios Prioritários
         </h3>
       </div>
-      <div className="space-y-5">
-        {data.map((item) => {
-          const riskInfo = getRiskInfo(item.risco_medio);
-          const scorePercentage = (item.risco_medio * 100).toFixed(0);
+      {isLoading ? (
+        <div className="flex justify-center items-center h-48">
+          <Spinner />
+        </div>
+      ) : (
+        <div className="space-y-5">
+          {sortedMunicipalities.map((item: MunicipalityRisk) => {
+            const riskInfo = getRiskInfo(item.riscoMedio);
+            const scorePercentage = (item.riscoMedio * 100).toFixed(0);
 
-          return (
-            <div key={item.municipio_nome}>
-              <div className="flex justify-between items-center mb-1 text-sm">
-                <span className="font-medium text-brand-text-primary">
-                  {item.municipio_nome}
-                </span>
-                <span className={`font-bold ${riskInfo.color}`}>
-                  {riskInfo.text}
-                </span>
-              </div>
-
-              <div className="relative w-full pt-2">
-                <div className="flex w-full h-2 rounded-full overflow-hidden">
-                  <div className="bg-orange-300" style={{ width: '40%' }}></div>
-                  <div className="bg-orange-500" style={{ width: '35%' }}></div>
-                  <div className="bg-orange-700" style={{ width: '15%' }}></div>
-                  <div className="bg-orange-900" style={{ width: '10%' }}></div>
+            return (
+              <div key={item.nome}>
+                <div className="flex justify-between items-center mb-1 text-sm">
+                  <span className="font-medium text-brand-text-primary">
+                    {item.nome}
+                  </span>
+                  <span className={`font-bold ${riskInfo.color}`}>
+                    {riskInfo.text}
+                  </span>
                 </div>
-                <div
-                  className="absolute top-0 w-0 h-0"
-                  style={{
-                    left: `${scorePercentage}%`,
-                    borderLeft: '6px solid transparent',
-                    borderRight: '6px solid transparent',
-                    borderTop: '8px solid #212529',
-                    transform: 'translateX(-50%)',
-                    transition: 'left 0.3s ease-in-out',
-                  }}
-                ></div>
+                <div className="relative w-full pt-2">
+                  <div className="flex w-full h-2 rounded-full overflow-hidden">
+                    <div
+                      className="bg-orange-300"
+                      style={{ width: '40%' }}
+                    ></div>
+                    <div
+                      className="bg-orange-500"
+                      style={{ width: '35%' }}
+                    ></div>
+                    <div
+                      className="bg-orange-700"
+                      style={{ width: '15%' }}
+                    ></div>
+                    <div className="bg-orange-800" style={{ width: '10%' }}></div>
+                  </div>
+                  <div
+                    className="absolute top-0 w-0 h-0"
+                    style={{
+                      left: `${scorePercentage}%`,
+                      borderLeft: '6px solid transparent',
+                      borderRight: '6px solid transparent',
+                      borderTop: '8px solid #212529',
+                      transform: 'translateX(-50%)',
+                    }}
+                  ></div>
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };

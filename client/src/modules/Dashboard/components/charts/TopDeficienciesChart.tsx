@@ -1,16 +1,16 @@
-import { useState, useEffect } from 'react';
 import { ResponsiveContainer, Treemap, Tooltip } from 'recharts';
 import { SquareChartGantt } from 'lucide-react';
-import { getTopDeficiencies } from '@/shared/mocks/services/getTopDeficiencies';
 import Spinner from '@/ui/components/common/Spinner';
+import { getTopDeficienciesUseCase } from '../../services/logic/School/getTopDeficienciesUseCase';
+import { useQuery } from '@tanstack/react-query';
 
 const CustomizedContent = (props: any) => {
-  const { x, y, width, height, index, name, escolas_afetadas } = props;
+  const { x, y, width, height, index, name, value } = props;
+
   const color = ['#7C2D12', '#F97316', '#963B14', '#FDBA74', '#B45309'][
     index % 5
   ];
-
-  const fontSize = Math.max(12, Math.min(24, width / 10));
+  const fontSize = Math.max(10, Math.min(18, width / 8));
 
   return (
     <g>
@@ -25,53 +25,48 @@ const CustomizedContent = (props: any) => {
           strokeWidth: 2,
         }}
       />
+
       <foreignObject
-        x={x + 10}
-        y={y + 10}
-        width={width - 20}
-        height={height - 20}
+        x={x + 5}
+        y={y + 5}
+        width={width - 10}
+        height={height - 10}
       >
-        {width > 80 && height > 50 && (
-          <div
-            className="text-white font-semibold leading-tight flex flex-col justify-center h-full"
-            style={{ fontSize: `${fontSize}px` }}
-          >
-            <p style={{ wordWrap: 'break-word' }}>{name}</p>
+        <div
+          className="flex flex-col items-center justify-center h-full text-white font-semibold"
+          style={{
+            fontSize: `${fontSize}px`,
+            textAlign: 'center',
+            overflow: 'hidden',
+          }}
+        >
+          {/* Nome da carência */}
+          {width > 40 && height > 30 && (
             <p
-              className="opacity-80 text-sm"
-              style={{ fontSize: `${Math.max(12, fontSize * 0.75)}px` }}
+              className="truncate w-full"
+              style={{
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
             >
-              {escolas_afetadas} escolas
+              {name}
             </p>
-          </div>
-        )}
+          )}
+
+          {/* Sempre renderiza o número de escolas */}
+          <p className="opacity-80 text-xs">{value} escolas</p>
+        </div>
       </foreignObject>
     </g>
   );
 };
 
 const TopDeficienciesChart = () => {
-  const [data, setData] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await getTopDeficiencies();
-        const formattedData = result.map((item) => ({
-          name: item.carencia,
-          size: item.escolas_afetadas, // Usado para o tamanho do retângulo
-          escolas_afetadas: item.escolas_afetadas, // Passado para o componente customizado
-        }));
-        setData(formattedData);
-      } catch (error) {
-        console.error('Erro ao buscar principais carências:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+  const { data: deficiencies = [], isLoading } = useQuery({
+    queryKey: ['top-deficiencies'],
+    queryFn: getTopDeficienciesUseCase.execute,
+  });
 
   if (isLoading) {
     return (
@@ -94,8 +89,9 @@ const TopDeficienciesChart = () => {
       <div className="flex-grow">
         <ResponsiveContainer width="100%" height="100%">
           <Treemap
-            data={data}
-            dataKey="size"
+            data={deficiencies}
+            dataKey="quantidadeEscolas"
+            nameKey="carencia"
             aspectRatio={4 / 3}
             stroke="#fff"
             content={<CustomizedContent />}

@@ -1,34 +1,51 @@
-import { HighRiskSchool } from "@/shared/mocks/services/getHighRiskSchools";
-import RiskIndicator from "@/ui/components/common/RiskIndicator";
+import { HighRiskSchool } from '@/shared/mocks/services/getHighRiskSchools';
 
 interface SchoolListItemProps {
-  school: HighRiskSchool;
-  index: number;
+  school: HighRiskSchool; 
+  rank: number;
 }
 
-const SchoolListItem = ({ school, index }: SchoolListItemProps) => {
-  const bgColor = index % 2 === 0 ? 'bg-brand-surface' : 'bg-white';
+const getRiskBgClass = (score: number) => {
+  if (score >= 0.9) return 'bg-red-700';
+  if (score >= 0.75) return 'bg-orange-600';
+  if (score >= 0.4) return 'bg-yellow-500';
+  return 'bg-gray-400';
+};
+
+const SchoolListItem = ({ school, rank }: SchoolListItemProps) => {
+  const scorePercentage = (school.score_de_risco * 100).toFixed(0);
 
   return (
-    <div
-      className={`
-        relative
-        flex justify-between items-center p-3 rounded-lg border
-        ${bgColor}
-        shadow-sm hover:bg-brand-surface cursor-pointer transition-colors duration-200
-        before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-[3px] before:rounded-t-lg
-        even:before:bg-brand-orange-light odd:before:bg-brand-orange-dark
-      `}
-    >
-      <div>
-        <p className="font-semibold text-sm text-brand-text-primary">
+    <div className="flex items-center p-3 space-x-4 border-b border-gray-100 last:border-b-0">
+      <div className="flex-none w-6 text-center">
+        <span className="text-lg font-bold text-gray-400">{rank}</span>
+      </div>
+      <div className="flex-grow min-w-0">
+        {' '}
+        {/* Adicionado min-w-0 para o truncate funcionar corretamente */}
+        <p
+          className="font-semibold text-sm text-brand-text-primary truncate"
+          title={school.escola_nome}
+        >
+          {/* Usando a propriedade 'escola_nome' do mock antigo */}
           {school.escola_nome}
         </p>
         <p className="text-xs text-brand-text-secondary">
+          {/* Usando a propriedade 'municipio_nome' do mock antigo */}
           {school.municipio_nome}
         </p>
       </div>
-      <RiskIndicator score={school.score_de_risco} />
+      <div className="flex-none flex items-center space-x-3 w-28 justify-end">
+        <span className="text-sm font-bold text-brand-text-primary">
+          {scorePercentage}%
+        </span>
+        <div className="w-12 h-2 bg-gray-200 rounded-full">
+          <div
+            className={`h-full rounded-full ${getRiskBgClass(school.score_de_risco)}`}
+            style={{ width: `${scorePercentage}%` }}
+          ></div>
+        </div>
+      </div>
     </div>
   );
 };

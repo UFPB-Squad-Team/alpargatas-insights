@@ -149,7 +149,7 @@ export const mockSchools: SchoolProps[] = [
       possui_quadra_esportes: false,
       possui_acessibilidade_pcd: false,
     },
-    score_de_risco: 0.98,
+    score_de_risco: 0.91,
   },
   {
     escola_id_inep: 25000051,
@@ -170,7 +170,7 @@ export const mockSchools: SchoolProps[] = [
       possui_quadra_esportes: false,
       possui_acessibilidade_pcd: false,
     },
-    score_de_risco: 0.92,
+    score_de_risco: 0.88,
   },
   {
     escola_id_inep: 25000072,
@@ -191,7 +191,7 @@ export const mockSchools: SchoolProps[] = [
       possui_quadra_esportes: false,
       possui_acessibilidade_pcd: false,
     },
-    score_de_risco: 0.98,
+    score_de_risco: 0.24,
   },
   {
     escola_id_inep: 25000074,
@@ -212,7 +212,7 @@ export const mockSchools: SchoolProps[] = [
       possui_quadra_esportes: true,
       possui_acessibilidade_pcd: false,
     },
-    score_de_risco: 0.91,
+    score_de_risco: 0.75,
   },
   {
     escola_id_inep: 25000068,
@@ -233,7 +233,7 @@ export const mockSchools: SchoolProps[] = [
       possui_quadra_esportes: false,
       possui_acessibilidade_pcd: false,
     },
-    score_de_risco: 0.96,
+    score_de_risco: 0.70,
   },
   {
     escola_id_inep: 25000069,
@@ -275,7 +275,7 @@ export const mockSchools: SchoolProps[] = [
       possui_quadra_esportes: false,
       possui_acessibilidade_pcd: false,
     },
-    score_de_risco: 0.97,
+    score_de_risco: 0.95,
   },
   {
     escola_id_inep: 25000071,
@@ -317,7 +317,7 @@ export const mockSchools: SchoolProps[] = [
       possui_quadra_esportes: false,
       possui_acessibilidade_pcd: false,
     },
-    score_de_risco: 0.98,
+    score_de_risco: 0.93,
   },
   {
     escola_id_inep: 25000073,
@@ -359,7 +359,7 @@ export const mockSchools: SchoolProps[] = [
       possui_quadra_esportes: false,
       possui_acessibilidade_pcd: false,
     },
-    score_de_risco: 0.99,
+    score_de_risco: 0.97,
   },
   {
     escola_id_inep: 25000075,
@@ -401,7 +401,7 @@ export const mockSchools: SchoolProps[] = [
       possui_quadra_esportes: false,
       possui_acessibilidade_pcd: false,
     },
-    score_de_risco: 0.97,
+    score_de_risco: 0.9,
   },
   {
     escola_id_inep: 25000077,
@@ -443,7 +443,7 @@ export const mockSchools: SchoolProps[] = [
       possui_quadra_esportes: false,
       possui_acessibilidade_pcd: false,
     },
-    score_de_risco: 0.98,
+    score_de_risco: 0.89,
   },
   {
     escola_id_inep: 25000079,
@@ -527,7 +527,7 @@ export const mockSchools: SchoolProps[] = [
       possui_quadra_esportes: false,
       possui_acessibilidade_pcd: false,
     },
-    score_de_risco: 0.97,
+    score_de_risco: 0.74,
   },
   {
     escola_id_inep: 25000083,
@@ -569,7 +569,7 @@ export const mockSchools: SchoolProps[] = [
       possui_quadra_esportes: false,
       possui_acessibilidade_pcd: false,
     },
-    score_de_risco: 0.98,
+    score_de_risco: 0.78,
   },
   {
     escola_id_inep: 25000085,
@@ -611,7 +611,7 @@ export const mockSchools: SchoolProps[] = [
       possui_quadra_esportes: false,
       possui_acessibilidade_pcd: false,
     },
-    score_de_risco: 0.97,
+    score_de_risco: 0.65,
   },
   {
     escola_id_inep: 25000087,
@@ -653,7 +653,7 @@ export const mockSchools: SchoolProps[] = [
       possui_quadra_esportes: false,
       possui_acessibilidade_pcd: false,
     },
-    score_de_risco: 0.98,
+    score_de_risco: 0.45,
   },
   {
     escola_id_inep: 25000089,
@@ -737,7 +737,7 @@ export const mockSchools: SchoolProps[] = [
       possui_quadra_esportes: false,
       possui_acessibilidade_pcd: false,
     },
-    score_de_risco: 0.99,
+    score_de_risco: 0.22,
   },
   {
     escola_id_inep: 25000093,
@@ -779,7 +779,7 @@ export const mockSchools: SchoolProps[] = [
       possui_quadra_esportes: false,
       possui_acessibilidade_pcd: false,
     },
-    score_de_risco: 0.97,
+    score_de_risco: 0.6,
   },
   {
     escola_id_inep: 25000095,
