@@ -26,3 +26,5 @@ services:
     container_name: alpargatas_etl
     env_file:
       - .env
+    volumes:
+      - ./etl/data:/app/data

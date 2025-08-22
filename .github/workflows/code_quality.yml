@@ -1,0 +1,76 @@
+name: Code Quality Automation
+
+on:
+  pull_request:
+    branches: ["main", "development"]
+  workflow_dispatch:
+
+jobs:
+  lint-and-format-etl:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: ./etl
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Set up Python environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install project dependencies
+        run: poetry install --sync
+
+      - name: Apply Ruff formatter
+        run: poetry run ruff format .
+
+      - name: Run Ruff linter with autofix
+        run: poetry run ruff check . --fix --ignore E501
+
+      - name: Commit formatting changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(etl): auto-format Python code via CI"
+          commit_user_name: "GitHub Actions Bot"
+          commit_user_email: "actions@github.com"
+
+  lint-and-format-backend:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Set up Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+          cache: "npm"
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install project dependencies
+        run: npm ci --prefix server
+
+      - name: Run linter with autofix and apply formatter
+        run: |
+          npm run lint --prefix server -- --fix || true
+          npm run format --prefix server
+
+      - name: Commit formatting changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(server): auto-format TypeScript code via CI"
+          commit_user_name: "GitHub Actions Bot"
+          commit_user_email: "actions@github.com"
