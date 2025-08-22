@@ -193,7 +193,7 @@ def run():
             df_with_coords, transform_config["categorical_maps"]
         )
         df_jittered = add_jitter_to_coordinates(df_mapped)
-        df_infra_processed = _process_infra_columns(df_mapped)
+        df_infra_processed = _process_infra_columns(df_jittered)
         df_structured = _structure_for_nosql(df_infra_processed)
 
         risk_weights = transform_config["risk_score_weights"]
