@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
-import Layout from './components/layout/Layout';
-import DashboardPage from './features/dashboard/DashboardPage';
-import { DashboardProvider } from './context/DashboardContext';
+import DashboardPage from './modules/Dashboard/DashboardPage';
+import { DashboardProvider } from './ui/context/DashboardContext';
+import Layout from './ui/components/layout/Layout';
 
 function App() {
   return (

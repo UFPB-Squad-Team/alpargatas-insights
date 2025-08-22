@@ -1,5 +1,5 @@
 export enum dependenciaAdministrativa {
-  MUNICIPAL = 'municipal',
-  ESTADUAL = 'estadual',
-  FEDERAL = 'federal',
+  MUNICIPAL = 'Municipal',
+  ESTADUAL = 'Estadual',
+  FEDERAL = 'Federal',
 }

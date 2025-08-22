@@ -3,7 +3,7 @@ import { UF } from '../enums/enumUnidadesFederativas';
 import { MunicipalityValidator } from '../validators/municipalityValidator';
 
 export type MunicipalityProps = {
-  codigoIbge: number;
+  codigoIbge: string;
 
   nome: string;
 
@@ -21,7 +21,7 @@ export type MunicipalityProps = {
 export class Municipality {
   public readonly id: string;
 
-  public readonly codigoIbge: number;
+  public readonly codigoIbge: string;
 
   public nome: string;
 

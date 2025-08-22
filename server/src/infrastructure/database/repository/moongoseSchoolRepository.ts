@@ -29,12 +29,18 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
   async findByIbgeCode(municipioIdIbge: string): Promise<School[]> {
     const pipeline = [
       {
-        $match: { municipioIdIbge },
+        $match: {
+          $expr: {
+            $eq: [
+              { $toDouble: '$municipioIdIbge' },
+              { $toDouble: municipioIdIbge },
+            ],
+          },
+        },
       },
       {
         $project: {
-          _id: 0,
-          id: '$_id',
+          id: { $toString: '$_id' },
           municipioIdIbge: 1,
           escolaIdInep: 1,
           escolaNome: 1,
@@ -42,6 +48,11 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
           estadoSigla: 1,
           dependenciaAdm: 1,
           scoreRisco: 1,
+          municipioSomaProjetos: 1,
+          municipioSomaBeneficiados: 1,
+          municipioMediaIdeb2023: 1,
+          riscoIdebMunicipio: 1,
+          scoreRiscoContextualizado: 1,
           indicadores: 1,
           infraestrutura: 1,
         },
@@ -60,8 +71,7 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
       },
       {
         $project: {
-          _id: 0,
-          id: '$_id',
+          id: { $toString: '$_id' },
           municipioIdIbge: 1,
           escolaIdInep: 1,
           escolaNome: 1,
@@ -69,6 +79,11 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
           estadoSigla: 1,
           dependenciaAdm: 1,
           scoreRisco: 1,
+          municipioSomaProjetos: 1,
+          municipioSomaBeneficiados: 1,
+          municipioMediaIdeb2023: 1,
+          riscoIdebMunicipio: 1,
+          scoreRiscoContextualizado: 1,
           indicadores: 1,
           infraestrutura: 1,
         },
@@ -89,8 +104,7 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
       },
       {
         $project: {
-          _id: 0,
-          id: '$_id',
+          id: { $toString: '$_id' },
           municipioIdIbge: 1,
           escolaIdInep: 1,
           escolaNome: 1,
@@ -98,6 +112,11 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
           estadoSigla: 1,
           dependenciaAdm: 1,
           scoreRisco: 1,
+          municipioSomaProjetos: 1,
+          municipioSomaBeneficiados: 1,
+          municipioMediaIdeb2023: 1,
+          riscoIdebMunicipio: 1,
+          scoreRiscoContextualizado: 1,
           indicadores: 1,
           infraestrutura: 1,
         },
@@ -121,7 +140,7 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
   }> {
     const query = {
       $or: [
-        { $text: { $search: term } },
+        { $text: { $search: `"${term}"` } },
         { municipioIdIbge: { $regex: term, $options: 'i' } },
         { estadoSigla: term.toUpperCase() },
       ],
@@ -146,16 +165,18 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
   }
 
   async findAllForMap(): Promise<
-    Pick<School, 'id' | 'escolaNome' | 'localizacao' | 'scoreRisco'>[]
+    Pick<
+      School,
+      'id' | 'escolaNome' | 'localizacao' | 'scoreRiscoContextualizado'
+    >[]
   > {
     const pipeline = [
       {
         $project: {
-          _id: 0,
-          id: '$_id',
+          id: { $toString: '$_id' },
           escolaNome: 1,
           localizacao: 1,
-          scoreRisco: 1,
+          scoreRiscoContextualizado: 1,
         },
       },
     ];
@@ -169,8 +190,7 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
     const pipeline = [
       {
         $project: {
-          _id: 0,
-          id: '$_id',
+          id: { $toString: '$_id' },
           municipioIdIbge: 1,
           escolaIdInep: 1,
           escolaNome: 1,
@@ -180,6 +200,11 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
           tipoLocalizacao: 1,
           localizacao: 1,
           scoreRisco: 1,
+          municipioSomaProjetos: 1,
+          municipioSomaBeneficiados: 1,
+          municipioMediaIdeb2023: 1,
+          riscoIdebMunicipio: 1,
+          scoreRiscoContextualizado: 1,
           indicadores: 1,
           infraestrutura: 1,
         },
@@ -210,6 +235,11 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
     localizacao,
     indicadores,
     scoreRisco,
+    municipioSomaProjetos,
+    municipioSomaBeneficiados,
+    municipioMediaIdeb2023,
+    riscoIdebMunicipio,
+    scoreRiscoContextualizado,
     infraestrutura,
   }: School): Promise<void> {
     await SchoolModel.create({
@@ -223,6 +253,11 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
       localizacao,
       indicadores,
       scoreRisco,
+      municipioSomaProjetos,
+      municipioSomaBeneficiados,
+      municipioMediaIdeb2023,
+      riscoIdebMunicipio,
+      scoreRiscoContextualizado,
       infraestrutura,
     });
   }

@@ -28,6 +28,16 @@ export type SchoolProps = {
 
   scoreRisco: number;
 
+  municipioSomaProjetos: number;
+
+  municipioSomaBeneficiados: number;
+
+  municipioMediaIdeb2023: number;
+
+  riscoIdebMunicipio: number;
+
+  scoreRiscoContextualizado: number;
+
   indicadores: {
     total_alunos: number;
   };
@@ -59,6 +69,16 @@ export class School {
 
   public scoreRisco: number;
 
+  public municipioSomaProjetos: number;
+
+  public municipioSomaBeneficiados: number;
+
+  public municipioMediaIdeb2023: number;
+
+  public riscoIdebMunicipio: number;
+
+  public scoreRiscoContextualizado: number;
+
   public indicadores: {
     total_alunos: number;
   };
@@ -88,6 +108,16 @@ export class School {
     this.localizacao = props.localizacao;
 
     this.scoreRisco = props.scoreRisco;
+
+    this.municipioSomaProjetos = props.municipioSomaProjetos;
+
+    this.municipioSomaBeneficiados = props.municipioSomaBeneficiados;
+
+    this.municipioMediaIdeb2023 = props.municipioMediaIdeb2023;
+
+    this.riscoIdebMunicipio = props.riscoIdebMunicipio;
+
+    this.scoreRiscoContextualizado = props.scoreRiscoContextualizado;
 
     this.indicadores = props.indicadores;
 

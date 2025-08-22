@@ -11,18 +11,16 @@ export class GetDashboardKPIsUseCase {
   async execute(): Promise<GetDashboardKPIsDTO> {
     const schools = await this.schoolRepository.findAll();
 
-    const municipalities = await this.municipalityRepository.findAll();
-
     const HIGH_RISK_THRESHOLD: number = 0.75;
-
-    const theHighMunicipalitiesRisk = new Map<string, number>();
 
     let lackCountMax: number = 0;
 
     let lackName: string = 'No lacks identify';
 
     const schoolsWithHighInfraestructureRisk = schools
-      .filter((school) => school.scoreRisco >= HIGH_RISK_THRESHOLD)
+      .filter(
+        (school) => school.scoreRiscoContextualizado >= HIGH_RISK_THRESHOLD,
+      )
       .map((school) => ({
         id: school.id,
         escolaIdInep: school.escolaIdInep,
@@ -32,23 +30,58 @@ export class GetDashboardKPIsUseCase {
         dependenciaAdm: school.dependenciaAdm,
         estadoSigla: school.estadoSigla,
         scoreRisco: school.scoreRisco,
+        municipioSomaProjetos: school.municipioSomaProjetos,
+        municipioSomaBeneficiados: school.municipioSomaBeneficiados,
+        municipioMediaIdeb2023: school.municipioMediaIdeb2023,
+        riscoIdebMunicipio: school.riscoIdebMunicipio,
+        scoreRiscoContextualizado: school.scoreRiscoContextualizado,
         infraestrutura: school.infraestrutura,
         localizacao: school.localizacao,
       }));
 
-    schoolsWithHighInfraestructureRisk.forEach((schools) => {
-      const count = theHighMunicipalitiesRisk.get(schools.municipioIdIbge) || 0;
-
-      theHighMunicipalitiesRisk.set(schools.municipioIdIbge, count + 1);
-    });
-
-    const municipalitiesWithMostSchoolsInHighRisk = municipalities.filter(
-      (municipality) => {
-        const count = theHighMunicipalitiesRisk.get(municipality.id) || 0;
-
-        return count >= 5;
+    const municipalityRiskStats = schools.reduce(
+      (acc, school) => {
+        if (!acc[school.municipioIdIbge]) {
+          acc[school.municipioIdIbge] = {
+            name: school.municipioNome,
+            totalRisk: 0,
+            schoolCount: 0,
+            municipioSomaProjetos: 0,
+          };
+        }
+        acc[school.municipioIdIbge].totalRisk +=
+          school.scoreRiscoContextualizado;
+        acc[school.municipioIdIbge].schoolCount += 1;
+        acc[school.municipioIdIbge].municipioSomaProjetos =
+          school.municipioSomaProjetos ?? 0;
+        return acc;
       },
+      {} as Record<
+        string,
+        {
+          name: string;
+          totalRisk: number;
+          schoolCount: number;
+          municipioSomaProjetos: number;
+        }
+      >,
     );
+
+    const municipalitiesWithAverageRisk = Object.entries(
+      municipalityRiskStats,
+    ).map(([idIbge, stats]) => ({
+      idIbge,
+      name: stats.name,
+      averageRisk: Number((stats.totalRisk / stats.schoolCount).toFixed(2)),
+      schoolsCount: stats.schoolCount,
+      municipioSomaProjetos: isNaN(stats.municipioSomaProjetos)
+        ? 0
+        : stats.municipioSomaProjetos,
+    }));
+
+    const highestAverageRiskMunicipality = municipalitiesWithAverageRisk.sort(
+      (a, b) => b.averageRisk - a.averageRisk,
+    )[0];
 
     const countDocuments = schools.length;
 
@@ -72,11 +105,33 @@ export class GetDashboardKPIsUseCase {
       }
     });
 
+    const municipalitiesWithAverageRiskAndTotalProjects = Object.entries(
+      municipalityRiskStats,
+    ).map(([idIbge, stats]) => ({
+      idIbge,
+      name: stats.name,
+      averageRisk: Number((stats.totalRisk / stats.schoolCount).toFixed(2)),
+      totalProjects: isNaN(stats.municipioSomaProjetos)
+        ? 0
+        : stats.municipioSomaProjetos,
+    }));
+
+    const bestMunicipalityOpportunity =
+      municipalitiesWithAverageRiskAndTotalProjects.sort((a, b) => {
+        if (b.averageRisk !== a.averageRisk) {
+          return b.averageRisk - a.averageRisk;
+        }
+
+        return a.totalProjects - b.totalProjects;
+      })[0];
+
     return {
       schools: countDocuments,
-      schoolsWithHighInfraestructureRisk,
-      municipalitiesWithMostSchoolsInHighRisk,
+      schoolsWithHighInfraestructureRisk:
+        schoolsWithHighInfraestructureRisk.length,
+      municipalitiesWithMostAverageRisk: highestAverageRiskMunicipality,
       lackName,
+      bestMunicipalityOpportunity: bestMunicipalityOpportunity.name,
     };
   }
 }

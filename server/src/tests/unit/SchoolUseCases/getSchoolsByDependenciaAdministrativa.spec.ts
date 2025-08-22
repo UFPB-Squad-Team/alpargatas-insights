@@ -10,7 +10,7 @@ describe('GetSchoolsByDependenciaAdministrativaUseCase', () => {
       findByUf: jest.fn().mockResolvedValue(null),
       findByDepAdm: jest.fn().mockResolvedValue([
         {
-          dependenciaAdm: 'estadual',
+          dependenciaAdm: 'Estadual',
         },
       ]),
       findSearchByTerm: jest.fn().mockResolvedValue(null),
@@ -32,7 +32,7 @@ describe('GetSchoolsByDependenciaAdministrativaUseCase', () => {
       await getSchoolsByDependenciaAdministrativaUseCase.execute(schoolData),
     ).toEqual([schoolData]);
 
-    expect(mockSchoolRepository.findByDepAdm).toHaveBeenCalledWith('estadual');
+    expect(mockSchoolRepository.findByDepAdm).toHaveBeenCalledWith('Estadual');
   });
 
   it('Get a empty array', async () => {

@@ -32,6 +32,7 @@ etl/data/input_data/
 
 # Ignora todos os arquivos .parquet dentro de data/raw/
 etl/data/raw/*.parquet
+etl/data/raw_professor/
 
 # Exceto este arquivo específico
 !etl/data/raw/escolas_paraiba_sample.parquet

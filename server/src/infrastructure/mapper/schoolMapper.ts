@@ -14,10 +14,15 @@ export class SchoolMapper {
         tipoLocalizacao: schoolDoc.tipoLocalizacao,
         localizacao: schoolDoc.localizacao,
         scoreRisco: schoolDoc.scoreRisco,
+        municipioSomaProjetos: schoolDoc.municipioSomaProjetos,
+        municipioSomaBeneficiados: schoolDoc.municipioSomaBeneficiados,
+        municipioMediaIdeb2023: schoolDoc.municipioMediaIdeb2023,
+        riscoIdebMunicipio: schoolDoc.riscoIdebMunicipio,
+        scoreRiscoContextualizado: schoolDoc.scoreRiscoContextualizado,
         indicadores: schoolDoc.indicadores,
         infraestrutura: schoolDoc.infraestrutura,
       },
-      schoolDoc._id,
+      schoolDoc._id.toString(),
     );
   }
 
@@ -35,10 +40,15 @@ export class SchoolMapper {
             tipoLocalizacao: school.tipoLocalizacao,
             localizacao: school.localizacao,
             scoreRisco: school.scoreRisco,
+            municipioSomaProjetos: school.municipioSomaProjetos,
+            municipioSomaBeneficiados: school.municipioSomaBeneficiados,
+            municipioMediaIdeb2023: school.municipioMediaIdeb2023,
+            riscoIdebMunicipio: school.riscoIdebMunicipio,
+            scoreRiscoContextualizado: school.scoreRiscoContextualizado,
             indicadores: school.indicadores,
             infraestrutura: school.infraestrutura,
           },
-          school._id,
+          school._id.toString(),
         ),
     );
   }

@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document, Types } from 'mongoose';
 import { UF } from '../../../domain/enums/enumUnidadesFederativas';
 import { dependenciaAdministrativa } from '../../../domain/enums/enumDependenciaAdministrativa';
 import { tipoLocalizacao } from '../../../domain/enums/enumTipoLocalizacao';
@@ -6,7 +6,7 @@ import { LocationCoordinates } from '../../../domain/entities/school';
 import { randomUUID } from 'node:crypto';
 
 export interface ISchoolDocument extends Document {
-  _id: string;
+  _id: Types.ObjectId;
   municipioIdIbge: string;
   escolaIdInep: number;
   escolaNome: string;
@@ -19,6 +19,17 @@ export interface ISchoolDocument extends Document {
     coordinates: LocationCoordinates;
   };
   scoreRisco: number;
+
+  municipioSomaProjetos: number;
+
+  municipioSomaBeneficiados: number;
+
+  municipioMediaIdeb2023: number;
+
+  riscoIdebMunicipio: number;
+
+  scoreRiscoContextualizado: number;
+
   indicadores: {
     total_alunos: number;
   };
@@ -26,9 +37,9 @@ export interface ISchoolDocument extends Document {
 }
 
 const schoolSchema: Schema = new Schema({
-  _id: { type: String, default: () => randomUUID() },
+  _id: { type: Schema.Types.ObjectId, auto: true },
   municipioIdIbge: { type: String, required: true },
-  escolaIdInep: { type: Number, required: true, unique: true },
+  escolaIdInep: { type: Number, required: true },
   escolaNome: { type: String, required: true },
   municipioNome: { type: String, required: true },
   estadoSigla: { type: String, enum: Object.values(UF), required: true },
@@ -54,6 +65,17 @@ const schoolSchema: Schema = new Schema({
     },
   },
   scoreRisco: { type: Number, required: true },
+
+  municipioSomaProjetos: { type: Number, required: true },
+
+  municipioSomaBeneficiados: { type: Number, required: true },
+
+  municipioMediaIdeb2023: { type: Number, required: true },
+
+  riscoIdebMunicipio: { type: Number, required: true },
+
+  scoreRiscoContextualizado: { type: Number, required: true },
+
   indicadores: {
     total_alunos: { type: Number, required: true },
   },
@@ -70,6 +92,6 @@ schoolSchema.index({ municipioIdIbge: 1 });
 schoolSchema.index({ scoreRisco: 1 });
 
 export const SchoolModel = mongoose.model<ISchoolDocument>(
-  'School',
+  'Escola',
   schoolSchema,
 );
