@@ -13,7 +13,11 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174', 'https://development.dbvzz9cfb1jf.amplifyapp.com'];
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'https://development.dbvzz9cfb1jf.amplifyapp.com',
+];
 
 app.use(
   cors({
