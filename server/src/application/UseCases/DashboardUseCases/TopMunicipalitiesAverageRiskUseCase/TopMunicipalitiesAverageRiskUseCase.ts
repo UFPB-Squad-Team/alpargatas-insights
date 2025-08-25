@@ -15,7 +15,7 @@ export class TopMunicipalitiesAverageRiskUseCase {
     const HIGH_RISK_THRESHOLD: number = 0.75;
 
     const schoolsWithHighInfraestructureRisk = schools
-      .filter((school) => school.scoreRisco >= HIGH_RISK_THRESHOLD)
+      .filter((school) => school.scoreRiscoContextualizado >= HIGH_RISK_THRESHOLD)
       .map((school) => ({
         id: school.id,
         escolaIdInep: school.escolaIdInep,
@@ -43,7 +43,7 @@ export class TopMunicipalitiesAverageRiskUseCase {
 
         return count >= 5;
       },
-    );
+    ).sort((a, b) => b.riscoMedio - a.riscoMedio).slice(0,5)
 
     return {
       municipalitiesWithMostSchoolsInHighRisk,
