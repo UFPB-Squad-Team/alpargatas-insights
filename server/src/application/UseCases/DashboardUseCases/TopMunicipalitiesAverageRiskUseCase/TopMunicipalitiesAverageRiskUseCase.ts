@@ -15,7 +15,9 @@ export class TopMunicipalitiesAverageRiskUseCase {
     const HIGH_RISK_THRESHOLD: number = 0.75;
 
     const schoolsWithHighInfraestructureRisk = schools
-      .filter((school) => school.scoreRiscoContextualizado >= HIGH_RISK_THRESHOLD)
+      .filter(
+        (school) => school.scoreRiscoContextualizado >= HIGH_RISK_THRESHOLD,
+      )
       .map((school) => ({
         id: school.id,
         escolaIdInep: school.escolaIdInep,
@@ -37,13 +39,14 @@ export class TopMunicipalitiesAverageRiskUseCase {
       theHighMunicipalitiesRisk.set(schools.municipioIdIbge, count + 1);
     });
 
-    const municipalitiesWithMostSchoolsInHighRisk = municipalities.filter(
-      (municipality) => {
+    const municipalitiesWithMostSchoolsInHighRisk = municipalities
+      .filter((municipality) => {
         const count = theHighMunicipalitiesRisk.get(municipality.id) || 0;
 
         return count >= 5;
-      },
-    ).sort((a, b) => b.riscoMedio - a.riscoMedio).slice(0,5)
+      })
+      .sort((a, b) => b.riscoMedio - a.riscoMedio)
+      .slice(0, 5);
 
     return {
       municipalitiesWithMostSchoolsInHighRisk,
