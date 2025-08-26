@@ -235,10 +235,6 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
     localizacao,
     indicadores,
     scoreRisco,
-    municipioSomaProjetos,
-    municipioSomaBeneficiados,
-    municipioMediaIdeb2023,
-    riscoIdebMunicipio,
     scoreRiscoContextualizado,
     infraestrutura,
   }: School): Promise<void> {
@@ -253,10 +249,6 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
       localizacao,
       indicadores,
       scoreRisco,
-      municipioSomaProjetos,
-      municipioSomaBeneficiados,
-      municipioMediaIdeb2023,
-      riscoIdebMunicipio,
       scoreRiscoContextualizado,
       infraestrutura,
     });
