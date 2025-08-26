@@ -92,7 +92,7 @@ export class School {
     this.localizacao = props.localizacao;
 
     this.scoreRisco = props.scoreRisco;
-    
+
     this.scoreRiscoContextualizado = props.scoreRiscoContextualizado;
 
     this.indicadores = props.indicadores;

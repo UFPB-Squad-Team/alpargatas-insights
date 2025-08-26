@@ -117,9 +117,9 @@ describe('GetDashboardKPIsUseCase', () => {
         averageRisk: 0.64,
         idIbge: 'mun-002',
         name: 'João Pessoa',
-        schoolsCount: 2
+        schoolsCount: 2,
       },
-      lackName: 'possui_ar_condicionado'
+      lackName: 'possui_ar_condicionado',
     });
   });
 });
