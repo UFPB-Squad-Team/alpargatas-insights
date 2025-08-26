@@ -1,4 +1,3 @@
-
 export interface GetDashboardKPIsDTO {
   schools: number;
   schoolsWithHighInfraestructureRisk: number;
