@@ -1,5 +1,3 @@
-import { Municipality } from '../../../../domain/entities/municipality';
-import { School } from '../../../../domain/entities/school';
 
 export interface GetDashboardKPIsDTO {
   schools: number;
@@ -9,8 +7,6 @@ export interface GetDashboardKPIsDTO {
     name: string;
     averageRisk: number;
     schoolsCount: number;
-    municipioSomaProjetos: number;
   };
   lackName: string;
-  bestMunicipalityOpportunity: string;
 }
