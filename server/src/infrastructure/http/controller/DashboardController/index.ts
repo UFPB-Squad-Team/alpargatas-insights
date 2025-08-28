@@ -40,7 +40,9 @@ const riskDistributionDashboardUseCase = new RiskDistributionDashboardUseCase(
 
 const topDeficienciesUseCase = new TopDeficienciesUseCase(schoolRepository);
 
-const municipalitiesByRiskCountUseCase = new MunicipalitiesByRiskCountUseCase(schoolRepository)
+const municipalitiesByRiskCountUseCase = new MunicipalitiesByRiskCountUseCase(
+  schoolRepository,
+);
 
 export const getDashboardKPIsController = new GetDashboardKPIsController(
   getDashboardKPIsUseCase,
@@ -66,4 +68,5 @@ export const topDeficienciesController = new TopDeficienciesController(
   topDeficienciesUseCase,
 );
 
-export const municipalitiesByRiskCountController = new MunicipalitiesByRiskCountController(municipalitiesByRiskCountUseCase)
+export const municipalitiesByRiskCountController =
+  new MunicipalitiesByRiskCountController(municipalitiesByRiskCountUseCase);
