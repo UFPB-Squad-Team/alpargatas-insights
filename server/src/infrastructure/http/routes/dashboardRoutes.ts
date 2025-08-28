@@ -46,4 +46,6 @@ dashboardRoutes.get(
   ),
 );
 
+dashboardRoutes.get('/api/v1/dashboard/municipalities-by-risk-count', dashboardController.municipalitiesByRiskCountController.getMunicipalitiesWithMostRiskSchools.bind(dashboardController.municipalitiesByRiskCountController))
+
 export { dashboardRoutes };

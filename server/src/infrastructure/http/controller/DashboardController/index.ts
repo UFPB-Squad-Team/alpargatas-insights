@@ -12,6 +12,8 @@ import { RiskDistributionDashboardUseCase } from '../../../../application/UseCas
 import { RiskDistributionDashboardController } from './RiskDistributionDashboardController/RiskDistributionDashboardController';
 import { TopDeficienciesUseCase } from '../../../../application/UseCases/DashboardUseCases/TopDeficienciesUseCase/TopDeficienciesUseCase';
 import { TopDeficienciesController } from './TopDeficienciesController/TopDeficienciesController';
+import { MunicipalitiesByRiskCountUseCase } from '../../../../application/UseCases/DashboardUseCases/MunicipalitiesByRiskCountUseCase/MunicipalitiesByRiskCountUseCase';
+import { MunicipalitiesByRiskCountController } from './MunicipalitiesByRiskCountController/MunicipalitiesByRiskCountController';
 
 const municipalityRepository = new MoongoseMunicipalityRepository();
 
@@ -38,6 +40,8 @@ const riskDistributionDashboardUseCase = new RiskDistributionDashboardUseCase(
 
 const topDeficienciesUseCase = new TopDeficienciesUseCase(schoolRepository);
 
+const municipalitiesByRiskCountUseCase = new MunicipalitiesByRiskCountUseCase(schoolRepository)
+
 export const getDashboardKPIsController = new GetDashboardKPIsController(
   getDashboardKPIsUseCase,
 );
@@ -61,3 +65,5 @@ export const riskDistributionDashboardController =
 export const topDeficienciesController = new TopDeficienciesController(
   topDeficienciesUseCase,
 );
+
+export const municipalitiesByRiskCountController = new MunicipalitiesByRiskCountController(municipalitiesByRiskCountUseCase)
