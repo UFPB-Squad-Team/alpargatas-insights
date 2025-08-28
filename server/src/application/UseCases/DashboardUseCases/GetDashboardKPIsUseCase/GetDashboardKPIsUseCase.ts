@@ -30,10 +30,6 @@ export class GetDashboardKPIsUseCase {
         dependenciaAdm: school.dependenciaAdm,
         estadoSigla: school.estadoSigla,
         scoreRisco: school.scoreRisco,
-        municipioSomaProjetos: school.municipioSomaProjetos,
-        municipioSomaBeneficiados: school.municipioSomaBeneficiados,
-        municipioMediaIdeb2023: school.municipioMediaIdeb2023,
-        riscoIdebMunicipio: school.riscoIdebMunicipio,
         scoreRiscoContextualizado: school.scoreRiscoContextualizado,
         infraestrutura: school.infraestrutura,
         localizacao: school.localizacao,
@@ -46,14 +42,11 @@ export class GetDashboardKPIsUseCase {
             name: school.municipioNome,
             totalRisk: 0,
             schoolCount: 0,
-            municipioSomaProjetos: 0,
           };
         }
         acc[school.municipioIdIbge].totalRisk +=
           school.scoreRiscoContextualizado;
         acc[school.municipioIdIbge].schoolCount += 1;
-        acc[school.municipioIdIbge].municipioSomaProjetos =
-          school.municipioSomaProjetos ?? 0;
         return acc;
       },
       {} as Record<
@@ -62,7 +55,6 @@ export class GetDashboardKPIsUseCase {
           name: string;
           totalRisk: number;
           schoolCount: number;
-          municipioSomaProjetos: number;
         }
       >,
     );
@@ -74,9 +66,6 @@ export class GetDashboardKPIsUseCase {
       name: stats.name,
       averageRisk: Number((stats.totalRisk / stats.schoolCount).toFixed(2)),
       schoolsCount: stats.schoolCount,
-      municipioSomaProjetos: isNaN(stats.municipioSomaProjetos)
-        ? 0
-        : stats.municipioSomaProjetos,
     }));
 
     const highestAverageRiskMunicipality = municipalitiesWithAverageRisk.sort(
@@ -105,33 +94,12 @@ export class GetDashboardKPIsUseCase {
       }
     });
 
-    const municipalitiesWithAverageRiskAndTotalProjects = Object.entries(
-      municipalityRiskStats,
-    ).map(([idIbge, stats]) => ({
-      idIbge,
-      name: stats.name,
-      averageRisk: Number((stats.totalRisk / stats.schoolCount).toFixed(2)),
-      totalProjects: isNaN(stats.municipioSomaProjetos)
-        ? 0
-        : stats.municipioSomaProjetos,
-    }));
-
-    const bestMunicipalityOpportunity =
-      municipalitiesWithAverageRiskAndTotalProjects.sort((a, b) => {
-        if (b.averageRisk !== a.averageRisk) {
-          return b.averageRisk - a.averageRisk;
-        }
-
-        return a.totalProjects - b.totalProjects;
-      })[0];
-
     return {
       schools: countDocuments,
       schoolsWithHighInfraestructureRisk:
         schoolsWithHighInfraestructureRisk.length,
       municipalitiesWithMostAverageRisk: highestAverageRiskMunicipality,
       lackName,
-      bestMunicipalityOpportunity: bestMunicipalityOpportunity.name,
     };
   }
 }
