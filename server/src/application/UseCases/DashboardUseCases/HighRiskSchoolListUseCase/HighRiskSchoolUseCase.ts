@@ -1,31 +1,17 @@
 import { ISchoolRepository } from '../../../../domain/repositories/schoolRepository';
-import { HighRiskSchoolDTO } from './HighRiskSchoolDTO';
+import { AppError } from '../../../../shared/utils/errors/appError';
+import { PaginationHighRiskSchoolDTO } from './PaginationHighRiskSchoolDTO';
 
 export class HighRiskSchoolUseCase {
+  private readonly HIGH_RISK_THRESHOLD: number = 0.75;
   constructor(private schoolRepository: ISchoolRepository) {}
 
-  async execute(): Promise<HighRiskSchoolDTO> {
-    const schools = await this.schoolRepository.findAll();
+  async execute({ page, limit }: PaginationHighRiskSchoolDTO){
 
-    const HIGH_RISK_THRESHOLD: number = 0.75;
+    if (page < 1 || limit < 1) {
+          throw new AppError('Parameters invalid');
+    }
 
-    const schoolsWithHighInfraestructureRisk = schools
-      .filter((school) => school.scoreRisco >= HIGH_RISK_THRESHOLD)
-      .map((school) => ({
-        id: school.id,
-        escolaIdInep: school.escolaIdInep,
-        escolaNome: school.escolaNome,
-        municipioNome: school.municipioNome,
-        municipioIdIbge: school.municipioIdIbge,
-        dependenciaAdm: school.dependenciaAdm,
-        estadoSigla: school.estadoSigla,
-        scoreRisco: school.scoreRisco,
-        infraestrutura: school.infraestrutura,
-        localizacao: school.localizacao,
-      }));
-
-    return {
-      schoolsWithHighInfraestructureRisk,
-    };
+    return await this.schoolRepository.pagination( page, limit, this.HIGH_RISK_THRESHOLD )
   }
 }

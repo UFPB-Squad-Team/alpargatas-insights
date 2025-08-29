@@ -14,22 +14,23 @@ describe('GetMunicipalityStatisticsUseCase', () => {
           escolaNome: 'Escola de Diego Antonio',
           municipioNome: 'Cabaceiros',
           estadoSigla: UF.PARAIBA,
-          scoreRisco: 0.75,
+          scoreRiscoContextualizado: 0.75,
         },
         {
           id: '2',
-          municipioIdIbge: 1234567,
+          municipioIdIbge: '1234567',
           escolaIdInep: 12345676,
           escolaNome: 'Escola de Neves',
           municipioNome: 'Cabaceiros',
           estadoSigla: UF.PARAIBA,
-          scoreRisco: 0.1,
+          scoreRiscoContextualizado: 0.1,
         },
       ]),
       findByName: jest.fn().mockResolvedValue(null),
       findByUf: jest.fn().mockResolvedValue(null),
       findByDepAdm: jest.fn().mockResolvedValue(null),
       findSearchByTerm: jest.fn().mockResolvedValue(null),
+      pagination: jest.fn().mockResolvedValue(null),
       findAllForMap: jest.fn().mockResolvedValue(null),
       findAll: jest.fn().mockResolvedValue(null),
       delete: jest.fn(),
@@ -47,7 +48,7 @@ describe('GetMunicipalityStatisticsUseCase', () => {
     expect(await getMunicipalityStatisticsUseCase.execute(schoolData)).toEqual({
       ibgeCode: '1234567',
       totalSchools: 2,
-      averageRisk: 0.425,
+      averageRisk: 0.42
     });
   });
   it('Get a not found error', async () => {
@@ -58,6 +59,7 @@ describe('GetMunicipalityStatisticsUseCase', () => {
       findByUf: jest.fn().mockResolvedValue(null),
       findByDepAdm: jest.fn().mockResolvedValue(null),
       findSearchByTerm: jest.fn().mockResolvedValue(null),
+      pagination: jest.fn().mockResolvedValue(null),
       findAllForMap: jest.fn().mockResolvedValue(null),
       findAll: jest.fn().mockResolvedValue(null),
       delete: jest.fn(),

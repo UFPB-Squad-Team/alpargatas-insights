@@ -18,6 +18,12 @@ export interface ISchoolRepository {
     page: number;
     currentPage: number;
   }>;
+  pagination(page: number, limit: number, threshold?: number): Promise<{ 
+    schools: School[];
+    total: number;
+    page: number;
+    currentPage: number;
+   }>
   findAllForMap(): Promise<
     Pick<
       School,
