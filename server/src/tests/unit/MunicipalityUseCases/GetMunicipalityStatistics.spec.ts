@@ -14,7 +14,7 @@ describe('GetMunicipalityStatisticsUseCase', () => {
           escolaNome: 'Escola de Diego Antonio',
           municipioNome: 'Cabaceiros',
           estadoSigla: UF.PARAIBA,
-          scoreRiscoContextualizado: 0.75,
+          scoreRisco: 0.75,
         },
         {
           id: '2',
@@ -23,7 +23,7 @@ describe('GetMunicipalityStatisticsUseCase', () => {
           escolaNome: 'Escola de Neves',
           municipioNome: 'Cabaceiros',
           estadoSigla: UF.PARAIBA,
-          scoreRiscoContextualizado: 0.1,
+          scoreRisco: 0.1,
         },
       ]),
       findByName: jest.fn().mockResolvedValue(null),
@@ -48,7 +48,7 @@ describe('GetMunicipalityStatisticsUseCase', () => {
     expect(await getMunicipalityStatisticsUseCase.execute(schoolData)).toEqual({
       ibgeCode: '1234567',
       totalSchools: 2,
-      averageRisk: 0.42
+      averageRisk: 0.425
     });
   });
   it('Get a not found error', async () => {
