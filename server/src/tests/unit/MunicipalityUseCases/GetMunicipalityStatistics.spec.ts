@@ -48,7 +48,7 @@ describe('GetMunicipalityStatisticsUseCase', () => {
     expect(await getMunicipalityStatisticsUseCase.execute(schoolData)).toEqual({
       ibgeCode: '1234567',
       totalSchools: 2,
-      averageRisk: 0.425
+      averageRisk: 0.425,
     });
   });
   it('Get a not found error', async () => {

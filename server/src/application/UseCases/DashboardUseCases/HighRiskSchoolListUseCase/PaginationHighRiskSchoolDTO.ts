@@ -1,5 +1,4 @@
-
-export interface PaginationHighRiskSchoolDTO{
-    page: number
-    limit: number
+export interface PaginationHighRiskSchoolDTO {
+  page: number;
+  limit: number;
 }
