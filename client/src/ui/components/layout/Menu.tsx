@@ -102,7 +102,7 @@ const Menu = () => {
     <nav className="flex flex-col gap-4">
       {Object.entries(groupedItems).map(([groupTitle, items]) => (
         <div key={groupTitle}>
-          <span className="text-xs font-bold text-brand-text-secondary uppercase hidden lg:inline px-2 mb-2">
+          <span className="text-xs font-bold text-brand-primary uppercase hidden lg:inline px-2 mb-2">
             {groupTitle}
           </span>
           <ul>
@@ -118,20 +118,21 @@ const Menu = () => {
                         p-2 flex items-center rounded-md my-1 transition-colors duration-200
                         ${
                           isActive
-                            ? 'bg-brand-orange-dark text-white'
-                            : 'text-brand-text-secondary hover:bg-brand-surface hover:text-brand-text-primary'
+                            ? 'bg-brand-primary text-brand-accent shadow-sm' 
+                            : 'text-brand-accent hover:bg-gray-100 hover:text-brand-primary' 
                         }
                       `}
                     >
                       <item.Icon className="h-5 w-5" />
-                      <span className="hidden lg:inline ml-4">
+                      <span className="hidden lg:inline ml-4 font-medium">
                         {item.title}
                       </span>
                     </Link>
                   ) : (
-                    <div className="p-2 flex items-center rounded-md my-1 text-gray-400 cursor-not-allowed">
+                    <div className="p-2 flex items-center rounded-md my-1 text-brand-text-muted cursor-not-allowed">
+                      {' '}
                       <item.Icon className="h-5 w-5" />
-                      <span className="hidden lg:inline ml-4">
+                      <span className="hidden lg:inline ml-4 font-medium">
                         {item.title}
                       </span>
                     </div>

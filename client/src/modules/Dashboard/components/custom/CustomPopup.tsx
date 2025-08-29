@@ -7,10 +7,10 @@ interface CustomPopupProps {
 }
 
 const getRiskInfo = (score: number) => {
-  if (score >= 0.9) return { color: 'text-red-900', text: 'Alerta Máximo' };
-  if (score >= 0.75) return { color: 'text-orange-700', text: 'Alto Risco' };
-  if (score >= 0.4) return { color: 'text-orange-500', text: 'Risco Moderado' };
-  return { color: 'text-orange-300', text: 'Baixo Risco' };
+  if (score >= 0.9) return { color: 'text-risk-critical', text: 'Alerta Máximo' };
+  if (score >= 0.75) return { color: 'text-risk-high', text: 'Alto Risco' };
+  if (score >= 0.4) return { color: 'text-risk-medium', text: 'Risco Moderado' };
+  return { color: 'text-risk-low', text: 'Baixo Risco' };
 };
 
 const CustomPopup = ({ school }: CustomPopupProps) => {
@@ -18,9 +18,9 @@ const CustomPopup = ({ school }: CustomPopupProps) => {
   const scorePercentage = (school.scoreRiscoContextualizado * 100).toFixed(0);
 
   return (
-    <div className="font-sans w-60 space-y-4 text-sm text-brand-text-primary">
+    <div className="font-sans w-60 space-y-4 text-sm text-brand-primary">
       <div className="flex items-center gap-2">
-        <School className="h-5 w-5 text-brand-orange-dark flex-shrink-0" />
+        <School className="h-5 w-5 text-brand-secondary flex-shrink-0" />
         <p className="font-bold text-base leading-tight">{school.nome}</p>
       </div>
 
@@ -35,10 +35,10 @@ const CustomPopup = ({ school }: CustomPopupProps) => {
         </div>
         <div className="relative w-full pt-2">
           <div className="flex w-full h-2 rounded-full overflow-hidden">
-            <div className="bg-orange-300" style={{ width: '40%' }}></div>
-            <div className="bg-orange-500" style={{ width: '35%' }}></div>
-            <div className="bg-orange-700" style={{ width: '15%' }}></div>
-            <div className="bg-red-900" style={{ width: '10%' }}></div>
+            <div className="bg-risk-low" style={{ width: '40%' }}></div>
+            <div className="bg-risk-medium" style={{ width: '35%' }}></div>
+            <div className="bg-risk-high" style={{ width: '15%' }}></div>
+            <div className="bg-risk-critical" style={{ width: '10%' }}></div>
           </div>
           <div
             className="absolute top-0 w-0 h-0"
@@ -46,7 +46,7 @@ const CustomPopup = ({ school }: CustomPopupProps) => {
               left: `${scorePercentage}%`,
               borderLeft: '6px solid transparent',
               borderRight: '6px solid transparent',
-              borderTop: '8px solid #212529', // Cor do texto primário
+              borderTop: '8px solid #1E3A8A', 
               transform: 'translateX(-50%)',
               transition: 'left 0.3s ease-in-out',
             }}
@@ -56,7 +56,7 @@ const CustomPopup = ({ school }: CustomPopupProps) => {
 
       <Link
         to={`/escolas/${school.id}`}
-        className="flex items-center justify-center gap-2 bg-brand-orange-dark hover:bg-brand-orange-contrast !text-brand-text-primary transition-colors py-2 px-4 rounded-lg w-full"
+        className="flex items-center justify-center gap-2 bg-brand-accent hover:bg-brand-primary !text-brand-text-primary !text-bold transition-colors py-2 px-4 rounded-lg w-full"
       >
         Ver Detalhes da Escola
         <ArrowUpRight className="h-4 w-4" />

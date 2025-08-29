@@ -5,10 +5,12 @@ import { getTopMunicipalitiesByRiskUseCase } from '../../services/logic/Municipa
 import { MunicipalityRisk } from '@/domain/entities/Municipality/Municipality';
 
 const getRiskInfo = (score: number) => {
-  if (score >= 0.9) return { color: 'text-orange-900', text: 'Alerta Máximo' };
-  if (score >= 0.75) return { color: 'text-orange-700', text: 'Alto Risco' };
-  if (score >= 0.4) return { color: 'text-orange-500', text: 'Risco Moderado' };
-  return { color: 'text-orange-300', text: 'Baixo Risco' };
+  if (score >= 0.9)
+    return { color: 'text-risk-critical', text: 'Alerta Máximo' };
+  if (score >= 0.75) return { color: 'text-risk-high', text: 'Alto Risco' };
+  if (score >= 0.4)
+    return { color: 'text-risk-medium', text: 'Risco Moderado' };
+  return { color: 'text-risk-low', text: 'Baixo Risco' };
 };
 
 const TopMunicipalitiesChart = () => {
@@ -24,8 +26,8 @@ const TopMunicipalitiesChart = () => {
   return (
     <div className="bg-brand-background p-6 rounded-2xl shadow-sm border border-gray-200">
       <div className="flex items-center gap-4 mb-6">
-        <div className="bg-brand-orange-light p-2 rounded-lg">
-          <Building2 className="h-6 w-6 text-brand-orange-dark" />
+        <div className="bg-brand-primary p-2 rounded-lg">
+          <Building2 className="h-6 w-6 text-brand-accent" />
         </div>
         <h3 className="font-bold text-lg text-brand-text-primary">
           Municípios Prioritários
@@ -44,7 +46,7 @@ const TopMunicipalitiesChart = () => {
             return (
               <div key={item.nome}>
                 <div className="flex justify-between items-center mb-1 text-sm">
-                  <span className="font-medium text-brand-text-primary">
+                  <span className="font-medium text-brand-accent">
                     {item.nome}
                   </span>
                   <span className={`font-bold ${riskInfo.color}`}>
@@ -53,19 +55,19 @@ const TopMunicipalitiesChart = () => {
                 </div>
                 <div className="relative w-full pt-2">
                   <div className="flex w-full h-2 rounded-full overflow-hidden">
+                    <div className="bg-risk-low" style={{ width: '40%' }}></div>
                     <div
-                      className="bg-orange-300"
-                      style={{ width: '40%' }}
-                    ></div>
-                    <div
-                      className="bg-orange-500"
+                      className="bg-risk-medium"
                       style={{ width: '35%' }}
                     ></div>
                     <div
-                      className="bg-orange-700"
+                      className="bg-risk-high"
                       style={{ width: '15%' }}
                     ></div>
-                    <div className="bg-orange-800" style={{ width: '10%' }}></div>
+                    <div
+                      className="bg-risk-critical"
+                      style={{ width: '10%' }}
+                    ></div>
                   </div>
                   <div
                     className="absolute top-0 w-0 h-0"

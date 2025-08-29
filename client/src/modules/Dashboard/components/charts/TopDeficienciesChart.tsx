@@ -4,12 +4,18 @@ import Spinner from '@/ui/components/common/Spinner';
 import { getTopDeficienciesUseCase } from '../../services/logic/School/getTopDeficienciesUseCase';
 import { useQuery } from '@tanstack/react-query';
 
+const brandColors = [
+  'rgba(30, 58, 138, 0.85)', 
+  'rgba(120, 53, 15, 0.8)', 
+  'rgba(180, 83, 9, 0.75)', 
+  'rgba(217, 119, 6, 0.7)', 
+  'rgba(156, 163, 175, 0.65)', 
+];
+
 const CustomizedContent = (props: any) => {
   const { x, y, width, height, index, name, value } = props;
 
-  const color = ['#7C2D12', '#F97316', '#963B14', '#FDBA74', '#B45309'][
-    index % 5
-  ];
+  const color = brandColors[index % brandColors.length];
   const fontSize = Math.max(10, Math.min(18, width / 8));
 
   return (
@@ -40,7 +46,6 @@ const CustomizedContent = (props: any) => {
             overflow: 'hidden',
           }}
         >
-          {/* Nome da carência */}
           {width > 40 && height > 30 && (
             <p
               className="truncate w-full"
@@ -79,10 +84,10 @@ const TopDeficienciesChart = () => {
   return (
     <div className="h-full flex flex-col">
       <div className="flex items-center gap-4 mb-4">
-        <div className="bg-brand-orange-light p-2 rounded-lg">
-          <SquareChartGantt className="h-6 w-6 text-brand-orange-dark" />
+        <div className="bg-brand-primary p-2 rounded-lg">
+          <SquareChartGantt className="h-6 w-6 text-brand-accent" />
         </div>
-        <h3 className="font-bold text-lg text-brand-text-primary">
+        <h3 className="font-bold text-lg text-brand-primary">
           Maiores Deficiências nas Escolas
         </h3>
       </div>

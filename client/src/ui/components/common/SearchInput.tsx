@@ -15,6 +15,7 @@ const SearchInput = () => {
 
   const containerRef = useClickOutside(() => setIsDropdownOpen(false));
   const { setSelectedSchoolId } = useDashboard();
+  const navigate = useNavigate();
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
@@ -32,20 +33,22 @@ const SearchInput = () => {
     }
   }, [searchResults]);
 
-  const navigate = useNavigate();
-
   const handleSelectSchool = (school: School) => {
-    setSelectedSchoolId(school.inep);
+    setSelectedSchoolId(school.id); 
     navigate('/');
     setIsDropdownOpen(false);
   };
 
   return (
-    <div
-      className="relative hidden sm:flex flex-col bg-brand-surface rounded-md p-2 w-full max-w-md lg:max-w-xl xl:max-w-2xl"
-      ref={containerRef}
-    >
-      <div className="flex items-center">
+    <div className="relative flex flex-col w-full" ref={containerRef}>
+      <div
+        className="
+          flex items-center bg-brand-surface rounded-md p-2 w-full 
+          border-2 border-transparent focus-within:border-brand-primary
+          focus-within:ring-1 focus-within:ring-brand-primary/50 
+          transition-all duration-300
+        "
+      >
         <Search className="h-5 w-5 text-brand-text-secondary" />
         <input
           type="text"
@@ -67,7 +70,7 @@ const SearchInput = () => {
             <ul>
               {searchResults.map((school) => (
                 <li
-                  key={school.inep}
+                  key={school.id} // Usando school.id para consistência
                   className="p-3 hover:bg-gray-100 cursor-pointer border-b"
                   onClick={() => handleSelectSchool(school)}
                 >
@@ -78,7 +81,8 @@ const SearchInput = () => {
                         {school.municipio}
                       </p>
                     </div>
-                    <RiskIndicator score={school.scoreDeRisco} />
+                    {/* Ajuste para usar o novo score contextualizado */}
+                    <RiskIndicator score={school.scoreRiscoContextualizado} />
                   </div>
                 </li>
               ))}

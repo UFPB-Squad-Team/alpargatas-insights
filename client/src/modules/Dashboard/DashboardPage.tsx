@@ -84,10 +84,10 @@ const DashboardPage = () => {
         <div className="lg:col-span-2 flex flex-col gap-6">
           <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-200">
             <div className="flex items-center gap-4 mb-4">
-              <div className="bg-brand-orange-light p-2 rounded-lg">
-                <Map className="h-6 w-6 text-brand-orange-dark" />
+              <div className="bg-brand-primary p-2 rounded-lg">
+                <Map className="h-6 w-6 text-brand-accent" />
               </div>
-              <h3 className="font-bold text-lg text-brand-text-primary">
+              <h3 className="font-bold text-lg text-brand-primary">
                 Mapa de Riscos das Escolas na Paraíba
               </h3>
             </div>

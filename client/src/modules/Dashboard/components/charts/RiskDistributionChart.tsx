@@ -29,10 +29,10 @@ const RiskDistribuitonChart = () => {
   return (
     <div className="bg-brand-background rounded-2xl flex flex-col h-full">
       <div className="flex items-center gap-4 mb-4">
-        <div className="bg-brand-orange-light p-2 rounded-lg">
-          <ChartBar className="h-6 w-6 text-brand-orange-dark" />
+        <div className="bg-brand-primary p-2 rounded-lg">
+          <ChartBar className="h-6 w-6 text-brand-accent" />
         </div>
-        <h3 className="font-bold text-lg text-brand-text-primary">
+        <h3 className="font-bold text-lg text-brand-primary">
           Distribuição de Risco
         </h3>
       </div>

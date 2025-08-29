@@ -16,10 +16,10 @@ delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({ iconRetinaUrl, iconUrl, shadowUrl });
 
 const createCustomIcon = (score: number) => {
-  let color = '#FDBA74';
-  if (score >= 0.9) color = '#7C2D12';
-  else if (score >= 0.75) color = '#B45309';
-  else if (score >= 0.4) color = '#F97316';
+  let color = '#9CA3AF';
+  if (score >= 0.9) color = '#78350F';
+  else if (score >= 0.75) color = '#D97706';
+  else if (score >= 0.4) color = '#facc15';
 
   const iconHtml = `
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="${color}" stroke="white" stroke-width="1.5">
@@ -39,12 +39,12 @@ const createClusterCustomIcon = (cluster: L.MarkerCluster) => {
   const count = cluster.getChildCount();
 
   const levels = [
-    { threshold: 50, size: 40, className: 'bg-brand-orange-dark text-white' },
-    { threshold: 10, size: 40, className: 'bg-brand-orange text-white' },
+    { threshold: 50, size: 40, className: 'bg-brand-primary text-white' },
+    { threshold: 10, size: 40, className: 'bg-brand-secondary text-white' },
     {
       threshold: 0,
       size: 40,
-      className: 'bg-brand-orange-light text-brand-orange-dark',
+      className: 'bg-brand-accent text-brand-muted',
     },
   ];
 

@@ -33,10 +33,10 @@ const HighRiskSchoolsList = ({ onSelectSchool }: HighRiskSchoolsListProps) => {
   return (
     <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
       <div className="flex items-center gap-4 mb-4">
-        <div className="bg-brand-orange-light p-2 rounded-lg">
-          <BadgeAlert className="h-6 w-6 text-brand-orange-dark" />
+        <div className="bg-brand-primary p-2 rounded-lg">
+          <BadgeAlert className="h-6 w-6 text-brand-accent" />
         </div>
-        <h3 className="font-bold text-lg text-brand-text-primary">
+        <h3 className="font-bold text-lg text-brand-primary">
           Atenção Prioritária
         </h3>
       </div>
@@ -49,16 +49,16 @@ const HighRiskSchoolsList = ({ onSelectSchool }: HighRiskSchoolsListProps) => {
           {schools.map(
             (
               school,
-              index, // Adicionamos o 'index' aqui
+              index, 
             ) => (
               <li
-                key={school.escola_id_inep} // Usando a chave do contrato antigo
+                key={school.escola_id_inep} 
                 onClick={() => onSelectSchool(school)}
                 className="cursor-pointer rounded-lg hover:bg-gray-50 transition-colors"
               >
                 <SchoolListItem
                   school={school}
-                  rank={index + 1} // Passamos o ranking como prop
+                  rank={index + 1} 
                 />
               </li>
             ),

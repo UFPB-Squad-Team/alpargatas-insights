@@ -106,17 +106,17 @@ const mapRiskDistributionFromApiToDomain = (
     {
       faixa: 'Alto Risco',
       quantidade: apiData.schoolsWithHighInfraestructureRisk,
-      cor: '#B45309',
+      cor: '#D97706',
     },
     {
       faixa: 'Risco Moderado',
       quantidade: apiData.schoolsWithMediumInfraestructureRisk,
-      cor: '#F97316',
+      cor: '#B45309',
     },
     {
       faixa: 'Baixo Risco',
       quantidade: apiData.schoolsWithLowInfraestructureRisk,
-      cor: '#FDBA74',
+      cor: '#9CA3AF',
     },
   ];
 };
