@@ -9,6 +9,7 @@ describe('ListSchoolForMapUseCase', () => {
       findByUf: jest.fn().mockResolvedValue(null),
       findByDepAdm: jest.fn().mockResolvedValue(null),
       findSearchByTerm: jest.fn().mockResolvedValue(null),
+      pagination: jest.fn().mockResolvedValue(null),
       findAllForMap: jest.fn().mockResolvedValue([
         {
           id: '1',

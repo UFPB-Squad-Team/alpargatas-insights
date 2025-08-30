@@ -164,6 +164,41 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
     };
   }
 
+  async pagination(
+    page: number,
+    limit: number = 20,
+    threshold: number = 0.75,
+  ): Promise<{
+    schools: School[];
+    total: number;
+    page: number;
+    currentPage: number;
+  }> {
+    const skip = (page - 1) * limit;
+
+    const query = {
+      scoreRiscoContextualizado: { $gte: threshold },
+    };
+
+    const [schools, total] = await Promise.all([
+      SchoolModel.find(query)
+        .sort({ scoreRiscoContextualizado: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      SchoolModel.countDocuments(query),
+    ]);
+
+    const pages = Math.ceil(total / limit);
+
+    return {
+      schools: SchoolMapper.toDomainManySchools(schools),
+      total,
+      page: pages,
+      currentPage: page,
+    };
+  }
+
   async findAllForMap(): Promise<
     Pick<
       School,
