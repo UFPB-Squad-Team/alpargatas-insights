@@ -7,6 +7,9 @@ import { schoolRoutes } from './infrastructure/http/routes/schoolRoutes';
 import { dashboardRoutes } from './infrastructure/http/routes/dashboardRoutes';
 import { municipalityRoutes } from './infrastructure/http/routes/municipalityRoutes';
 
+import swaggerUi from 'swagger-ui-express'
+import swaggerSpec from './infrastructure/configs/swagger';
+
 const app = express();
 // const BASE_PATH = config.BASE_PATH;
 
@@ -30,6 +33,8 @@ app.use(
     },
   }),
 );
+
+app.use("/api/v1/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec) )
 
 app.use(schoolRoutes);
 
