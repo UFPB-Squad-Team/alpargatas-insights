@@ -4,10 +4,12 @@ import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 import SettingsModal from './SettingsModal';
 import { useClickOutside } from '@/ui/hooks/useClickOutside';
+import AboutModal from '../common/AboutModal';
 
 const Layout = () => {
   const [isSettingsOpen, setSettingsOpen] = useState(false);
   const [isNotificationsOpen, setNotificationsOpen] = useState(false);
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
 
   const notificationsRef = useClickOutside(() => {
     setNotificationsOpen(false);
@@ -23,6 +25,7 @@ const Layout = () => {
           isNotificationsOpen={isNotificationsOpen}
           onNotificationsClick={() => setNotificationsOpen((prev) => !prev)}
           onSettingsClick={() => setSettingsOpen(true)}
+          onAboutClick={() => setIsAboutOpen(true)}
           notificationsRef={notificationsRef}
         />
         <main className="flex-1 p-6 overflow-y-auto">
@@ -33,6 +36,7 @@ const Layout = () => {
         isOpen={isSettingsOpen}
         onClose={() => setSettingsOpen(false)}
       />
+      <AboutModal isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} />
     </div>
   );
 };

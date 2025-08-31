@@ -11,6 +11,8 @@ import {
   YAxis,
 } from 'recharts';
 import { getRiskDistributionUseCase } from '../../services/logic/School/getRiskDistributionUseCase';
+import InfoPopover from '@/ui/components/common/InfoPopover';
+import { explanations } from '@/shared/config/explanations.config';
 
 const RiskDistribuitonChart = () => {
   const { data = [], isLoading } = useQuery({
@@ -35,6 +37,10 @@ const RiskDistribuitonChart = () => {
         <h3 className="font-bold text-lg text-brand-text-primary">
           Distribuição de Risco
         </h3>
+        <InfoPopover
+          title={explanations.CHART_RISK_DISTRIBUTION.title}
+          content={explanations.CHART_RISK_DISTRIBUTION.content}
+        />
       </div>
       <div className="flex-1">
         <ResponsiveContainer width="100%" height="100%">

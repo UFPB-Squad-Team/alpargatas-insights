@@ -1,17 +1,19 @@
+import { MapPin } from 'lucide-react';
+
 const legendItems = [
-  { label: 'Alerta Máximo', color: 'bg-orange-800' },
-  { label: 'Alto Risco', color: 'bg-orange-600' },
-  { label: 'Risco Moderado', color: 'bg-orange-500' },
-  { label: 'Baixo Risco', color: 'bg-orange-300' },
+  { label: 'Alerta Máximo', color: 'text-orange-800' },
+  { label: 'Alto Risco', color: 'text-orange-600' },
+  { label: 'Risco Moderado', color: 'text-orange-500' },
+  { label: 'Baixo Risco', color: 'text-orange-300' },
 ];
 
 const RiskLegend = () => {
   return (
-    <div className="flex flex-wrap gap-2 text-xs mt-2">
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs mt-2">
       {legendItems.map(({ label, color }) => (
         <div key={label} className="flex items-center gap-1">
-          <span className={`w-3 h-3 rounded-full ${color}`} />
-          <span className="text-gray-600">{label}</span>
+          <MapPin className={`w-4 h-4 ${color}`} />
+          <span className="text-brand-text-secondary">{label}</span>
         </div>
       ))}
     </div>

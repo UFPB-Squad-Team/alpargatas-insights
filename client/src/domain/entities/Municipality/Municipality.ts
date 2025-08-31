@@ -15,3 +15,39 @@ export type MunicipalityRisk = {
   nome: string;
   riscoMedio: number;
 };
+
+/**
+ * @description Contract that represents a municipality in the filter list as it comes from the API.
+ */
+export type MunicipalityForFilterFromApi = {
+  id: number; 
+  nome: string;
+};
+
+/**
+ * @description Our internal domain model for the municipality filter.
+ */
+export type MunicipalityForFilter = {
+  codigoIbge: string;
+  nome: string;
+};
+
+/**
+ * @description Contract that represents the object of a municipality as it comes from the API
+ * in the endpoint for counting schools at risk.
+ */
+export type MunicipalityRiskCountFromApi = {
+  idIbge: string;
+  name: string;
+  schoolCount: number;
+};
+
+/**
+ * @description Our internal domain model for the risk count by municipality.
+ * It is the type that our choropleth map will consume.
+ */
+export type MunicipalityRiskCount = {
+  codigoIbge: string;
+  nome: string;
+  escolasEmAltoRisco: number;
+};

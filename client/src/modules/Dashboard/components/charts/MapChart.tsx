@@ -1,25 +1,28 @@
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMap,
+  LayersControl, 
+} from 'react-leaflet';
 import MarkerClusterGroup from '@changey/react-leaflet-markercluster';
 import L from 'leaflet';
 import { useEffect, useRef } from 'react';
-
 import 'leaflet/dist/leaflet.css';
 import '@changey/react-leaflet-markercluster/dist/styles.min.css';
 
-import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
-import iconUrl from 'leaflet/dist/images/marker-icon.png';
-import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 import CustomPopup from '../custom/CustomPopup';
 import { SchoolForMap } from '@/domain/entities/School/SchoolForMap';
-
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({ iconRetinaUrl, iconUrl, shadowUrl });
+import ChoroplethLayer from './ChoroplethLayer'; 
 
 const createCustomIcon = (score: number) => {
-  let color = '#FDBA74';
-  if (score >= 0.9) color = '#7C2D12';
-  else if (score >= 0.75) color = '#B45309';
-  else if (score >= 0.4) color = '#F97316';
+  let color = '#FDBA74'; 
+  if (score >= 0.9)
+    color = '#963B14';
+  else if (score >= 0.75)
+    color = '#D46419'; 
+  else if (score >= 0.4) color = '#FFA726'; 
 
   const iconHtml = `
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="${color}" stroke="white" stroke-width="1.5">
@@ -37,7 +40,6 @@ const createCustomIcon = (score: number) => {
 
 const createClusterCustomIcon = (cluster: L.MarkerCluster) => {
   const count = cluster.getChildCount();
-
   const levels = [
     { threshold: 50, size: 40, className: 'bg-brand-orange-dark text-white' },
     { threshold: 10, size: 40, className: 'bg-brand-orange text-white' },
@@ -47,7 +49,6 @@ const createClusterCustomIcon = (cluster: L.MarkerCluster) => {
       className: 'bg-brand-orange-light text-brand-orange-dark',
     },
   ];
-
   const { size, className } = levels.find((level) => count >= level.threshold)!;
 
   return L.divIcon({
@@ -62,32 +63,29 @@ interface MapChartProps {
   selectedSchoolId?: string | null | number;
 }
 
-const MapMarkers = ({ schools, selectedSchoolId }: MapChartProps) => {
+const SchoolMarkersLayer = ({ schools, selectedSchoolId }: MapChartProps) => {
   const map = useMap();
-
   const markerRefs = useRef<Record<string, L.Marker>>({});
 
   useEffect(() => {
     if (!selectedSchoolId) return;
-
     const school = schools.find((s) => s.id === selectedSchoolId);
     if (!school) return;
 
     const coords = school.coordenadas;
-
-    if (coords.length >= 2) {
+    if (coords && coords.length >= 2) {
       const latLng: [number, number] = [coords[1], coords[0]];
       map.setView(latLng, 15, { animate: true });
-    } else {
-      console.warn('Coordenadas inválidas para setView:', coords);
-    }
 
-    const marker = markerRefs.current[selectedSchoolId];
-    if (marker) marker.openPopup();
+      const marker = markerRefs.current[selectedSchoolId.toString()];
+      if (marker) {
+        setTimeout(() => marker.openPopup(), 300);
+      }
+    }
   }, [selectedSchoolId, schools, map]);
 
   return (
-    <>
+    <MarkerClusterGroup iconCreateFunction={createClusterCustomIcon}>
       {schools.map((school) => (
         <Marker
           key={school.id}
@@ -102,25 +100,44 @@ const MapMarkers = ({ schools, selectedSchoolId }: MapChartProps) => {
           </Popup>
         </Marker>
       ))}
-    </>
+    </MarkerClusterGroup>
   );
 };
 
 const MapChart = ({ schools, selectedSchoolId }: MapChartProps) => {
   return (
-    <div className="h-[500px] w-full rounded-lg shadow-md overflow-hidden">
+    <div className="h-[500px] w-full rounded-lg shadow-md overflow-hidden z-[9995]">
       <MapContainer
         center={[-7.1, -36.8]}
         zoom={8}
         style={{ height: '100%', width: '100%' }}
       >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        />
-        <MarkerClusterGroup iconCreateFunction={createClusterCustomIcon}>
-          <MapMarkers schools={schools} selectedSchoolId={selectedSchoolId} />
-        </MarkerClusterGroup>
+        <LayersControl position="topright">
+          <LayersControl.BaseLayer checked name="Mapa Detalhado">
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            />
+          </LayersControl.BaseLayer>
+
+          <LayersControl.BaseLayer name="Mapa Limpo">
+            <TileLayer
+              url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
+              attribution='&copy; <a href="https://carto.com/attributions">CARTO</a>'
+            />
+          </LayersControl.BaseLayer>
+
+          <LayersControl.Overlay checked name="Visão por Escolas (Clusters)">
+            <SchoolMarkersLayer
+              schools={schools}
+              selectedSchoolId={selectedSchoolId}
+            />
+          </LayersControl.Overlay>
+
+          <LayersControl.Overlay name="Visão por Municípios (Risco)">
+            <ChoroplethLayer />
+          </LayersControl.Overlay>
+        </LayersControl>
       </MapContainer>
     </div>
   );

@@ -1,6 +1,13 @@
-import { MunicipalityRisk } from '@/domain/entities/Municipality/Municipality';
+import {
+  MunicipalityRisk,
+  MunicipalityRiskCount,
+  MunicipalityRiskCountFromApi,
+} from '@/domain/entities/Municipality/Municipality';
 import { apiClient } from '@/shared/lib/axios';
-import { mapMunicipalityRiskFromApiToDomain } from '@/shared/services/Municipality/repositories/mappers/municipalityMapper';
+import {
+  mapMunicipalityRiskCountFromApiToDomain,
+  mapMunicipalityRiskFromApiToDomain,
+} from '@/shared/services/Municipality/repositories/mappers/municipalityMapper';
 import { mapSchoolFromApiToDomain } from '@/shared/services/Schools/repositories/mappers/schoolMapper';
 import {
   HighRiskSchool,
@@ -16,6 +23,7 @@ import {
   TopDeficienciesApiResponse,
 } from '../types/School/DeficiencyTypes';
 import { mapDeficiencyFromApiToDomain } from './mappers/deficiencyMapper';
+import { GeoJsonFeatureCollection } from '@/domain/entities/Municipality/GeoJson';
 
 type DashboardKpisFromApi = {
   schools: number;
@@ -51,6 +59,10 @@ const mapKpisFromApiToDomain = (
       .replace(/_/g, ' '),
     municipioOportunidade: apiData.bestMunicipalityOpportunity,
   };
+};
+
+type MunicipalitiesByRiskCountApiResponse = {
+  schoolsWithHighRiskPerMunicipality: MunicipalityRiskCountFromApi[];
 };
 
 const getKpis = async (): Promise<DashboardKpis> => {
@@ -149,10 +161,43 @@ const getTopDeficiencies = async (): Promise<Deficiency[]> => {
   }
 };
 
+const getParaibaGeoJson = async (): Promise<GeoJsonFeatureCollection> => {
+  try {
+    const response = await fetch('/pb.json');
+    if (!response.ok) {
+      throw new Error('Falha ao carregar o arquivo GeoJSON da Paraíba');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Erro no repositório ao buscar GeoJSON:', error);
+    throw error;
+  }
+};
+
+const getMunicipalitiesByRiskCount = async (): Promise<
+  MunicipalityRiskCount[]
+> => {
+  try {
+    const { data } = await apiClient.get<MunicipalitiesByRiskCountApiResponse>(
+      '/api/v1/dashboard/municipalities-by-risk-count',
+    );
+    const municipalitiesFromApi = data.schoolsWithHighRiskPerMunicipality || [];
+    return municipalitiesFromApi.map(mapMunicipalityRiskCountFromApiToDomain);
+  } catch (error) {
+    console.error(
+      'Erro no repositório ao buscar contagem de escolas por município:',
+      error,
+    );
+    throw error;
+  }
+};
+
 export const dashboardRepository = {
   getKpis,
   getHighRiskSchools,
   getTopMunicipalitiesByRisk,
   getRiskDistribution,
   getTopDeficiencies,
+  getParaibaGeoJson,
+  getMunicipalitiesByRiskCount,
 };

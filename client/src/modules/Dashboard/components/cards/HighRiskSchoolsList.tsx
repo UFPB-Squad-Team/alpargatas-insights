@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import SchoolListItem from './SchoolListItem';
-
 import { BadgeAlert } from 'lucide-react';
 import {
   HighRiskSchool,
   getHighRiskSchools,
 } from '@/shared/mocks/services/getHighRiskSchools';
 import Spinner from '@/ui/components/common/Spinner';
+import InfoPopover from '@/ui/components/common/InfoPopover';
+import { explanations } from '@/shared/config/explanations.config';
 
 interface HighRiskSchoolsListProps {
   onSelectSchool: (school: HighRiskSchool) => void;
@@ -39,6 +40,10 @@ const HighRiskSchoolsList = ({ onSelectSchool }: HighRiskSchoolsListProps) => {
         <h3 className="font-bold text-lg text-brand-text-primary">
           Atenção Prioritária
         </h3>
+        <InfoPopover
+          title={explanations.HIGH_RISK_SCHOOLS_LIST.title}
+          content={explanations.HIGH_RISK_SCHOOLS_LIST.content}
+        />
       </div>
       {isLoading ? (
         <div className="flex justify-center items-center h-48">
@@ -49,16 +54,16 @@ const HighRiskSchoolsList = ({ onSelectSchool }: HighRiskSchoolsListProps) => {
           {schools.map(
             (
               school,
-              index, // Adicionamos o 'index' aqui
+              index, 
             ) => (
               <li
-                key={school.escola_id_inep} // Usando a chave do contrato antigo
+                key={school.escola_id_inep} 
                 onClick={() => onSelectSchool(school)}
                 className="cursor-pointer rounded-lg hover:bg-gray-50 transition-colors"
               >
                 <SchoolListItem
                   school={school}
-                  rank={index + 1} // Passamos o ranking como prop
+                  rank={index + 1} 
                 />
               </li>
             ),
