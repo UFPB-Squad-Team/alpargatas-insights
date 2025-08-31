@@ -3,6 +3,8 @@ import { SquareChartGantt } from 'lucide-react';
 import Spinner from '@/ui/components/common/Spinner';
 import { getTopDeficienciesUseCase } from '../../services/logic/School/getTopDeficienciesUseCase';
 import { useQuery } from '@tanstack/react-query';
+import InfoPopover from '@/ui/components/common/InfoPopover';
+import { explanations } from '@/shared/config/explanations.config';
 
 const CustomizedContent = (props: any) => {
   const { x, y, width, height, index, name, value } = props;
@@ -10,15 +12,24 @@ const CustomizedContent = (props: any) => {
   const color = ['#7C2D12', '#F97316', '#963B14', '#FDBA74', '#B45309'][
     index % 5
   ];
-  const fontSize = Math.max(10, Math.min(18, width / 8));
+
+  const minWidth = 50;
+  const minHeight = 40;
+  const rectWidth = Math.max(width, minWidth);
+  const rectHeight = Math.max(height, minHeight);
+
+  const fontSize = Math.max(
+    10,
+    Math.min(18, Math.min(rectWidth, rectHeight) / 5),
+  );
 
   return (
     <g>
       <rect
         x={x}
         y={y}
-        width={width}
-        height={height}
+        width={rectWidth}
+        height={rectHeight}
         style={{
           fill: color,
           stroke: '#fff',
@@ -29,8 +40,8 @@ const CustomizedContent = (props: any) => {
       <foreignObject
         x={x + 5}
         y={y + 5}
-        width={width - 10}
-        height={height - 10}
+        width={rectWidth - 10}
+        height={rectHeight - 10}
       >
         <div
           className="flex flex-col items-center justify-center h-full text-white font-semibold"
@@ -40,22 +51,15 @@ const CustomizedContent = (props: any) => {
             overflow: 'hidden',
           }}
         >
-          {/* Nome da carência */}
-          {width > 40 && height > 30 && (
-            <p
-              className="truncate w-full"
-              style={{
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              {name}
-            </p>
-          )}
-
-          {/* Sempre renderiza o número de escolas */}
-          <p className="opacity-80 text-xs">{value} escolas</p>
+          <p
+            className="w-full"
+            style={{ whiteSpace: 'normal', wordWrap: 'break-word' }}
+          >
+            {name}
+          </p>
+          <p style={{ fontSize: `${Math.max(10, fontSize - 2)}px` }}>
+            {value} escolas
+          </p>
         </div>
       </foreignObject>
     </g>
@@ -76,6 +80,8 @@ const TopDeficienciesChart = () => {
     );
   }
 
+  const aspectRatio = deficiencies.length <= 5 ? 1 : 4 / 3;
+
   return (
     <div className="h-full flex flex-col">
       <div className="flex items-center gap-4 mb-4">
@@ -85,6 +91,10 @@ const TopDeficienciesChart = () => {
         <h3 className="font-bold text-lg text-brand-text-primary">
           Maiores Deficiências nas Escolas
         </h3>
+        <InfoPopover
+          title={explanations.CHART_TOP_DEFICIENCIES.title}
+          content={explanations.CHART_TOP_DEFICIENCIES.content}
+        />
       </div>
       <div className="flex-grow">
         <ResponsiveContainer width="100%" height="100%">
@@ -92,7 +102,7 @@ const TopDeficienciesChart = () => {
             data={deficiencies}
             dataKey="quantidadeEscolas"
             nameKey="carencia"
-            aspectRatio={4 / 3}
+            aspectRatio={aspectRatio}
             stroke="#fff"
             content={<CustomizedContent />}
           >

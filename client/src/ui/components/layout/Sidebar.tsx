@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import Menu from './Menu';
-import { HelpCircle, Lightbulb } from 'lucide-react';
+import { HelpCircle } from 'lucide-react';
 
 const Sidebar = () => {
   return (
@@ -12,15 +12,14 @@ const Sidebar = () => {
             className="flex items-center justify-center lg:justify-start gap-2"
           >
             <img
-              className="w-14 h-14 lg:w-14 lg:h-14"
-              src="/logo_no_background.svg"
-              alt="Logo do Instituto Alpargatas"
+              className="w-14 h-14 lg:w-15 lg:h-15"
+              src="/Logo de Educação e Análise de Dados.png"
+              alt="Logo"
             />
             <span className="hidden lg:block font-bold text-brand-text-primary text-xl">
-              Alpargatas{' '}
+              Observatório da{' '}
               <span className="text-brand-orange-dark text-md">
-                Insights
-                <Lightbulb className="inline-block h-4 w-4 ml-1 text-brand-orange-dark" />
+                Educação - PB
               </span>
             </span>
           </Link>
@@ -34,7 +33,7 @@ const Sidebar = () => {
       <div>
         <div className="border-t border-gray-200 pt-4 flex flex-col items-center lg:items-start">
           <p className="text-xs text-brand-text-secondary hidden lg:block">
-            © 2025 Alpargatas Insights.
+            © 2025 UFPB.
           </p>
           <Link to="/ajuda" className="lg:hidden">
             <HelpCircle className="h-5 w-5 text-brand-text-secondary" />

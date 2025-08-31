@@ -3,6 +3,8 @@ import Spinner from '@/ui/components/common/Spinner';
 import { useQuery } from '@tanstack/react-query';
 import { getTopMunicipalitiesByRiskUseCase } from '../../services/logic/Municipality/getTopMunicipalitiesByRiskUseCase';
 import { MunicipalityRisk } from '@/domain/entities/Municipality/Municipality';
+import { explanations } from '@/shared/config/explanations.config';
+import InfoPopover from '@/ui/components/common/InfoPopover';
 
 const getRiskInfo = (score: number) => {
   if (score >= 0.9) return { color: 'text-orange-900', text: 'Alerta Máximo' };
@@ -30,6 +32,10 @@ const TopMunicipalitiesChart = () => {
         <h3 className="font-bold text-lg text-brand-text-primary">
           Municípios Prioritários
         </h3>
+        <InfoPopover
+          title={explanations.CHART_TOP_MUNICIPALITIES.title}
+          content={explanations.CHART_TOP_MUNICIPALITIES.content}
+        />
       </div>
       {isLoading ? (
         <div className="flex justify-center items-center h-48">
@@ -65,7 +71,10 @@ const TopMunicipalitiesChart = () => {
                       className="bg-orange-700"
                       style={{ width: '15%' }}
                     ></div>
-                    <div className="bg-orange-800" style={{ width: '10%' }}></div>
+                    <div
+                      className="bg-orange-800"
+                      style={{ width: '10%' }}
+                    ></div>
                   </div>
                   <div
                     className="absolute top-0 w-0 h-0"

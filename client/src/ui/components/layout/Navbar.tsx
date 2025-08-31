@@ -1,4 +1,4 @@
-import { Bell, Settings, Menu as MenuIcon } from 'lucide-react';
+import { Bell, Settings, Menu as MenuIcon, HelpCircle } from 'lucide-react';
 import NotificationsDropdown from './NotificationsDropdown';
 import React from 'react';
 import SearchInput from '../common/SearchInput';
@@ -7,6 +7,7 @@ interface NavbarProps {
   isNotificationsOpen: boolean;
   onNotificationsClick: () => void;
   onSettingsClick: () => void;
+  onAboutClick: () => void;
   notificationsRef: React.RefObject<HTMLDivElement>;
 }
 
@@ -14,6 +15,7 @@ const Navbar = ({
   isNotificationsOpen,
   onNotificationsClick,
   onSettingsClick,
+  onAboutClick,
   notificationsRef,
 }: NavbarProps) => {
   return (
@@ -46,19 +48,17 @@ const Navbar = ({
           <Settings className="h-6 w-6" />
         </button>
 
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-brand-orange-dark flex items-center justify-center text-white font-bold">
-            B
-          </div>
-          <div className="hidden md:block">
-            <p className="font-semibold text-sm text-brand-text-primary">
-              Brenno Henrique {/* TODO: vai ser um component futuramente*/}
-            </p>
-            <p className="text-xs text-brand-text-secondary">
-              Diretor Executivo {/* TODO: vai ser um component futuramente*/}
-            </p>
-          </div>
-        </div>
+        <div className="hidden sm:block h-6 w-px bg-gray-200"></div>
+
+        <button
+          onClick={onAboutClick}
+          className="hidden sm:flex items-center gap-2 text-brand-text-secondary hover:text-brand-orange-dark transition-colors"
+        >
+          <HelpCircle className="h-6 w-6" />
+          <span className="font-medium text-sm hidden lg:block">
+            Ajuda & Sobre
+          </span>
+        </button>
       </div>
     </header>
   );
