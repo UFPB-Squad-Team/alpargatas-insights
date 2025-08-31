@@ -1,13 +1,13 @@
-
-import swaggerJSDoc from "swagger-jsdoc";
+import swaggerJSDoc from 'swagger-jsdoc';
 
 const options = {
-      definition: {
+  definition: {
     openapi: '3.0.0',
     info: {
       title: 'API Observatório da Educação - PB',
       version: '1.0.0',
-      description: 'Documentação da API RESTful para a plataforma de gestão escolar.',
+      description:
+        'Documentação da API RESTful para a plataforma de gestão escolar.',
     },
     servers: [
       {
@@ -16,9 +16,9 @@ const options = {
       },
     ],
   },
-  apis: ['./src/infrastructure/http/controller/**/*.ts'], 
-}
+  apis: ['./src/infrastructure/http/controller/**/*.ts'],
+};
 
-const swaggerSpec = swaggerJSDoc(options)
+const swaggerSpec = swaggerJSDoc(options);
 
-export default swaggerSpec
+export default swaggerSpec;

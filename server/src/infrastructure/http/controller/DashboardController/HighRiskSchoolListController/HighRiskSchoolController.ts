@@ -6,7 +6,6 @@ import { Request, Response } from 'express';
 export class HighRiskSchoolController {
   constructor(private highRiskSchoolUseCase: HighRiskSchoolUseCase) {}
 
-  
   /**
    * @swagger
    * /api/v1/dashboard/high-risk-schools:

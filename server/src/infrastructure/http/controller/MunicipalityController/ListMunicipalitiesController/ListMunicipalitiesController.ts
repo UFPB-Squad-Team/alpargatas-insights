@@ -5,7 +5,6 @@ import { Request, Response } from 'express';
 export class ListMunicipalitiesController {
   constructor(private listMunicipalitiesUseCase: ListMunicipalitiesUseCase) {}
 
-  
   /**
    * @swagger
    * /api/v1/municipalities:

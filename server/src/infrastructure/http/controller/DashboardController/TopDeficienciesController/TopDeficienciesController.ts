@@ -5,7 +5,6 @@ import { Request, Response } from 'express';
 export class TopDeficienciesController {
   constructor(private topDeficienciesUseCase: TopDeficienciesUseCase) {}
 
-  
   /**
    * @swagger
    * /api/v1/dashboard/top-deficiencies:

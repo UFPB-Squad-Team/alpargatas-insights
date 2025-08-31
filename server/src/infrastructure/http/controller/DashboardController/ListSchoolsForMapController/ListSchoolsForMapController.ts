@@ -5,7 +5,6 @@ import { Request, Response } from 'express';
 export class ListSchoolsForMapController {
   constructor(private listSchoolsForMapUseCase: ListSchoolsForMapUseCase) {}
 
-  
   /**
    * @swagger
    * /api/v1/dashboard/map-data:

@@ -7,7 +7,6 @@ export class TopMunicipalitiesAverageRiskController {
     private topMunicipalitiesAverageRiskUseCase: TopMunicipalitiesAverageRiskUseCase,
   ) {}
 
-  
   /**
    * @swagger
    * /api/v1/dashboard/top-municipalities-by-average-risk:

@@ -8,7 +8,7 @@ export class GetMunicipalityStatisticsController {
     private getMunicipalityStatisticsUseCase: GetMunicipalityStatisticsUseCase,
   ) {}
 
-   /**
+  /**
    * @swagger
    * /api/v1/municipalities/{municipioIdIbge}/statistics:
    *   get:

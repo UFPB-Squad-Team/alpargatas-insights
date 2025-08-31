@@ -9,7 +9,6 @@ export class GetSchoolsByDependenciaAdministrativaController {
     private getSchoolsByDependenciaAdministrativaUseCase: GetSchoolsByDependenciaAdministrativa,
   ) {}
 
-  
   /**
    * @swagger
    * /api/v1/schools/details/{dependenciaAdm}:

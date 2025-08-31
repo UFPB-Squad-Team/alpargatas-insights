@@ -7,7 +7,7 @@ export class RiskDistributionDashboardController {
     private riskDistributionDashboardUseCase: RiskDistributionDashboardUseCase,
   ) {}
 
-    /**
+  /**
    * @swagger
    * /api/v1/dashboard/risk-distribution:
    *   get:
