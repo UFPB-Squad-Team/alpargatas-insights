@@ -16,7 +16,10 @@ const options = {
       },
     ],
   },
-  apis: ['./src/infrastructure/http/controller/**/*.ts'],
+  apis: [ 
+          './dist/infrastructure/http/controller/**/*.js', 
+          './src/infrastructure/http/controller/**/*.ts'
+  ],
 };
 
 const swaggerSpec = swaggerJSDoc(options);
