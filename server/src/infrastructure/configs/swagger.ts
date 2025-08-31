@@ -16,9 +16,9 @@ const options = {
       },
     ],
   },
-  apis: [ 
-          './dist/infrastructure/http/controller/**/*.js', 
-          './src/infrastructure/http/controller/**/*.ts'
+  apis: [
+    './dist/infrastructure/http/controller/**/*.js',
+    './src/infrastructure/http/controller/**/*.ts',
   ],
 };
 

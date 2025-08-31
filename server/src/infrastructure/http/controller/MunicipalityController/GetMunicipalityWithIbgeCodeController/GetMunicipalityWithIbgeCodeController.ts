@@ -8,7 +8,6 @@ export class GetMunicipalityWithIbgeCodeController {
     private getMunicipalityWithIbgeCodeUseCase: GetMunicipalityWithIbgeCodeUseCase,
   ) {}
 
-   
   /**
    * @swagger
    * /api/v1/municipalities/{codigoIbge}:
@@ -55,7 +54,7 @@ export class GetMunicipalityWithIbgeCodeController {
    *                       type: integer
    *                       description: Total de escolas no município
    *                       example: 15
-   *                     
+   *
    *                 - type: string
    *                   example: "No have a municipality with this code"
    *       '400':
