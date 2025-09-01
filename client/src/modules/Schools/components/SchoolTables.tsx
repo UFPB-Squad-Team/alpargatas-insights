@@ -31,7 +31,7 @@ const dependencyStyles: { [key: string]: string } = {
   Estadual: 'bg-orange-100 text-orange-800',
 };
 const locationStyles: { [key: string]: string } = {
-  Urbana: 'bg-lime-100 text-lime-800',
+  Urbana: 'bg-red-100 text-red-800',
   Rural: 'bg-yellow-100 text-yellow-800',
 };
 
