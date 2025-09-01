@@ -10,7 +10,7 @@ import {
  */
 export const mapSchoolFromApiToDomain = (apiSchool: SchoolFromApi): School => {
   return {
-    id: apiSchool._id,
+    id: apiSchool.id,
     inep: apiSchool.escolaIdInep,
     nome: apiSchool.escolaNome,
     municipioId: apiSchool.municipioIdIbge,

@@ -1,4 +1,4 @@
-import { Filter, X } from 'lucide-react'; // Importar o ícone 'X'
+import { Filter, X } from 'lucide-react';
 import FilterDropdown from '@/ui/components/common/FilterDropdown';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -9,28 +9,38 @@ const DashboardFilters = () => {
   const [selectedMunicipality, setSelectedMunicipality] = useState<string>();
   const [selectedINSE, setSelectedINSE] = useState<string>();
   const [selectedLocation, setSelectedLocation] = useState<string>();
+  const [selectedDependency, setSelectedDependency] = useState<string>();
 
   const { data: municipalities = [] } = useQuery({
     queryKey: ['municipalities-for-filter'],
     queryFn: listMunicipalitiesUseCase.execute,
   });
+
   const municipalityOptions = municipalities.map((m) => ({
     value: m.codigoIbge.toString(),
     label: m.nome,
   }));
+
   const inseOptions = [
     { value: '1', label: 'Nível I' },
     { value: '2', label: 'Nível II' },
   ];
+
   const locationOptions = [
     { value: 'urbana', label: 'Urbana' },
     { value: 'rural', label: 'Rural' },
+  ];
+
+  const dependenciesOptions = [
+    { value: 'municipal', label: 'Municipal' },
+    { value: 'estadual', label: 'Estadual' },
   ];
 
   const handleClearFilters = () => {
     setSelectedMunicipality(undefined);
     setSelectedINSE(undefined);
     setSelectedLocation(undefined);
+    setSelectedDependency(undefined);
   };
 
   const hasActiveFilters =
@@ -38,12 +48,15 @@ const DashboardFilters = () => {
 
   return (
     <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 mb-6">
-      <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
+      <div className="flex flex-col md:flex-row md:items-center gap-4">
+        {/* Título Filtros */}
         <div className="flex items-center gap-2 text-brand-orange-dark flex-shrink-0">
           <Filter size={16} />
           <h3 className="font-semibold text-sm uppercase">Filtros</h3>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
+
+        {/* Container dos Filtros */}
+        <div className="flex flex-wrap gap-3 w-full">
           <FilterDropdown
             label="Município"
             placeholder="Todos os municípios"
@@ -54,6 +67,16 @@ const DashboardFilters = () => {
             onChange={setSelectedMunicipality}
           />
           <FilterDropdown
+            label="Dependência Administrativa"
+            placeholder="Municipal e Estadual"
+            searchPlaceholder="Buscar dependência..."
+            emptyText="Nenhuma dependência encontrada."
+            options={dependenciesOptions}
+            value={selectedDependency}
+            onChange={setSelectedDependency}
+            disabled={true}
+          />
+          <FilterDropdown
             label="Nível Socioeconômico"
             placeholder="Todos os níveis"
             searchPlaceholder="Buscar nível..."
@@ -61,7 +84,7 @@ const DashboardFilters = () => {
             options={inseOptions}
             value={selectedINSE}
             onChange={setSelectedINSE}
-            disabled={false}
+            disabled={true}
           />
           <FilterDropdown
             label="Localização"
@@ -71,7 +94,7 @@ const DashboardFilters = () => {
             options={locationOptions}
             value={selectedLocation}
             onChange={setSelectedLocation}
-            disabled={false}
+            disabled={true}
           />
         </div>
 
