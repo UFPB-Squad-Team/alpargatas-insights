@@ -15,6 +15,7 @@ function App() {
             <Route element={<Layout />}>
               <Route path="/" element={<DashboardPage />} />
               <Route path="/escolas" element={<SchoolsPage />} />
+              <Route path="/escolas/:id" />
             </Route>
           </Routes>
         </DashboardProvider>
