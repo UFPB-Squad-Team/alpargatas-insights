@@ -7,7 +7,7 @@ import { tipoLocalizacao } from '../../enums/enumTipoLocalizacao';
  * Note the mixed naming (camelCase and snake_case) and the _id field.
  */
 export type SchoolFromApi = {
-  _id: string;
+  id: string;
   escolaIdInep: number;
   escolaNome: string;
   municipioIdIbge: number;

@@ -37,7 +37,7 @@ const FilterDropdown = ({
   const selectedLabel = options.find((option) => option.value === value)?.label;
 
   return (
-    <div>
+    <div className="flex flex-col flex-1 min-w-[160px] max-w-[250px]">
       <label className="text-xs font-semibold text-brand-text-primary">
         {label}
       </label>
@@ -47,7 +47,7 @@ const FilterDropdown = ({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-full justify-between mt-1 disabled:bg-gray-100 disabled:cursor-not-allowed " 
+            className="w-full justify-between mt-1 disabled:bg-gray-100 disabled:cursor-not-allowed"
             disabled={disabled}
           >
             {selectedLabel || placeholder}
@@ -55,7 +55,6 @@ const FilterDropdown = ({
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[--radix-popover-trigger-width] p-0 z-[9999]">
-          {' '}
           <Command>
             <CommandInput placeholder={searchPlaceholder} />
             <CommandList>

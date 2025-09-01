@@ -8,6 +8,7 @@ import {
   AlertCircle,
   FileText,
   Network,
+  FileSearchIcon,
 } from 'lucide-react';
 import React from 'react';
 
@@ -81,6 +82,14 @@ const menuItems: MenuItem[] = [
     title: 'Configurações',
     path: '/configuracoes',
     Icon: Settings,
+    group: 'Sistema',
+    disabled: true,
+  },
+  {
+    id: 9,
+    title: 'Metodologia',
+    path: '/metodologia',
+    Icon: FileSearchIcon,
     group: 'Sistema',
     disabled: true,
   },

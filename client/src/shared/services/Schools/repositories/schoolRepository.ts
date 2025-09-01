@@ -22,6 +22,7 @@ export interface ISchoolRepository {
     page?: number,
     limit?: number,
   ): Promise<PaginatedResponse<School>>;
+  listAll(): Promise<School[]>;
   listForMap(): Promise<SchoolForMap[]>;
 }
 
@@ -36,6 +37,23 @@ const listForMap = async (): Promise<SchoolForMap[]> => {
     console.error('Erro no repositório ao buscar dados para o mapa:', error);
     throw error;
     // TODO: Implements new errors for this repository
+  }
+};
+
+const listAll = async (): Promise<School[]> => {
+  try {
+    const { data } = await apiClient.get<any>('/api/v1/schools/all');
+
+    const schoolsFromApi = Array.isArray(data?.schools) ? data.schools : data;
+
+    if (Array.isArray(schoolsFromApi)) {
+      return schoolsFromApi.map(mapSchoolFromApiToDomain);
+    }
+
+    return [];
+  } catch (error) {
+    console.error('Erro no repositório ao buscar todas as escolas:', error);
+    throw error;
   }
 };
 
@@ -75,4 +93,5 @@ const search = async (
 export const schoolRepository: ISchoolRepository = {
   search,
   listForMap,
+  listAll,
 };
