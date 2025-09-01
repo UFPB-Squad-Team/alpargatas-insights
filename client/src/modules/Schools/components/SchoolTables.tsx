@@ -135,13 +135,13 @@ export const SchoolsTable = ({ data, globalFilter }: SchoolsTableProps) => {
   });
 
   const handleRowClick = (rowData: SchoolProps) => {
-    const schoolId = rowData.id; // Usando o INEP como ID único e confiável.
+    const schoolId = rowData.id; 
     navigate(`/escolas/${schoolId}`);
   };
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full text-sm text-left text-brand-text-secondary">
+      <table className="w-full min-w-[800px] text-sm text-left text-brand-text-secondary">
         <thead className="text-xs text-brand-text-secondary uppercase bg-brand-surface">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
@@ -164,7 +164,7 @@ export const SchoolsTable = ({ data, globalFilter }: SchoolsTableProps) => {
               onClick={() => handleRowClick(row.original)}
             >
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="px-4 py-4">
+                <td key={cell.id} className="px-4 py-4 whitespace-nowrap">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
