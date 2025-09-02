@@ -19,7 +19,7 @@ describe('ListMunicipalitiesUseCase', () => {
       mockMunicipalityRepository,
     );
 
-    expect(await listMunicipalitiesUseCase.execute()).toEqual([
+    expect(await listMunicipalitiesUseCase.execute(1, 20)).toEqual([
       {
         id: '1',
         nome: 'Municipio mock',
@@ -40,6 +40,6 @@ describe('ListMunicipalitiesUseCase', () => {
       mockMunicipalityRepository,
     );
 
-    expect(await listMunicipalitiesUseCase.execute()).toEqual([]);
+    expect(await listMunicipalitiesUseCase.execute(1, 20)).toEqual([]);
   });
 });
