@@ -45,17 +45,19 @@ export class ListMunicipalitiesController {
    */
 
   async listMunicipalitiesForDropdown(req: Request, res: Response) {
-
     const querySchema = z.object({
-          page: z.coerce.number().gt(0, { message: 'Page need be greater than 0' }),
-          limit: z.coerce
-            .number()
-            .gt(0, { message: 'Limit need be greater than 0' }),
+      page: z.coerce.number().gt(0, { message: 'Page need be greater than 0' }),
+      limit: z.coerce
+        .number()
+        .gt(0, { message: 'Limit need be greater than 0' }),
     });
 
-    const { page, limit } = querySchema.parse(req.query)
-    
-    const municipalities = await this.listMunicipalitiesUseCase.execute(page, limit);
+    const { page, limit } = querySchema.parse(req.query);
+
+    const municipalities = await this.listMunicipalitiesUseCase.execute(
+      page,
+      limit,
+    );
 
     res.status(200).json(municipalities);
   }

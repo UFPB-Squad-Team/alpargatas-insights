@@ -175,13 +175,13 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
     page: number;
     currentPage: number;
   }> {
-  const skip = (page - 1) * limit;
-    
-  const matchStage: any = {};
+    const skip = (page - 1) * limit;
 
-  const aggregationPipeline: any[] = [];
+    const matchStage: any = {};
 
-   if (filters?.municipioIdIbge) {
+    const aggregationPipeline: any[] = [];
+
+    if (filters?.municipioIdIbge) {
       aggregationPipeline.push({
         $match: {
           $expr: {
@@ -210,52 +210,50 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
       });
     }
 
-  if (Object.keys(matchStage).length > 0) {
-    aggregationPipeline.push({ $match: matchStage });
-  }
+    if (Object.keys(matchStage).length > 0) {
+      aggregationPipeline.push({ $match: matchStage });
+    }
 
-  aggregationPipeline.push({
-    $facet: {
-      paginatedResults: [
-        { $sort: { escolaNome: 1 } },
-        { $skip: skip },
-        { $limit: limit },
-        {
-          $project: {
-            id: { $toString: '$_id' },
-            municipioIdIbge: 1,
-            escolaIdInep: 1,
-            escolaNome: 1,
-            municipioNome: 1,
-            estadoSigla: 1,
-            dependenciaAdm: 1,
-            tipoLocalizacao: 1,
-            localizacao: 1,
-            scoreRisco: 1,
-            scoreRiscoContextualizado: 1,
-            indicadores: 1,
-            infraestrutura: 1,
+    aggregationPipeline.push({
+      $facet: {
+        paginatedResults: [
+          { $sort: { escolaNome: 1 } },
+          { $skip: skip },
+          { $limit: limit },
+          {
+            $project: {
+              id: { $toString: '$_id' },
+              municipioIdIbge: 1,
+              escolaIdInep: 1,
+              escolaNome: 1,
+              municipioNome: 1,
+              estadoSigla: 1,
+              dependenciaAdm: 1,
+              tipoLocalizacao: 1,
+              localizacao: 1,
+              scoreRisco: 1,
+              scoreRiscoContextualizado: 1,
+              indicadores: 1,
+              infraestrutura: 1,
+            },
           },
-        },
-      ],
-      totalCount: [
-        { $count: 'count' }
-      ],
-    },
-  });
+        ],
+        totalCount: [{ $count: 'count' }],
+      },
+    });
 
-  const [result] = await SchoolModel.aggregate(aggregationPipeline);
-  
-  const schools = result.paginatedResults;
-  const total = result.totalCount[0]?.count || 0;
-  const pages = Math.ceil(total / limit);
+    const [result] = await SchoolModel.aggregate(aggregationPipeline);
 
-  return {
-    schools: SchoolMapper.toDomainManySchools(schools),
-    total,
-    page: pages,
-    currentPage: page,
-  };
+    const schools = result.paginatedResults;
+    const total = result.totalCount[0]?.count || 0;
+    const pages = Math.ceil(total / limit);
+
+    return {
+      schools: SchoolMapper.toDomainManySchools(schools),
+      total,
+      page: pages,
+      currentPage: page,
+    };
   }
 
   async findWithFilters(
