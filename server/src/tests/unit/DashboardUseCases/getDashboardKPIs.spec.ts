@@ -10,8 +10,7 @@ describe('GetDashboardKPIsUseCase', () => {
       findByDepAdm: jest.fn().mockResolvedValue(null),
       findSearchByTerm: jest.fn().mockResolvedValue(null),
       pagination: jest.fn().mockResolvedValue(null),
-      findAllForMap: jest.fn().mockResolvedValue(null),
-      findAll: jest.fn().mockResolvedValue([
+      findWithFilters: jest.fn().mockResolvedValue([
         {
           id: 'esc-001',
           municipioIdIbge: 'mun-002',
@@ -86,6 +85,9 @@ describe('GetDashboardKPIsUseCase', () => {
           },
         },
       ]),
+      getRiskDistribution: jest.fn().mockResolvedValue(null),
+      findAllForMap: jest.fn().mockResolvedValue(null),
+      findAll: jest.fn().mockResolvedValue(null),
       delete: jest.fn(),
       update: jest.fn(),
       save: jest.fn(),

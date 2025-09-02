@@ -10,6 +10,8 @@ describe('ListSchoolForMapUseCase', () => {
       findByDepAdm: jest.fn().mockResolvedValue(null),
       findSearchByTerm: jest.fn().mockResolvedValue(null),
       pagination: jest.fn().mockResolvedValue(null),
+      findWithFilters: jest.fn().mockResolvedValue(null),
+      getRiskDistribution: jest.fn().mockResolvedValue(null),
       findAllForMap: jest.fn().mockResolvedValue([
         {
           id: '1',
