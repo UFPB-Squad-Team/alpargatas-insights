@@ -167,6 +167,7 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
   async pagination(
     page: number,
     limit: number = 20,
+    filters?: Partial<School>,
     threshold: number = 0.75,
   ): Promise<{
     schools: School[];
@@ -174,29 +175,87 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
     page: number;
     currentPage: number;
   }> {
-    const skip = (page - 1) * limit;
+  const skip = (page - 1) * limit;
+    
+  const matchStage: any = {};
 
-    const query = {
-      scoreRiscoContextualizado: { $gte: threshold },
-    };
+  const aggregationPipeline: any[] = [];
 
-    const [schools, total] = await Promise.all([
-      SchoolModel.find(query)
-        .sort({ scoreRiscoContextualizado: -1 })
-        .skip(skip)
-        .limit(limit)
-        .lean(),
-      SchoolModel.countDocuments(query),
-    ]);
+   if (filters?.municipioIdIbge) {
+      aggregationPipeline.push({
+        $match: {
+          $expr: {
+            $eq: [
+              { $toString: '$municipioIdIbge' },
+              String(filters.municipioIdIbge),
+            ],
+          },
+        },
+      });
+    }
 
-    const pages = Math.ceil(total / limit);
+    if (filters?.dependenciaAdm) {
+      aggregationPipeline.push({
+        $match: {
+          dependenciaAdm: filters.dependenciaAdm,
+        },
+      });
+    }
 
-    return {
-      schools: SchoolMapper.toDomainManySchools(schools),
-      total,
-      page: pages,
-      currentPage: page,
-    };
+    if (filters?.tipoLocalizacao) {
+      aggregationPipeline.push({
+        $match: {
+          tipoLocalizacao: filters.tipoLocalizacao,
+        },
+      });
+    }
+
+  if (Object.keys(matchStage).length > 0) {
+    aggregationPipeline.push({ $match: matchStage });
+  }
+
+  aggregationPipeline.push({
+    $facet: {
+      paginatedResults: [
+        { $sort: { escolaNome: 1 } },
+        { $skip: skip },
+        { $limit: limit },
+        {
+          $project: {
+            id: { $toString: '$_id' },
+            municipioIdIbge: 1,
+            escolaIdInep: 1,
+            escolaNome: 1,
+            municipioNome: 1,
+            estadoSigla: 1,
+            dependenciaAdm: 1,
+            tipoLocalizacao: 1,
+            localizacao: 1,
+            scoreRisco: 1,
+            scoreRiscoContextualizado: 1,
+            indicadores: 1,
+            infraestrutura: 1,
+          },
+        },
+      ],
+      totalCount: [
+        { $count: 'count' }
+      ],
+    },
+  });
+
+  const [result] = await SchoolModel.aggregate(aggregationPipeline);
+  
+  const schools = result.paginatedResults;
+  const total = result.totalCount[0]?.count || 0;
+  const pages = Math.ceil(total / limit);
+
+  return {
+    schools: SchoolMapper.toDomainManySchools(schools),
+    total,
+    page: pages,
+    currentPage: page,
+  };
   }
 
   async findWithFilters(

@@ -21,6 +21,7 @@ export interface ISchoolRepository {
   pagination(
     page: number,
     limit: number,
+    filters?: Partial<School>,
     threshold?: number,
   ): Promise<{
     schools: School[];

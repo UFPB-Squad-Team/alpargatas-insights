@@ -194,40 +194,59 @@ export class MoongoseMunicipalityRepository implements IMunicipalityRepository {
     return municipality;
   }
 
-  async findAllForDropdown(): Promise<Pick<Municipality, 'id' | 'nome'>[]> {
-    const pipeline: PipelineStage[] = [
-      {
-        $match: {
-          municipioIdIbge: { $exists: true, $ne: null },
+  async findAllForDropdown(page: number, limit: number = 20): Promise<{ municipalities: Pick<Municipality, 'id' | 'nome'>[], page: number, total: number, currentPage: number  }> {
+    const skip = (page - 1) * limit;
 
-          municipioNome: { $exists: true, $ne: null },
+  const pipeline: PipelineStage[] = [
+    {
+      $match: {
+        municipioIdIbge: { $exists: true, $ne: null },
+        municipioNome: { $exists: true, $ne: null },
+      },
+    },
+    {
+      $group: {
+        _id: {
+          codigoIbge: '$municipioIdIbge',
+          nome: '$municipioNome',
         },
       },
-
-      {
-        $group: {
-          _id: {
-            codigoIbge: '$municipioIdIbge',
-            nome: '$municipioNome',
-          },
-        },
+    },
+    {
+      $project: {
+        _id: 0,
+        id: '$_id.codigoIbge',
+        nome: '$_id.nome',
       },
+    },
+    {
+      $sort: { nome: 1 },
+    },
+    {
+      $facet: {
+        paginatedResults: [
+          { $skip: skip },
+          { $limit: limit },
+        ],
 
-      {
-        $project: {
-          _id: 0,
-          id: '$_id.codigoIbge',
-          nome: '$_id.nome',
-        },
+        totalCount: [
+          { $count: 'count' }
+        ],
       },
+    },
+  ];
 
-      {
-        $sort: { nome: 1 },
-      },
-    ];
+  const [result] = await SchoolModel.aggregate(pipeline).exec();
+  
+  const municipalities = result.paginatedResults;
+  const total = result.totalCount[0]?.count || 0;
+  const pages = Math.ceil(total / limit);
 
-    const municipality = await SchoolModel.aggregate(pipeline).exec();
-
-    return municipality;
+  return {
+    municipalities,
+    total,
+    page: pages,
+    currentPage: page,
+  };
   }
 }
