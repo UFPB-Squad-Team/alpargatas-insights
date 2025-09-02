@@ -1,6 +1,9 @@
+import z from 'zod';
 import { ListSchoolsForMapUseCase } from '../../../../../application/UseCases/SchoolUseCases/ListSchoolsForMapUseCase/ListSchoolsForMapUseCase';
 
 import { Request, Response } from 'express';
+import { dependenciaAdministrativa } from '../../../../../domain/enums/enumDependenciaAdministrativa';
+import { tipoLocalizacao } from '../../../../../domain/enums/enumTipoLocalizacao';
 
 export class ListSchoolsForMapController {
   constructor(private listSchoolsForMapUseCase: ListSchoolsForMapUseCase) {}
@@ -55,7 +58,21 @@ export class ListSchoolsForMapController {
    *                   example: "Não foi possível obter os dados das escolas para o mapa"
    */
   async listSchoolsForMap(req: Request, res: Response) {
-    const school = await this.listSchoolsForMapUseCase.execute();
+    const querySchema = z
+      .object({
+        municipioIdIbge: z
+          .string()
+          .trim()
+          .length(7, { message: 'Need  7 caracteres' })
+          .optional(),
+        dependenciaAdm: z.enum(dependenciaAdministrativa).optional(),
+        tipoLocalizacao: z.enum(tipoLocalizacao).optional(),
+      })
+      .strict();
+
+    const filters = querySchema.parse(req.query);
+
+    const school = await this.listSchoolsForMapUseCase.execute(filters);
 
     res.status(200).json(school.length > 0 ? school : []);
   }

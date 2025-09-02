@@ -1,6 +1,9 @@
+import z from 'zod';
 import { MunicipalitiesByRiskCountUseCase } from '../../../../../application/UseCases/DashboardUseCases/MunicipalitiesByRiskCountUseCase/MunicipalitiesByRiskCountUseCase';
 
 import { Request, Response } from 'express';
+import { dependenciaAdministrativa } from '../../../../../domain/enums/enumDependenciaAdministrativa';
+import { tipoLocalizacao } from '../../../../../domain/enums/enumTipoLocalizacao';
 
 export class MunicipalitiesByRiskCountController {
   constructor(
@@ -54,8 +57,22 @@ export class MunicipalitiesByRiskCountController {
    */
 
   async getMunicipalitiesWithMostRiskSchools(req: Request, res: Response) {
+    const querySchema = z
+      .object({
+        municipioIdIbge: z
+          .string()
+          .trim()
+          .length(7, { message: 'Need  7 caracteres' })
+          .optional(),
+        dependenciaAdm: z.enum(dependenciaAdministrativa).optional(),
+        tipoLocalizacao: z.enum(tipoLocalizacao).optional(),
+      })
+      .strict();
+
+    const filters = querySchema.parse(req.query);
+
     const municipalitiesWithMostRiskSchools =
-      await this.municipalitiesByRiskCountUseCase.execute();
+      await this.municipalitiesByRiskCountUseCase.execute(filters);
 
     res.status(200).json(municipalitiesWithMostRiskSchools);
   }

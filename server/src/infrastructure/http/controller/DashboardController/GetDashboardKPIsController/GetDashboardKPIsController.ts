@@ -1,6 +1,9 @@
+import z from 'zod';
 import { GetDashboardKPIsUseCase } from '../../../../../application/UseCases/DashboardUseCases/GetDashboardKPIsUseCase/GetDashboardKPIsUseCase';
 
 import { Request, Response } from 'express';
+import { dependenciaAdministrativa } from '../../../../../domain/enums/enumDependenciaAdministrativa';
+import { tipoLocalizacao } from '../../../../../domain/enums/enumTipoLocalizacao';
 
 export class GetDashboardKPIsController {
   constructor(private getDashboardKPIsUseCase: GetDashboardKPIsUseCase) {}
@@ -59,7 +62,21 @@ export class GetDashboardKPIsController {
    *                   example: "Não foi possível obter os dados do dashboard."
    */
   async getKpis(req: Request, res: Response) {
-    const getKpis = await this.getDashboardKPIsUseCase.execute();
+    const querySchema = z
+      .object({
+        municipioIdIbge: z
+          .string()
+          .trim()
+          .length(7, { message: 'Need  7 caracteres' })
+          .optional(),
+        dependenciaAdm: z.enum(dependenciaAdministrativa).optional(),
+        tipoLocalizacao: z.enum(tipoLocalizacao).optional(),
+      })
+      .strict();
+
+    const filters = querySchema.parse(req.query);
+
+    const getKpis = await this.getDashboardKPIsUseCase.execute(filters);
 
     res.status(200).json(getKpis);
   }

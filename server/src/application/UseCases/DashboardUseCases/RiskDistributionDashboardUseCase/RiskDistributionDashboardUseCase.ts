@@ -1,3 +1,4 @@
+import { School } from '../../../../domain/entities/school';
 import { ISchoolRepository } from '../../../../domain/repositories/schoolRepository';
 import { RiskDistributionDashboardReturnDTO } from './RiskDistributionDashboardReturnDTO';
 
@@ -10,27 +11,34 @@ export class RiskDistributionDashboardUseCase {
 
   constructor(private schoolRepository: ISchoolRepository) {}
 
-  async execute(): Promise<RiskDistributionDashboardReturnDTO> {
-    const schools = await this.schoolRepository.findAll();
+  async execute(
+    filters?: Partial<School>,
+  ): Promise<RiskDistributionDashboardReturnDTO> {
+    const schools = await this.schoolRepository.getRiskDistribution(
+      {
+        high: this.HIGH_RISK_THRESHOLD,
+        medium: this.MEDIUM_RISK_THRESHOLD,
+        low: this.LOW_RISK_THRESHOLD,
+      },
+      filters,
+    );
 
-    let highRiskCount = 0;
-    let lowRiskCount = 0;
-    let mediumRiskCount = 0;
-
-    for (const school of schools) {
-      if (school.scoreRisco >= this.HIGH_RISK_THRESHOLD) {
-        highRiskCount++;
-      } else if (school.scoreRisco <= this.LOW_RISK_THRESHOLD) {
-        lowRiskCount++;
-      } else if (school.scoreRisco <= this.MEDIUM_RISK_THRESHOLD) {
-        mediumRiskCount++;
-      }
-    }
+    const high = schools.filter(
+      (s) => s.scoreRiscoContextualizado >= this.HIGH_RISK_THRESHOLD,
+    ).length;
+    const medium = schools.filter(
+      (s) =>
+        s.scoreRiscoContextualizado > this.LOW_RISK_THRESHOLD &&
+        s.scoreRiscoContextualizado < this.HIGH_RISK_THRESHOLD,
+    ).length;
+    const low = schools.filter(
+      (s) => s.scoreRiscoContextualizado <= this.LOW_RISK_THRESHOLD,
+    ).length;
 
     return {
-      schoolsWithHighInfraestructureRisk: highRiskCount,
-      schoolsWithLowInfraestructureRisk: lowRiskCount,
-      schoolsWithMediumInfraestructureRisk: mediumRiskCount,
+      schoolsWithHighInfraestructureRisk: high,
+      schoolsWithLowInfraestructureRisk: low,
+      schoolsWithMediumInfraestructureRisk: medium,
     };
   }
 }

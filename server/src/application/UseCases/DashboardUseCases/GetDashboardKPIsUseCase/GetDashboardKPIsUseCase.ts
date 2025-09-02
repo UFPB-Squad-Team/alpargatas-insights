@@ -1,17 +1,17 @@
+import { School } from '../../../../domain/entities/school';
 import { IMunicipalityRepository } from '../../../../domain/repositories/municipalityRepository';
 import { ISchoolRepository } from '../../../../domain/repositories/schoolRepository';
 import { GetDashboardKPIsDTO } from './GetDashboardKPIsDTO';
 
 export class GetDashboardKPIsUseCase {
+  private readonly HIGH_RISK_THRESHOLD: number = 0.75;
   constructor(
     private schoolRepository: ISchoolRepository,
     private municipalityRepository: IMunicipalityRepository,
   ) {}
 
-  async execute(): Promise<GetDashboardKPIsDTO> {
-    const schools = await this.schoolRepository.findAll();
-
-    const HIGH_RISK_THRESHOLD: number = 0.75;
+  async execute(filters?: Partial<School>): Promise<GetDashboardKPIsDTO> {
+    const schools = await this.schoolRepository.findWithFilters(0, filters);
 
     let lackCountMax: number = 0;
 
@@ -19,7 +19,8 @@ export class GetDashboardKPIsUseCase {
 
     const schoolsWithHighInfraestructureRisk = schools
       .filter(
-        (school) => school.scoreRiscoContextualizado >= HIGH_RISK_THRESHOLD,
+        (school) =>
+          school.scoreRiscoContextualizado >= this.HIGH_RISK_THRESHOLD,
       )
       .map((school) => ({
         id: school.id,
