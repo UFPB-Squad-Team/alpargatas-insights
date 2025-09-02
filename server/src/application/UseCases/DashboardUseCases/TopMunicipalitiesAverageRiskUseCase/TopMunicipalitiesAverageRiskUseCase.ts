@@ -10,15 +10,17 @@ export class TopMunicipalitiesAverageRiskUseCase {
   ) {}
 
   async execute(filters?: Partial<School>) {
-    const schools = await this.schoolRepository.findWithFilters(this.HIGH_RISK_THRESHOLD, filters);
+    const schools = await this.schoolRepository.findWithFilters(
+      this.HIGH_RISK_THRESHOLD,
+      filters,
+    );
 
     const municipalities = await this.municipalityRepository.findAll();
 
-    
-
     const schoolsWithHighInfraestructureRisk = schools
       .filter(
-        (school) => school.scoreRiscoContextualizado >= this.HIGH_RISK_THRESHOLD,
+        (school) =>
+          school.scoreRiscoContextualizado >= this.HIGH_RISK_THRESHOLD,
       )
       .map((school) => ({
         id: school.id,

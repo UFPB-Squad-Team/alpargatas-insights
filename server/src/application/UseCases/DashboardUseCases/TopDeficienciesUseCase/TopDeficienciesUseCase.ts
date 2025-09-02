@@ -10,7 +10,11 @@ export class TopDeficienciesUseCase {
   async execute(filters?: Partial<School>): Promise<TopDeficienciesReturnDTO> {
     const deficienciesCount: Record<string, number> = {};
 
-    const schoolsWithHighInfraestructureRisk = await this.schoolRepository.findWithFilters(this.HIGH_RISK_THRESHOLD, filters)
+    const schoolsWithHighInfraestructureRisk =
+      await this.schoolRepository.findWithFilters(
+        this.HIGH_RISK_THRESHOLD,
+        filters,
+      );
 
     schoolsWithHighInfraestructureRisk.forEach((school) => {
       Object.entries(school.infraestrutura).forEach(([item, available]) => {

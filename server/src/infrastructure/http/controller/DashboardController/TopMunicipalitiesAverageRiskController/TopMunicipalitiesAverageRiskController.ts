@@ -60,14 +60,19 @@ export class TopMunicipalitiesAverageRiskController {
    *                   example: "Não foi possível obter os municípios com maior risco médio"
    */
   async getTopAverageRiskMunicipality(req: Request, res: Response) {
+    const querySchema = z
+      .object({
+        municipioIdIbge: z
+          .string()
+          .trim()
+          .length(7, { message: 'Need  7 caracteres' })
+          .optional(),
+        dependenciaAdm: z.enum(dependenciaAdministrativa).optional(),
+        tipoLocalizacao: z.enum(tipoLocalizacao).optional(),
+      })
+      .strict();
 
-    const querySchema = z.object({
-          municipioIdIbge: z.string().trim().length(7, { message: 'Need  7 caracteres' }).optional(),
-          dependenciaAdm: z.enum(dependenciaAdministrativa).optional(),
-          tipoLocalizacao: z.enum(tipoLocalizacao).optional()
-    }).strict()
-
-    const filters = querySchema.parse(req.query)
+    const filters = querySchema.parse(req.query);
 
     const topMunicipalitiesAverageRisk =
       await this.topMunicipalitiesAverageRiskUseCase.execute(filters);

@@ -199,109 +199,121 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
     };
   }
 
-  async findWithFilters(riskTrheshold: number, filters?: Partial<School>, page?: number, limit?: number): Promise<School[]> {
-      const aggregationPipeline: any[] = [
-    {
-      $match: {
-        scoreRiscoContextualizado: { $gte: riskTrheshold }
-      }
+  async findWithFilters(
+    riskTrheshold: number,
+    filters?: Partial<School>,
+    page?: number,
+    limit?: number,
+  ): Promise<School[]> {
+    const aggregationPipeline: any[] = [
+      {
+        $match: {
+          scoreRiscoContextualizado: { $gte: riskTrheshold },
+        },
+      },
+    ];
+
+    if (filters?.municipioIdIbge) {
+      aggregationPipeline.push({
+        $match: {
+          $expr: {
+            $eq: [
+              { $toString: '$municipioIdIbge' },
+              String(filters.municipioIdIbge),
+            ],
+          },
+        },
+      });
     }
-  ];
 
-  if (filters?.municipioIdIbge) {
-    aggregationPipeline.push({
-      $match: {
-        $expr: {
-          $eq: [
-            { $toString: '$municipioIdIbge' },
-            String(filters.municipioIdIbge)
-          ]
-        }
-      }
-    });
+    if (filters?.dependenciaAdm) {
+      aggregationPipeline.push({
+        $match: {
+          dependenciaAdm: filters.dependenciaAdm,
+        },
+      });
+    }
+
+    if (filters?.tipoLocalizacao) {
+      aggregationPipeline.push({
+        $match: {
+          tipoLocalizacao: filters.tipoLocalizacao,
+        },
+      });
+    }
+
+    if (page && limit) {
+      aggregationPipeline.push(
+        { $skip: (page - 1) * limit },
+        { $limit: limit },
+      );
+    }
+
+    const schools = await SchoolModel.aggregate(aggregationPipeline).exec();
+
+    return SchoolMapper.toDomainManySchools(schools);
   }
 
-  if (filters?.dependenciaAdm) {
-    aggregationPipeline.push({
-      $match: {
-        dependenciaAdm: filters.dependenciaAdm
-      }
-    });
-  }
+  async getRiskDistribution(
+    thresholds: { high: number; medium: number; low: number },
+    filters?: Partial<School>,
+  ): Promise<School[]> {
+    const baseFilter: any = {};
 
-  if (filters?.tipoLocalizacao) {
-    aggregationPipeline.push({
-      $match: {
-        tipoLocalizacao: filters.tipoLocalizacao
-      }
-    });
-  }
+    if (filters?.municipioIdIbge) {
+      baseFilter.$expr = {
+        $eq: [
+          { $toString: '$municipioIdIbge' },
+          String(filters.municipioIdIbge),
+        ],
+      };
+    }
 
-  if (page && limit) {
-    aggregationPipeline.push(
-      { $skip: (page - 1) * limit },
-      { $limit: limit }
+    if (filters?.dependenciaAdm) {
+      baseFilter.dependenciaAdm = filters.dependenciaAdm;
+    }
+
+    if (filters?.tipoLocalizacao) {
+      baseFilter.tipoLocalizacao = filters.tipoLocalizacao;
+    }
+
+    return SchoolMapper.toDomainManySchools(
+      await SchoolModel.find(baseFilter).exec(),
     );
   }
-  
-  const schools = await SchoolModel.aggregate(aggregationPipeline).exec();
 
-  return SchoolMapper.toDomainManySchools(schools)
-  }
-
-  async getRiskDistribution(thresholds: { high: number; medium: number; low: number; }, filters?: Partial<School>): Promise<School[]> {
-         const baseFilter: any = {};
-
-  if (filters?.municipioIdIbge) {
-    baseFilter.$expr = {
-      $eq: [
-        { $toString: '$municipioIdIbge' },
-        String(filters.municipioIdIbge)
-      ]
-    };
-  }
-
-  if (filters?.dependenciaAdm) {
-    baseFilter.dependenciaAdm = filters.dependenciaAdm;
-  }
-
-  if (filters?.tipoLocalizacao) {
-    baseFilter.tipoLocalizacao = filters.tipoLocalizacao;
-  }
-
-  return SchoolMapper.toDomainManySchools(
-    await SchoolModel.find(baseFilter).exec()
-  );
-  }
-
-  async findAllForMap(filters?: Partial<School>): Promise<
+  async findAllForMap(
+    filters?: Partial<School>,
+  ): Promise<
     Pick<
       School,
       'id' | 'escolaNome' | 'localizacao' | 'scoreRiscoContextualizado'
     >[]
   > {
     const matchStage: any = {};
-  
+
     if (filters?.municipioIdIbge) {
       matchStage.$expr = {
         $eq: [
           { $toString: '$municipioIdIbge' },
-          String(filters.municipioIdIbge)
-        ]
+          String(filters.municipioIdIbge),
+        ],
       };
     }
-    if (filters?.dependenciaAdm) matchStage.dependenciaAdm = filters.dependenciaAdm;
-    if (filters?.tipoLocalizacao) matchStage.tipoLocalizacao = filters.tipoLocalizacao;
+    if (filters?.dependenciaAdm)
+      matchStage.dependenciaAdm = filters.dependenciaAdm;
+    if (filters?.tipoLocalizacao)
+      matchStage.tipoLocalizacao = filters.tipoLocalizacao;
 
     const pipeline: any[] = [];
-    
+
     if (Object.keys(matchStage).length > 0) {
       pipeline.push({ $match: matchStage });
     }
 
     pipeline.push({
       $project: {
-        _id: 0, 
+        _id: 0,
         id: { $toString: '$_id' },
         escolaNome: 1,
         localizacao: 1,

@@ -122,17 +122,25 @@ export class HighRiskSchoolController {
    */
 
   async getRiskSchools(req: Request, res: Response) {
-    const querySchema = z.object({
-      page: z.coerce.number().gt(0, { message: 'Page need be greater than 0' }),
+    const querySchema = z
+      .object({
+        page: z.coerce
+          .number()
+          .gt(0, { message: 'Page need be greater than 0' }),
 
-      limit: z.coerce
-        .number()
-        .gt(0, { message: 'Limit need be greater than 0' }),
-      municipioIdIbge: z.string().trim().length(7, { message: 'Need  7 caracteres' }).optional(),
-      dependenciaAdm: z.enum(dependenciaAdministrativa).optional(),
-      tipoLocalizacao: z.enum(tipoLocalizacao).optional()
-    }).strict();
-    
+        limit: z.coerce
+          .number()
+          .gt(0, { message: 'Limit need be greater than 0' }),
+        municipioIdIbge: z
+          .string()
+          .trim()
+          .length(7, { message: 'Need  7 caracteres' })
+          .optional(),
+        dependenciaAdm: z.enum(dependenciaAdministrativa).optional(),
+        tipoLocalizacao: z.enum(tipoLocalizacao).optional(),
+      })
+      .strict();
+
     const { page, limit, ...filters } = querySchema.parse(req.query);
 
     const highRiskSchools = await this.highRiskSchoolUseCase.execute({
