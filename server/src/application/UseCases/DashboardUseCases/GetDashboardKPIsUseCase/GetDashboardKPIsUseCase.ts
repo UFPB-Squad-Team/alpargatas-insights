@@ -11,8 +11,7 @@ export class GetDashboardKPIsUseCase {
   ) {}
 
   async execute(filters?: Partial<School>): Promise<GetDashboardKPIsDTO> {
-
-    const schools = await this.schoolRepository.findWithFilters(0, filters)
+    const schools = await this.schoolRepository.findWithFilters(0, filters);
 
     let lackCountMax: number = 0;
 
@@ -20,7 +19,8 @@ export class GetDashboardKPIsUseCase {
 
     const schoolsWithHighInfraestructureRisk = schools
       .filter(
-        (school) => school.scoreRiscoContextualizado >= this.HIGH_RISK_THRESHOLD,
+        (school) =>
+          school.scoreRiscoContextualizado >= this.HIGH_RISK_THRESHOLD,
       )
       .map((school) => ({
         id: school.id,

@@ -7,8 +7,13 @@ export class MunicipalitiesByRiskCountUseCase {
 
   constructor(private schoolRepository: ISchoolRepository) {}
 
-  async execute(filters?: Partial<School>): Promise<MunicipalitiesByRiskCountReturnDTO> {
-    const schools = await this.schoolRepository.findWithFilters(this.HIGH_RISK_THRESHOLD, filters);
+  async execute(
+    filters?: Partial<School>,
+  ): Promise<MunicipalitiesByRiskCountReturnDTO> {
+    const schools = await this.schoolRepository.findWithFilters(
+      this.HIGH_RISK_THRESHOLD,
+      filters,
+    );
 
     const schoolsWithHighInfraestructureRisk = schools
       .filter(

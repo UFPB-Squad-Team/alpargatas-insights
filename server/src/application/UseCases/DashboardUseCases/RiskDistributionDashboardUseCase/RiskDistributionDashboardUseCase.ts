@@ -11,16 +11,29 @@ export class RiskDistributionDashboardUseCase {
 
   constructor(private schoolRepository: ISchoolRepository) {}
 
-  async execute(filters?: Partial<School>): Promise<RiskDistributionDashboardReturnDTO> {
+  async execute(
+    filters?: Partial<School>,
+  ): Promise<RiskDistributionDashboardReturnDTO> {
+    const schools = await this.schoolRepository.getRiskDistribution(
+      {
+        high: this.HIGH_RISK_THRESHOLD,
+        medium: this.MEDIUM_RISK_THRESHOLD,
+        low: this.LOW_RISK_THRESHOLD,
+      },
+      filters,
+    );
 
-    const schools = await this.schoolRepository.getRiskDistribution({ high: this.HIGH_RISK_THRESHOLD, medium: this.MEDIUM_RISK_THRESHOLD, low: this.LOW_RISK_THRESHOLD }, filters );
-
-    const high = schools.filter(s => s.scoreRiscoContextualizado >= this.HIGH_RISK_THRESHOLD).length;
-    const medium = schools.filter(s =>
-      s.scoreRiscoContextualizado > this.LOW_RISK_THRESHOLD &&
-      s.scoreRiscoContextualizado < this.HIGH_RISK_THRESHOLD
+    const high = schools.filter(
+      (s) => s.scoreRiscoContextualizado >= this.HIGH_RISK_THRESHOLD,
     ).length;
-    const low = schools.filter(s => s.scoreRiscoContextualizado <= this.LOW_RISK_THRESHOLD).length;
+    const medium = schools.filter(
+      (s) =>
+        s.scoreRiscoContextualizado > this.LOW_RISK_THRESHOLD &&
+        s.scoreRiscoContextualizado < this.HIGH_RISK_THRESHOLD,
+    ).length;
+    const low = schools.filter(
+      (s) => s.scoreRiscoContextualizado <= this.LOW_RISK_THRESHOLD,
+    ).length;
 
     return {
       schoolsWithHighInfraestructureRisk: high,

@@ -58,14 +58,19 @@ export class ListSchoolsForMapController {
    *                   example: "Não foi possível obter os dados das escolas para o mapa"
    */
   async listSchoolsForMap(req: Request, res: Response) {
+    const querySchema = z
+      .object({
+        municipioIdIbge: z
+          .string()
+          .trim()
+          .length(7, { message: 'Need  7 caracteres' })
+          .optional(),
+        dependenciaAdm: z.enum(dependenciaAdministrativa).optional(),
+        tipoLocalizacao: z.enum(tipoLocalizacao).optional(),
+      })
+      .strict();
 
-    const querySchema = z.object({
-              municipioIdIbge: z.string().trim().length(7, { message: 'Need  7 caracteres' }).optional(),
-              dependenciaAdm: z.enum(dependenciaAdministrativa).optional(),
-              tipoLocalizacao: z.enum(tipoLocalizacao).optional()
-    }).strict()
-
-    const filters = querySchema.parse(req.query)
+    const filters = querySchema.parse(req.query);
 
     const school = await this.listSchoolsForMapUseCase.execute(filters);
 

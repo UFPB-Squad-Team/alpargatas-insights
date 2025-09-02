@@ -57,17 +57,20 @@ export class MunicipalitiesByRiskCountController {
    */
 
   async getMunicipalitiesWithMostRiskSchools(req: Request, res: Response) {
+    const querySchema = z
+      .object({
+        municipioIdIbge: z
+          .string()
+          .trim()
+          .length(7, { message: 'Need  7 caracteres' })
+          .optional(),
+        dependenciaAdm: z.enum(dependenciaAdministrativa).optional(),
+        tipoLocalizacao: z.enum(tipoLocalizacao).optional(),
+      })
+      .strict();
 
-    
-      const querySchema = z.object({
-          municipioIdIbge: z.string().trim().length(7, { message: 'Need  7 caracteres' }).optional(),
-          dependenciaAdm: z.enum(dependenciaAdministrativa).optional(),
-          tipoLocalizacao: z.enum(tipoLocalizacao).optional()
-        }).strict()
+    const filters = querySchema.parse(req.query);
 
-      
-        const filters = querySchema.parse(req.query)
-    
     const municipalitiesWithMostRiskSchools =
       await this.municipalitiesByRiskCountUseCase.execute(filters);
 
