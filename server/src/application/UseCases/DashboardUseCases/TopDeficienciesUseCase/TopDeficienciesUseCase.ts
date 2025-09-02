@@ -1,3 +1,4 @@
+import { School } from '../../../../domain/entities/school';
 import { ISchoolRepository } from '../../../../domain/repositories/schoolRepository';
 import { TopDeficienciesReturnDTO } from './TopDeficienciesReturnDTO';
 
@@ -6,14 +7,10 @@ export class TopDeficienciesUseCase {
 
   constructor(private schoolRepository: ISchoolRepository) {}
 
-  async execute(): Promise<TopDeficienciesReturnDTO> {
-    const schools = await this.schoolRepository.findAll();
-
+  async execute(filters?: Partial<School>): Promise<TopDeficienciesReturnDTO> {
     const deficienciesCount: Record<string, number> = {};
 
-    const schoolsWithHighInfraestructureRisk = schools.filter(
-      (school) => school.scoreRisco >= this.HIGH_RISK_THRESHOLD,
-    );
+    const schoolsWithHighInfraestructureRisk = await this.schoolRepository.findWithFilters(this.HIGH_RISK_THRESHOLD, filters)
 
     schoolsWithHighInfraestructureRisk.forEach((school) => {
       Object.entries(school.infraestrutura).forEach(([item, available]) => {

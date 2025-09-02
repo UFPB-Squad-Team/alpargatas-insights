@@ -1,3 +1,4 @@
+import { School } from '../../../../domain/entities/school';
 import { ISchoolRepository } from '../../../../domain/repositories/schoolRepository';
 import { MunicipalitiesByRiskCountReturnDTO } from './MunicipalitiesByRiskCountReturnDTO';
 
@@ -6,8 +7,8 @@ export class MunicipalitiesByRiskCountUseCase {
 
   constructor(private schoolRepository: ISchoolRepository) {}
 
-  async execute(): Promise<MunicipalitiesByRiskCountReturnDTO> {
-    const schools = await this.schoolRepository.findAll();
+  async execute(filters?: Partial<School>): Promise<MunicipalitiesByRiskCountReturnDTO> {
+    const schools = await this.schoolRepository.findWithFilters(this.HIGH_RISK_THRESHOLD, filters);
 
     const schoolsWithHighInfraestructureRisk = schools
       .filter(

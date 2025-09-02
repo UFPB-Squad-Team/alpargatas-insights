@@ -1,4 +1,4 @@
 export enum tipoLocalizacao {
-  URBANA = 'urbana',
-  RURAL = 'rural',
+  URBANA = 'Urbana',
+  RURAL = 'Rural',
 }

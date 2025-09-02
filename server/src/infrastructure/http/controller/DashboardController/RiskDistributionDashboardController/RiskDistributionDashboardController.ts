@@ -1,6 +1,9 @@
+import z from 'zod';
 import { RiskDistributionDashboardUseCase } from '../../../../../application/UseCases/DashboardUseCases/RiskDistributionDashboardUseCase/RiskDistributionDashboardUseCase';
 
 import { Request, Response } from 'express';
+import { dependenciaAdministrativa } from '../../../../../domain/enums/enumDependenciaAdministrativa';
+import { tipoLocalizacao } from '../../../../../domain/enums/enumTipoLocalizacao';
 
 export class RiskDistributionDashboardController {
   constructor(
@@ -48,8 +51,18 @@ export class RiskDistributionDashboardController {
    */
 
   async getRiskDistribution(req: Request, res: Response) {
+
+    const querySchema = z.object({
+         municipioIdIbge: z.string().trim().length(7, { message: 'Need  7 caracteres' }).optional(),
+         dependenciaAdm: z.enum(dependenciaAdministrativa).optional(),
+         tipoLocalizacao: z.enum(tipoLocalizacao).optional()
+       }).strict()
+
+       
+       const filters = querySchema.parse(req.query)
+
     const riskDistribution =
-      await this.riskDistributionDashboardUseCase.execute();
+      await this.riskDistributionDashboardUseCase.execute(filters);
 
     res.status(200).json(riskDistribution);
   }

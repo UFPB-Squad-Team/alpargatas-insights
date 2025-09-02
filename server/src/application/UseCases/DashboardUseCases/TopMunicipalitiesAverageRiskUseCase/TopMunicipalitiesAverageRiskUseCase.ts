@@ -1,22 +1,24 @@
+import { School } from '../../../../domain/entities/school';
 import { IMunicipalityRepository } from '../../../../domain/repositories/municipalityRepository';
 import { ISchoolRepository } from '../../../../domain/repositories/schoolRepository';
 
 export class TopMunicipalitiesAverageRiskUseCase {
+  private readonly HIGH_RISK_THRESHOLD: number = 0.75;
   constructor(
     private schoolRepository: ISchoolRepository,
     private municipalityRepository: IMunicipalityRepository,
   ) {}
 
-  async execute() {
-    const schools = await this.schoolRepository.findAll();
+  async execute(filters?: Partial<School>) {
+    const schools = await this.schoolRepository.findWithFilters(this.HIGH_RISK_THRESHOLD, filters);
 
     const municipalities = await this.municipalityRepository.findAll();
 
-    const HIGH_RISK_THRESHOLD: number = 0.75;
+    
 
     const schoolsWithHighInfraestructureRisk = schools
       .filter(
-        (school) => school.scoreRiscoContextualizado >= HIGH_RISK_THRESHOLD,
+        (school) => school.scoreRiscoContextualizado >= this.HIGH_RISK_THRESHOLD,
       )
       .map((school) => ({
         id: school.id,

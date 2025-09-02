@@ -28,7 +28,10 @@ export interface ISchoolRepository {
     page: number;
     currentPage: number;
   }>;
-  findAllForMap(): Promise<
+  findWithFilters( riskTrheshold: number, filters?: Partial<School>, page?: number, limit?: number): Promise<School[]>
+  getRiskDistribution( thresholds: { high: number, medium: number, low: number }, filters?: Partial<School> ): Promise<
+  School[]> 
+  findAllForMap(filters?: Partial<School>): Promise<
     Pick<
       School,
       'id' | 'escolaNome' | 'localizacao' | 'scoreRiscoContextualizado'
