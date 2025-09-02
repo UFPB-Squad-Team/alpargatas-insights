@@ -194,59 +194,62 @@ export class MoongoseMunicipalityRepository implements IMunicipalityRepository {
     return municipality;
   }
 
-  async findAllForDropdown(page: number, limit: number = 20): Promise<{ municipalities: Pick<Municipality, 'id' | 'nome'>[], page: number, total: number, currentPage: number  }> {
+  async findAllForDropdown(
+    page: number,
+    limit: number = 20,
+  ): Promise<{
+    municipalities: Pick<Municipality, 'id' | 'nome'>[];
+    page: number;
+    total: number;
+    currentPage: number;
+  }> {
     const skip = (page - 1) * limit;
 
-  const pipeline: PipelineStage[] = [
-    {
-      $match: {
-        municipioIdIbge: { $exists: true, $ne: null },
-        municipioNome: { $exists: true, $ne: null },
-      },
-    },
-    {
-      $group: {
-        _id: {
-          codigoIbge: '$municipioIdIbge',
-          nome: '$municipioNome',
+    const pipeline: PipelineStage[] = [
+      {
+        $match: {
+          municipioIdIbge: { $exists: true, $ne: null },
+          municipioNome: { $exists: true, $ne: null },
         },
       },
-    },
-    {
-      $project: {
-        _id: 0,
-        id: '$_id.codigoIbge',
-        nome: '$_id.nome',
+      {
+        $group: {
+          _id: {
+            codigoIbge: '$municipioIdIbge',
+            nome: '$municipioNome',
+          },
+        },
       },
-    },
-    {
-      $sort: { nome: 1 },
-    },
-    {
-      $facet: {
-        paginatedResults: [
-          { $skip: skip },
-          { $limit: limit },
-        ],
-
-        totalCount: [
-          { $count: 'count' }
-        ],
+      {
+        $project: {
+          _id: 0,
+          id: '$_id.codigoIbge',
+          nome: '$_id.nome',
+        },
       },
-    },
-  ];
+      {
+        $sort: { nome: 1 },
+      },
+      {
+        $facet: {
+          paginatedResults: [{ $skip: skip }, { $limit: limit }],
 
-  const [result] = await SchoolModel.aggregate(pipeline).exec();
-  
-  const municipalities = result.paginatedResults;
-  const total = result.totalCount[0]?.count || 0;
-  const pages = Math.ceil(total / limit);
+          totalCount: [{ $count: 'count' }],
+        },
+      },
+    ];
 
-  return {
-    municipalities,
-    total,
-    page: pages,
-    currentPage: page,
-  };
+    const [result] = await SchoolModel.aggregate(pipeline).exec();
+
+    const municipalities = result.paginatedResults;
+    const total = result.totalCount[0]?.count || 0;
+    const pages = Math.ceil(total / limit);
+
+    return {
+      municipalities,
+      total,
+      page: pages,
+      currentPage: page,
+    };
   }
 }

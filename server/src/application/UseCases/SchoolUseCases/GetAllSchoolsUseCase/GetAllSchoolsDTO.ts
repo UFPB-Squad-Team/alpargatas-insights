@@ -1,7 +1,7 @@
-import { School } from "../../../../domain/entities/school"
+import { School } from '../../../../domain/entities/school';
 
-export interface GetAllSchoolsDTO{
-    page: number
-    limit: number
-    filters?: Partial<School>
+export interface GetAllSchoolsDTO {
+  page: number;
+  limit: number;
+  filters?: Partial<School>;
 }

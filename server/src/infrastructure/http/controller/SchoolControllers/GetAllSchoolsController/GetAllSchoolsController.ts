@@ -113,24 +113,31 @@ export class GetAllSchoolsController {
    *                   example: "Não foi possível obter os dados das escolas."
    */
   async getAll(req: Request, res: Response) {
+    const querySchema = z
+      .object({
+        page: z.coerce
+          .number()
+          .gt(0, { message: 'Page need be greater than 0' }),
+        limit: z.coerce
+          .number()
+          .gt(0, { message: 'Limit need be greater than 0' }),
+        municipioIdIbge: z
+          .string()
+          .trim()
+          .length(7, { message: 'Need  7 caracteres' })
+          .optional(),
+        dependenciaAdm: z.enum(dependenciaAdministrativa).optional(),
+        tipoLocalizacao: z.enum(tipoLocalizacao).optional(),
+      })
+      .strict();
 
-    const querySchema = z.object({
-          page: z.coerce.number().gt(0, { message: 'Page need be greater than 0' }),
-          limit: z.coerce
-            .number()
-            .gt(0, { message: 'Limit need be greater than 0' }),
-          municipioIdIbge: z
-                      .string()
-                      .trim()
-                      .length(7, { message: 'Need  7 caracteres' })
-                      .optional(),
-          dependenciaAdm: z.enum(dependenciaAdministrativa).optional(),
-          tipoLocalizacao: z.enum(tipoLocalizacao).optional(),
-    }).strict();
+    const { page, limit, ...filters } = querySchema.parse(req.query);
 
-    const { page, limit, ...filters } = querySchema.parse(req.query)
-
-    const school = await this.getAllSchoolsUseCase.execute({ filters, page, limit});
+    const school = await this.getAllSchoolsUseCase.execute({
+      filters,
+      page,
+      limit,
+    });
 
     res.status(200).json(school);
   }
