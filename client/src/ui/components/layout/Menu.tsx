@@ -43,7 +43,7 @@ const menuItems: MenuItem[] = [
     path: '/municipios',
     Icon: Map,
     group: 'Análises',
-    disabled: true,
+    disabled: false,
   },
   {
     id: 4,
@@ -116,8 +116,10 @@ const Menu = () => {
           </span>
           <ul>
             {items.map((item) => {
-              const isActive = pathname === item.path;
-
+              const isActive =
+                item.path === '/'
+                  ? pathname === item.path
+                  : pathname.startsWith(item.path);
               return (
                 <li key={item.id}>
                   {!item.disabled ? (

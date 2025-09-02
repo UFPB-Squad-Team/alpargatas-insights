@@ -5,6 +5,7 @@ import { FiltersProvider } from './ui/context/FiltersContext';
 import { DashboardProvider } from './ui/context/DashboardContext';
 import SchoolsPage from './modules/Schools/SchoolsPage';
 import { TooltipProvider } from './ui/components/common/tooltip';
+import SchoolDetailsPage from './modules/Schools/SchoolDetails/SchoolDetailsPage';
 
 function App() {
   return (
@@ -15,7 +16,9 @@ function App() {
             <Route element={<Layout />}>
               <Route path="/" element={<DashboardPage />} />
               <Route path="/escolas" element={<SchoolsPage />} />
-              <Route path="/escolas/:id" />
+              <Route path="/escolas/:id" element={<SchoolDetailsPage />} />
+              <Route path="/municipios" />
+              <Route path="/municipios/:id" />
             </Route>
           </Routes>
         </DashboardProvider>
