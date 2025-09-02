@@ -79,4 +79,20 @@ Ajuda a interpretar rapidamente o nível de risco de cada escola.`,
     title: 'Onde o Risco se Concentra?',
     content: `Este gráfico mostra o **ranking dos 10 municípios** com a maior **quantidade absoluta** de escolas classificadas como de alto risco de infraestrutura. \n\nEle ajuda a responder a pergunta: "Se quisermos intervir onde o **volume** de problemas é maior, por onde devemos começar?"`,
   },
+  SCHOOL_DETAILS_RISK_SCORE: {
+    title: 'Score de Risco de Infraestrutura',
+    content: `Este é um indicador de **0 a 1** que mede a vulnerabilidade da infraestrutura da escola.\n\nQuanto **mais próximo de 1**, maior a quantidade de carências (falta de biblioteca, saneamento, etc.) e maior o "risco" estrutural.`,
+  },
+  SCHOOL_DETAILS_CONTEXTUALIZED_SCORE: {
+    title: 'Score de Risco Contextualizado',
+    content: `Este score compara o risco de infraestrutura da escola com a **média de outras escolas em municípios com perfil socioeconômico semelhante**.\n\nEle ajuda a responder: "Esta escola está em uma situação pior ou melhor do que o esperado para a sua realidade?"`,
+  },
+  SCHOOL_DETAILS_STUDENT_COUNT: {
+    title: 'Alunos Impactados',
+    content: `Indica o **número total de alunos matriculados** nesta escola, de acordo com o Censo Escolar.\n\nEste dado é crucial para entender a escala do impacto de qualquer intervenção ou carência existente.`,
+  },
+  SCHOOL_DETAILS_INFRA_XRAY: {
+    title: 'Raio-X da Infraestrutura',
+    content: `Esta seção detalha os **principais indicadores de infraestrutura** da escola, baseados nos dados do Censo Escolar.\n\nCada item mostra se a escola possui (✔️) ou não possui (❌) o recurso, justificando o cálculo do Score de Risco.`,
+  },
 };

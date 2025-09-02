@@ -24,6 +24,7 @@ export interface ISchoolRepository {
   ): Promise<PaginatedResponse<School>>;
   listAll(): Promise<School[]>;
   listForMap(): Promise<SchoolForMap[]>;
+  findById(id: string): Promise<School | null>;
 }
 
 const listForMap = async (): Promise<SchoolForMap[]> => {
@@ -90,8 +91,22 @@ const search = async (
   }
 };
 
+const findById = async (id: string): Promise<School | null> => {
+  try {
+    const { data } = await apiClient.get<SchoolFromApi>(
+      `/api/v1/schools/${id}`,
+    );
+    if (!data) return null;
+    return mapSchoolFromApiToDomain(data);
+  } catch (error) {
+    console.error(`Erro no repositório ao buscar escola com ID ${id}:`, error);
+    throw error;
+  }
+};
+
 export const schoolRepository: ISchoolRepository = {
   search,
   listForMap,
   listAll,
+  findById,
 };
