@@ -6,6 +6,15 @@ export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      safelist: [
+        'text-orange-900',
+        'text-orange-700',
+        'text-orange-500',
+        'bg-orange-900',
+        'bg-orange-700',
+        'bg-orange-500',
+        'bg-orange-300',
+      ],
       colors: {
         'brand-orange': {
           light: '#FFA726',
@@ -70,9 +79,9 @@ export default {
       typography: (theme) => ({
         DEFAULT: {
           css: {
-            color: theme('colors.brand-text.primary'), 
-            a: { color: theme('colors.brand-orange.dark') }, 
-            strong: { color: theme('colors.brand-orange.dark') }, 
+            color: theme('colors.brand-text.primary'),
+            a: { color: theme('colors.brand-orange.dark') },
+            strong: { color: theme('colors.brand-orange.dark') },
             h1: { color: theme('colors.brand-text.primary') },
             h2: { color: theme('colors.brand-text.primary') },
             h3: { color: theme('colors.brand-text.primary') },
