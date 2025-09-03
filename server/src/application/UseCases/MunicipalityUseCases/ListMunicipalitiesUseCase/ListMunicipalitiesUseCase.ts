@@ -3,8 +3,11 @@ import { IMunicipalityRepository } from '../../../../domain/repositories/municip
 export class ListMunicipalitiesUseCase {
   constructor(private municipalityRepository: IMunicipalityRepository) {}
 
-  async execute() {
-    const municipality = await this.municipalityRepository.findAllForDropdown();
+  async execute(page: number, limit: number = 20) {
+    const municipality = await this.municipalityRepository.findAllForDropdown(
+      page,
+      limit,
+    );
 
     return municipality || [];
   }

@@ -1,6 +1,9 @@
+import z from 'zod';
 import { GetAllSchoolsUseCase } from '../../../../../application/UseCases/SchoolUseCases/GetAllSchoolsUseCase/GetAllSchoolsUseCase';
 
 import { Request, Response } from 'express';
+import { dependenciaAdministrativa } from '../../../../../domain/enums/enumDependenciaAdministrativa';
+import { tipoLocalizacao } from '../../../../../domain/enums/enumTipoLocalizacao';
 
 export class GetAllSchoolsController {
   constructor(private getAllSchoolsUseCase: GetAllSchoolsUseCase) {}
@@ -110,8 +113,32 @@ export class GetAllSchoolsController {
    *                   example: "Não foi possível obter os dados das escolas."
    */
   async getAll(req: Request, res: Response) {
-    const school = await this.getAllSchoolsUseCase.execute();
+    const querySchema = z
+      .object({
+        page: z.coerce
+          .number()
+          .gt(0, { message: 'Page need be greater than 0' }),
+        limit: z.coerce
+          .number()
+          .gt(0, { message: 'Limit need be greater than 0' }),
+        municipioIdIbge: z
+          .string()
+          .trim()
+          .length(7, { message: 'Need  7 caracteres' })
+          .optional(),
+        dependenciaAdm: z.enum(dependenciaAdministrativa).optional(),
+        tipoLocalizacao: z.enum(tipoLocalizacao).optional(),
+      })
+      .strict();
 
-    res.status(200).json(school.length > 0 ? school : []);
+    const { page, limit, ...filters } = querySchema.parse(req.query);
+
+    const school = await this.getAllSchoolsUseCase.execute({
+      filters,
+      page,
+      limit,
+    });
+
+    res.status(200).json(school);
   }
 }
