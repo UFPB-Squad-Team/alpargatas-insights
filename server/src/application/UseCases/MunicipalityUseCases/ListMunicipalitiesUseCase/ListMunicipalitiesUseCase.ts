@@ -7,9 +7,9 @@ export class ListMunicipalitiesUseCase {
     const municipality = await this.municipalityRepository.findAllForDropdown(
       page,
       limit,
-      term
+      term,
     );
-    
+
     return municipality || [];
   }
 }

@@ -4,9 +4,10 @@ import { AppError } from '../../../../shared/utils/errors/appError';
 import { GetMunicipalityWithIbgeCodeDTO } from './GetMunicipalityWithIbgeCodeDTO';
 
 export class GetMunicipalityWithIbgeCodeUseCase {
-  private readonly HIGH_RISK_THRESHOLD: number = 0.75
-  constructor(private municipalityRepository: IMunicipalityRepository, 
-    private schoolRepository: ISchoolRepository 
+  private readonly HIGH_RISK_THRESHOLD: number = 0.75;
+  constructor(
+    private municipalityRepository: IMunicipalityRepository,
+    private schoolRepository: ISchoolRepository,
   ) {}
 
   async execute({ codigoIbge }: GetMunicipalityWithIbgeCodeDTO) {
@@ -17,13 +18,13 @@ export class GetMunicipalityWithIbgeCodeUseCase {
     const municipality =
       await this.municipalityRepository.findByIbgeCode(codigoIbge);
 
-    const schools = await this.schoolRepository.findAll()
+    const schools = await this.schoolRepository.findAll();
 
-    
     const schoolsWithHighInfraestructureRisk = schools
       .filter(
         (school) =>
-          school.scoreRiscoContextualizado >= this.HIGH_RISK_THRESHOLD && String(school.municipioIdIbge) === codigoIbge
+          school.scoreRiscoContextualizado >= this.HIGH_RISK_THRESHOLD &&
+          String(school.municipioIdIbge) === codigoIbge,
       )
       .map((school) => ({
         id: school.id,
@@ -40,10 +41,11 @@ export class GetMunicipalityWithIbgeCodeUseCase {
         localizacao: school.localizacao,
       }));
 
-      const schoolMunicipality = schools
+    const schoolMunicipality = schools
       .filter(
         (school) =>
-          school.dependenciaAdm === 'Municipal' && String(school.municipioIdIbge) === codigoIbge
+          school.dependenciaAdm === 'Municipal' &&
+          String(school.municipioIdIbge) === codigoIbge,
       )
       .map((school) => ({
         id: school.id,
@@ -60,10 +62,11 @@ export class GetMunicipalityWithIbgeCodeUseCase {
         localizacao: school.localizacao,
       }));
 
-      const schoolsState = schools
+    const schoolsState = schools
       .filter(
         (school) =>
-          school.dependenciaAdm === 'Estadual' && String(school.municipioIdIbge) === codigoIbge
+          school.dependenciaAdm === 'Estadual' &&
+          String(school.municipioIdIbge) === codigoIbge,
       )
       .map((school) => ({
         id: school.id,
@@ -80,10 +83,11 @@ export class GetMunicipalityWithIbgeCodeUseCase {
         localizacao: school.localizacao,
       }));
 
-      const schoolFederal = schools
+    const schoolFederal = schools
       .filter(
         (school) =>
-          school.dependenciaAdm === 'Federal' && String(school.municipioIdIbge) === codigoIbge
+          school.dependenciaAdm === 'Federal' &&
+          String(school.municipioIdIbge) === codigoIbge,
       )
       .map((school) => ({
         id: school.id,
@@ -100,10 +104,11 @@ export class GetMunicipalityWithIbgeCodeUseCase {
         localizacao: school.localizacao,
       }));
 
-      const urbans = schools
+    const urbans = schools
       .filter(
         (school) =>
-          school.tipoLocalizacao === 'Urbana' && String(school.municipioIdIbge) === codigoIbge
+          school.tipoLocalizacao === 'Urbana' &&
+          String(school.municipioIdIbge) === codigoIbge,
       )
       .map((school) => ({
         id: school.id,
@@ -120,10 +125,11 @@ export class GetMunicipalityWithIbgeCodeUseCase {
         localizacao: school.localizacao,
       }));
 
-      const rural = schools
+    const rural = schools
       .filter(
         (school) =>
-          school.tipoLocalizacao === 'Rural' && String(school.municipioIdIbge) === codigoIbge
+          school.tipoLocalizacao === 'Rural' &&
+          String(school.municipioIdIbge) === codigoIbge,
       )
       .map((school) => ({
         id: school.id,
@@ -145,14 +151,14 @@ export class GetMunicipalityWithIbgeCodeUseCase {
       codigoIbge: municipality?.codigoIbge,
       nome: municipality?.nome,
       uf: municipality?.uf,
-      riscoMedio:municipality?.riscoMedio,
+      riscoMedio: municipality?.riscoMedio,
       totalEscolas: municipality?.totalEscolas,
       totalEscolasUrbanas: urbans.length,
       totalEscolasRurais: rural.length,
-      totalEscolasMunicipais:schoolMunicipality.length,
+      totalEscolasMunicipais: schoolMunicipality.length,
       totalEscolasEstaduais: schoolsState.length,
       totalEscolasFederais: schoolFederal.length,
       totalEscolasEmAltoRisco: schoolsWithHighInfraestructureRisk.length,
-    }
+    };
   }
 }

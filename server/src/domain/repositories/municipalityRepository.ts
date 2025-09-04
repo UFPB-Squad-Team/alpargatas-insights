@@ -8,7 +8,7 @@ export interface IMunicipalityRepository {
   findAllForDropdown(
     page: number,
     limit: number,
-    term?: string
+    term?: string,
   ): Promise<{
     municipalities: Pick<Municipality, 'id' | 'nome'>[];
     page: number;

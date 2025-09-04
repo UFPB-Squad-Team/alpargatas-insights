@@ -197,74 +197,73 @@ export class MoongoseMunicipalityRepository implements IMunicipalityRepository {
   async findAllForDropdown(
     page: number,
     limit: number = 20,
-    term?: string
+    term?: string,
   ): Promise<{
     municipalities: Pick<Municipality, 'id' | 'nome'>[];
     page: number;
     total: number;
     currentPage: number;
   }> {
-  const skip = (page - 1) * limit;
+    const skip = (page - 1) * limit;
 
+    const matchStage: any = {
+      municipioIdIbge: { $exists: true, $ne: null },
+      municipioNome: { $exists: true, $ne: null },
+    };
 
-  const matchStage: any = {
-    municipioIdIbge: { $exists: true, $ne: null },
-    municipioNome: { $exists: true, $ne: null },
-  };
+    if (term) {
+      matchStage.$or = [
+        { municipioNome: { $regex: term, $options: 'i' } },
+        { municipioIdIbge: { $regex: term, $options: 'i' } },
+        {
+          $expr: {
+            $regexMatch: {
+              input: { $toString: '$municipioIdIbge' },
+              regex: term,
+              options: 'i',
+            },
+          },
+        },
+      ];
+    }
 
-  if (term) {
-    matchStage.$or = [
-      { municipioNome: { $regex: term, $options: "i" } }, 
-      { municipioIdIbge: { $regex: term, $options: "i" } },   
+    const pipeline: PipelineStage[] = [
+      { $match: matchStage },
       {
-        $expr: {
-          $regexMatch: {
-            input: { $toString: "$municipioIdIbge" },
-            regex: term,
-            options: "i",
+        $group: {
+          _id: {
+            codigoIbge: '$municipioIdIbge',
+            nome: '$municipioNome',
           },
         },
       },
-    ];
-  }
-
-  const pipeline: PipelineStage[] = [
-    { $match: matchStage },
-    {
-      $group: {
-        _id: {
-          codigoIbge: "$municipioIdIbge",
-          nome: "$municipioNome",
+      {
+        $project: {
+          _id: 0,
+          id: '$_id.codigoIbge',
+          nome: '$_id.nome',
         },
       },
-    },
-    {
-      $project: {
-        _id: 0,
-        id: "$_id.codigoIbge",
-        nome: "$_id.nome",
+      { $sort: { nome: 1 } },
+      {
+        $facet: {
+          paginatedResults: [{ $skip: skip }, { $limit: limit }],
+          totalCount: [{ $count: 'count' }],
+        },
       },
-    },
-    { $sort: { nome: 1 } },
-    {
-      $facet: {
-        paginatedResults: [{ $skip: skip }, { $limit: limit }],
-        totalCount: [{ $count: "count" }],
-      },
-    },
-  ];
+    ];
 
-  const [result] = await SchoolModel.aggregate(pipeline).exec();
+    const [result] = await SchoolModel.aggregate(pipeline).exec();
 
-  const municipalities = result.paginatedResults;
-  const total = result.totalCount[0]?.count || 0;
-  const pages = Math.ceil(total / limit);
+    const municipalities = result.paginatedResults;
+    const total = result.totalCount[0]?.count || 0;
+    const pages = Math.ceil(total / limit);
 
-  return {
-    municipalities,
-    total,
-    page: pages,
-    currentPage: page,
-  };
+    return {
+      municipalities,
+      total,
+      page: pages,
+      currentPage: page,
+    };
   }
 }
