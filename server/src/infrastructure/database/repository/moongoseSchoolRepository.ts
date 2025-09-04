@@ -168,6 +168,7 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
     page: number,
     limit: number = 20,
     filters?: Partial<School>,
+    term?: string,
     threshold: number = 0.75,
   ): Promise<{
     schools: School[];
@@ -182,33 +183,35 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
     const aggregationPipeline: any[] = [];
 
     if (filters?.municipioIdIbge) {
-      aggregationPipeline.push({
-        $match: {
-          $expr: {
-            $eq: [
-              { $toString: '$municipioIdIbge' },
-              String(filters.municipioIdIbge),
-            ],
-          },
-        },
-      });
-    }
+        matchStage.municipioIdIbge = +filters.municipioIdIbge;
+      }
 
     if (filters?.dependenciaAdm) {
-      aggregationPipeline.push({
-        $match: {
-          dependenciaAdm: filters.dependenciaAdm,
-        },
-      });
-    }
+        matchStage.dependenciaAdm = filters.dependenciaAdm;
+      }
 
     if (filters?.tipoLocalizacao) {
-      aggregationPipeline.push({
-        $match: {
-          tipoLocalizacao: filters.tipoLocalizacao,
-        },
-      });
-    }
+        matchStage.tipoLocalizacao = filters.tipoLocalizacao;
+      }
+
+    if (term) {
+        matchStage.$or = [
+          { estadoSigla: term.toUpperCase() },
+          { escolaNome: { $regex: term, $options: "i" } },
+          { municipioNome: { $regex: term, $options: "i" } },
+          {
+            $expr: {
+              $regexMatch: {
+                input: { $toString: "$municipioIdIbge" },
+                regex: term,
+                options: "i"
+              }
+            }
+          }
+        ];
+      }
+
+    aggregationPipeline.push({ $match: matchStage });
 
     if (Object.keys(matchStage).length > 0) {
       aggregationPipeline.push({ $match: matchStage });

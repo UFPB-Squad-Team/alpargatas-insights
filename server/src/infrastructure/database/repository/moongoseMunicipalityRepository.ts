@@ -197,59 +197,74 @@ export class MoongoseMunicipalityRepository implements IMunicipalityRepository {
   async findAllForDropdown(
     page: number,
     limit: number = 20,
+    term?: string
   ): Promise<{
     municipalities: Pick<Municipality, 'id' | 'nome'>[];
     page: number;
     total: number;
     currentPage: number;
   }> {
-    const skip = (page - 1) * limit;
+  const skip = (page - 1) * limit;
 
-    const pipeline: PipelineStage[] = [
+
+  const matchStage: any = {
+    municipioIdIbge: { $exists: true, $ne: null },
+    municipioNome: { $exists: true, $ne: null },
+  };
+
+  if (term) {
+    matchStage.$or = [
+      { municipioNome: { $regex: term, $options: "i" } }, 
+      { municipioIdIbge: { $regex: term, $options: "i" } },   
       {
-        $match: {
-          municipioIdIbge: { $exists: true, $ne: null },
-          municipioNome: { $exists: true, $ne: null },
-        },
-      },
-      {
-        $group: {
-          _id: {
-            codigoIbge: '$municipioIdIbge',
-            nome: '$municipioNome',
+        $expr: {
+          $regexMatch: {
+            input: { $toString: "$municipioIdIbge" },
+            regex: term,
+            options: "i",
           },
         },
       },
-      {
-        $project: {
-          _id: 0,
-          id: '$_id.codigoIbge',
-          nome: '$_id.nome',
-        },
-      },
-      {
-        $sort: { nome: 1 },
-      },
-      {
-        $facet: {
-          paginatedResults: [{ $skip: skip }, { $limit: limit }],
-
-          totalCount: [{ $count: 'count' }],
-        },
-      },
     ];
+  }
 
-    const [result] = await SchoolModel.aggregate(pipeline).exec();
+  const pipeline: PipelineStage[] = [
+    { $match: matchStage },
+    {
+      $group: {
+        _id: {
+          codigoIbge: "$municipioIdIbge",
+          nome: "$municipioNome",
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        id: "$_id.codigoIbge",
+        nome: "$_id.nome",
+      },
+    },
+    { $sort: { nome: 1 } },
+    {
+      $facet: {
+        paginatedResults: [{ $skip: skip }, { $limit: limit }],
+        totalCount: [{ $count: "count" }],
+      },
+    },
+  ];
 
-    const municipalities = result.paginatedResults;
-    const total = result.totalCount[0]?.count || 0;
-    const pages = Math.ceil(total / limit);
+  const [result] = await SchoolModel.aggregate(pipeline).exec();
 
-    return {
-      municipalities,
-      total,
-      page: pages,
-      currentPage: page,
-    };
+  const municipalities = result.paginatedResults;
+  const total = result.totalCount[0]?.count || 0;
+  const pages = Math.ceil(total / limit);
+
+  return {
+    municipalities,
+    total,
+    page: pages,
+    currentPage: page,
+  };
   }
 }

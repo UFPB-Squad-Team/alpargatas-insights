@@ -128,12 +128,14 @@ export class GetAllSchoolsController {
           .optional(),
         dependenciaAdm: z.enum(dependenciaAdministrativa).optional(),
         tipoLocalizacao: z.enum(tipoLocalizacao).optional(),
+        term: z.string().min(1, { message: 'Term need min 1 caracter' }).optional(),
       })
       .strict();
 
-    const { page, limit, ...filters } = querySchema.parse(req.query);
+    const { page, limit, term, ...filters } = querySchema.parse(req.query);
 
     const school = await this.getAllSchoolsUseCase.execute({
+      term,
       filters,
       page,
       limit,
