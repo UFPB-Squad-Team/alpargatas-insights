@@ -25,4 +25,11 @@ municipalityRoutes.get(
   ),
 );
 
+municipalityRoutes.get(
+  '/api/v1/municipalities/map/get-all-for-map',
+  municipalityController.getAllMunicipalitiesWithHighRiskSchoolController.getAllHighRiskSchoolsPerMunicipality.bind(
+    municipalityController.getAllMunicipalitiesWithHighRiskSchoolController,
+  ),
+);
+
 export { municipalityRoutes };
