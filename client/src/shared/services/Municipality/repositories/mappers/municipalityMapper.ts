@@ -1,4 +1,6 @@
 import {
+  MunicipalityDetails,
+  MunicipalityDetailsFromApi,
   MunicipalityForFilter,
   MunicipalityForFilterFromApi,
   MunicipalityRisk,
@@ -41,5 +43,20 @@ export const mapMunicipalityRiskCountFromApiToDomain = (
     codigoIbge: apiMunicipality.idIbge.toString(),
     nome: apiMunicipality.name,
     escolasEmAltoRisco: apiMunicipality.schoolCount,
+  };
+};
+
+/**
+ * @description Maps the details data of a municipality from the API to our domain model.
+ */
+export const mapMunicipalityDetailsFromApiToDomain = (
+  apiMunicipality: MunicipalityDetailsFromApi,
+): MunicipalityDetails => {
+  return {
+    codigoIbge: apiMunicipality.codigoIbge,
+    nome: apiMunicipality.nome,
+    uf: apiMunicipality.uf,
+    totalEscolas: apiMunicipality.totalEscolas,
+    riscoMedio: apiMunicipality.riscoMedio,
   };
 };

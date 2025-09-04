@@ -20,7 +20,7 @@ export type MunicipalityRisk = {
  * @description Contract that represents a municipality in the filter list as it comes from the API.
  */
 export type MunicipalityForFilterFromApi = {
-  id: number; 
+  id: number;
   nome: string;
 };
 
@@ -50,4 +50,27 @@ export type MunicipalityRiskCount = {
   codigoIbge: string;
   nome: string;
   escolasEmAltoRisco: number;
+};
+
+/**
+ * @description Contract that represents the API response for the details of a municipality.
+ */
+export type MunicipalityDetailsFromApi = {
+  id: string;
+  codigoIbge: string;
+  nome: string;
+  uf: string;
+  totalEscolas: number;
+  riscoMedio: number;
+};
+
+/**
+ * @description Our internal and clean domain model for municipality details.
+ */
+export type MunicipalityDetails = {
+  codigoIbge: string;
+  nome: string;
+  uf: string;
+  totalEscolas: number;
+  riscoMedio: number;
 };

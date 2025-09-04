@@ -43,7 +43,7 @@ export const ScoreGrid = ({
         info={explanations.SCHOOL_DETAILS_RISK_SCORE}
       >
         <p className="text-4xl font-bold text-brand-text-primary">
-          {riskScore * 100}%
+          {(riskScore * 100).toFixed(0)}%
         </p>
         <div className="mt-1">
           <RiskIndicator score={riskScore} />
@@ -56,7 +56,7 @@ export const ScoreGrid = ({
         info={explanations.SCHOOL_DETAILS_CONTEXTUALIZED_SCORE}
       >
         <p className="text-4xl font-bold text-brand-text-primary">
-          {contextualizedScore * 100}%
+          {(contextualizedScore * 100).toFixed(0)}%
         </p>
         <div className="mt-1">
           <RiskIndicator score={contextualizedScore} />

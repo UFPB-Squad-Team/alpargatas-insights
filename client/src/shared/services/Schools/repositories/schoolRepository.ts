@@ -10,10 +10,25 @@ import {
   SchoolForMapFromApi,
 } from '@/domain/entities/School/SchoolForMap';
 
-type PaginatedSchoolFromApi = {
+type RawPaginatedSchoolFromApi = {
   schools: SchoolFromApi[];
   total: number;
   currentPage: number;
+};
+
+export type FiltersOptions = {
+  municipioIdIbge?: string;
+  dependenciaAdm?: string;
+  tipoLocalizacao?: string;
+};
+
+type ListOrSearchParams = {
+  page?: number;
+  limit?: number;
+  searchTerm?: string;
+  municipioIdIbge?: string;
+  dependenciaAdm?: string;
+  tipoLocalizacao?: string;
 };
 
 export interface ISchoolRepository {
@@ -22,15 +37,22 @@ export interface ISchoolRepository {
     page?: number,
     limit?: number,
   ): Promise<PaginatedResponse<School>>;
-  listAll(): Promise<School[]>;
-  listForMap(): Promise<SchoolForMap[]>;
+  listOrSearch(params: ListOrSearchParams): Promise<PaginatedResponse<School>>;
+  listForMap(filters: FiltersOptions): Promise<SchoolForMap[]>;
   findById(id: string): Promise<School | null>;
 }
 
-const listForMap = async (): Promise<SchoolForMap[]> => {
+const listForMap = async (filters: FiltersOptions): Promise<SchoolForMap[]> => {
   try {
     const { data } = await apiClient.get<SchoolForMapFromApi[]>(
       '/api/v1/dashboard/map-data',
+      {
+        params: {
+          municipioIdIbge: filters.municipioIdIbge,
+          dependenciaAdm: filters.dependenciaAdm,
+          tipoLocalizacao: filters.tipoLocalizacao,
+        },
+      },
     );
 
     return data.map(mapSchoolForMapFromApiToDomain);
@@ -41,19 +63,49 @@ const listForMap = async (): Promise<SchoolForMap[]> => {
   }
 };
 
-const listAll = async (): Promise<School[]> => {
+const listOrSearch = async (
+  params: ListOrSearchParams,
+): Promise<PaginatedResponse<School>> => {
   try {
-    const { data } = await apiClient.get<any>('/api/v1/schools/all');
+    // Pegamos todos os parâmetros possíveis
+    const {
+      page,
+      limit,
+      searchTerm,
+      municipioIdIbge,
+      dependenciaAdm,
+      tipoLocalizacao,
+    } = params;
 
-    const schoolsFromApi = Array.isArray(data?.schools) ? data.schools : data;
+    const apiParams = {
+      page,
+      limit,
+      term: searchTerm,
+      municipioIdIbge,
+      dependenciaAdm,
+      tipoLocalizacao,
+    };
 
-    if (Array.isArray(schoolsFromApi)) {
-      return schoolsFromApi.map(mapSchoolFromApiToDomain);
-    }
+    Object.keys(apiParams).forEach(
+      (key) =>
+        (apiParams as any)[key] === undefined && delete (apiParams as any)[key],
+    );
 
-    return [];
+    const { data: apiResponse } =
+      await apiClient.get<RawPaginatedSchoolFromApi>('/api/v1/schools/all', {
+        params: apiParams,
+      });
+
+    const mappedData = apiResponse.schools.map(mapSchoolFromApiToDomain);
+
+    return {
+      data: mappedData,
+      total: apiResponse.total,
+      page: apiResponse.currentPage,
+      limit: params.limit || mappedData.length,
+    };
   } catch (error) {
-    console.error('Erro no repositório ao buscar todas as escolas:', error);
+    console.error('Erro no repositório ao buscar escolas:', error);
     throw error;
   }
 };
@@ -64,7 +116,7 @@ const search = async (
   limit = 20,
 ): Promise<PaginatedResponse<School>> => {
   try {
-    const { data } = await apiClient.get<PaginatedSchoolFromApi>(
+    const { data } = await apiClient.get<RawPaginatedSchoolFromApi>(
       '/api/v1/schools',
       {
         params: {
@@ -107,6 +159,6 @@ const findById = async (id: string): Promise<School | null> => {
 export const schoolRepository: ISchoolRepository = {
   search,
   listForMap,
-  listAll,
+  listOrSearch,
   findById,
 };

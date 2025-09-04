@@ -20,22 +20,28 @@ import TopMunicipalitiesChart from './components/charts/TopMunicipalitiesChart';
 import RiskLegend from '@/ui/components/common/RiskLegend';
 import Spinner from '@/ui/components/common/Spinner';
 import { listSchoolsForMapUseCase } from './services/logic/School/listSchoolsForMapUseCase';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { getDashboardKPIsUseCase } from './services/logic/getDashboardKPIsUseCase';
 import DashboardFilters from './components/custom/DashboardFilters';
 import { explanations } from '@/shared/config/explanations.config';
 import InfoPopover from '@/ui/components/common/InfoPopover';
 import MunicipalitiesByRiskCountChart from './components/charts/MunicipalitiesByRiskCountChart';
+import { useFilters } from '@/ui/context/FiltersContext';
+import { cn } from '@/shared/lib/utils';
 
 const DashboardPage = () => {
+  const { filters, isPending } = useFilters();
+
   const { data: kpis, isLoading: isLoadingKpis } = useQuery({
-    queryKey: ['dashboard-kpis'],
-    queryFn: getDashboardKPIsUseCase.execute,
+    queryKey: ['dashboard-kpis', filters],
+    queryFn: () => getDashboardKPIsUseCase.execute(filters),
+    placeholderData: keepPreviousData,
   });
 
   const { data: mapData = [], isLoading: isLoadingMap } = useQuery({
-    queryKey: ['schools-for-map'],
-    queryFn: () => listSchoolsForMapUseCase.execute(),
+    queryKey: ['schools-for-map', filters],
+    queryFn: () => listSchoolsForMapUseCase.execute(filters),
+    placeholderData: keepPreviousData,
   });
 
   const { selectedSchoolId, setSelectedSchoolId } = useDashboard();
@@ -51,7 +57,12 @@ const DashboardPage = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div
+      className={cn(
+        'space-y-6 transition-opacity duration-200',
+        isPending && 'opacity-60 pointer-events-none',
+      )}
+    >
       <DashboardFilters />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -130,9 +141,7 @@ const DashboardPage = () => {
 
         <div className="lg:col-span-1 flex flex-col gap-6">
           <HighRiskSchoolsList
-            onSelectSchool={(school) =>
-              setSelectedSchoolId(school.escola_id_inep)
-            }
+            onSelectSchool={(school) => setSelectedSchoolId(school.id)}
           />
           <TopMunicipalitiesChart />
 

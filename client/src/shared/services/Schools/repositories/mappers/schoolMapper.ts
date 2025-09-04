@@ -39,7 +39,7 @@ export const mapSchoolForMapFromApiToDomain = (
   apiSchool: SchoolForMapFromApi,
 ): SchoolForMap => {
   return {
-    id: apiSchool._id,
+    id: apiSchool.id,
     nome: apiSchool.escolaNome,
     coordenadas: apiSchool.localizacao.coordinates,
     scoreRiscoContextualizado: apiSchool.scoreRiscoContextualizado,

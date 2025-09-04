@@ -1,67 +1,52 @@
 import { useQuery } from '@tanstack/react-query';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Spinner from '@/ui/components/common/Spinner';
 import DashboardFilters from '../Dashboard/components/custom/DashboardFilters';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/ui/components/common/pagination';
 import { Input } from '@/ui/components/common/input';
 import { Search } from 'lucide-react';
-import { listAllSchoolsUseCase } from '@/shared/services/Schools/logic/listPaginatedSchoolsUseCase';
-import { SchoolsTable } from './components/SchoolTables';
-// import { usePagination } from '@/ui/hooks/usePagination';
 import { useDebounce } from '@/ui/hooks/useDebounce';
+import { usePagination } from '@/ui/hooks/usePagination';
+import { CustomPagination } from '@/ui/components/common/CustomPagination';
+import { SchoolsTable } from './components/SchoolTables';
+import { listSchoolsUseCase } from '@/shared/services/Schools/logic/listPaginatedSchoolsUseCase';
+import { useFilters } from '@/ui/context/FiltersContext';
 
-const PAGE_SIZE = 50;
+const PAGE_SIZE = 25;
 
 const SchoolsPage = () => {
   const [page, setPage] = useState(1);
-  const [globalFilter, setGlobalFilter] = useState('');
+  const { filters } = useFilters();
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const {
-    data: allSchools = [],
+    data: paginatedData,
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ['schools-all-list'],
-    queryFn: listAllSchoolsUseCase.execute,
+    queryKey: ['schools-list', page, debouncedSearchTerm, filters],
+    queryFn: () =>
+      listSchoolsUseCase.execute({
+        page,
+        limit: PAGE_SIZE,
+        ...filters,
+      }),
   });
 
-  const debouncedFilter = useDebounce(globalFilter, 300);
-
-  useEffect(() => {
-    setPage(1);
-  }, [debouncedFilter]);
-
-  const filteredSchools = useMemo(() => {
-    if (!globalFilter) return allSchools;
-    const filterText = globalFilter.toLowerCase();
-    return allSchools.filter((school) =>
-      [school.nome, school.municipio, school.inep.toString()].some((value) =>
-        String(value).toLowerCase().includes(filterText),
-      ),
-    );
-  }, [allSchools, globalFilter]);
-
-  const totalSchools = filteredSchools.length;
+  const schoolsOnPage = paginatedData?.data || [];
+  const totalSchools = paginatedData?.total || 0;
   const totalPages = Math.ceil(totalSchools / PAGE_SIZE);
 
-  const schoolsDataOnPage = useMemo(() => {
-    const startIndex = (page - 1) * PAGE_SIZE;
-    const endIndex = startIndex + PAGE_SIZE;
-    return filteredSchools.slice(startIndex, endIndex);
-  }, [filteredSchools, page]);
-
-  /**const paginationRange = usePagination({
+  const paginationRange = usePagination({
     currentPage: page,
     totalCount: totalSchools,
     pageSize: PAGE_SIZE,
   });
-  **/
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearchTerm, filters]);
 
   return (
     <div className="space-y-6">
@@ -78,10 +63,12 @@ const SchoolsPage = () => {
         </div>
         <div className="text-right">
           <p className="font-semibold text-brand-text-primary">
-            Exibindo {schoolsDataOnPage.length} de {totalSchools}
+            Exibindo {schoolsOnPage.length} de {totalSchools}
           </p>
           <p className="text-xs text-brand-text-secondary">
-            {globalFilter ? 'Escolas Filtradas' : 'Total de Escolas'}
+            {searchTerm || Object.values(filters).some((v) => v)
+              ? 'Escolas Filtradas'
+              : 'Total de Escolas'}
           </p>
         </div>
       </div>
@@ -92,9 +79,9 @@ const SchoolsPage = () => {
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
-            placeholder="Buscar na tabela por nome, município, inep..."
-            value={globalFilter}
-            onChange={(e) => setGlobalFilter(e.target.value)}
+            placeholder="Buscar por nome, município, inep..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-9"
           />
         </div>
@@ -111,52 +98,20 @@ const SchoolsPage = () => {
         )}
         {!isLoading && !isError && totalSchools > 0 && (
           <>
-            <SchoolsTable
-              data={schoolsDataOnPage}
-              globalFilter={globalFilter}
-            />
-            <div className="mt-6 flex justify-center">
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setPage((old) => Math.max(old - 1, 1));
-                      }}
-                      className={
-                        page <= 1 ? 'pointer-events-none opacity-50' : ''
-                      }
-                    />
-                  </PaginationItem>
-                  <PaginationItem>
-                    <span className="px-4 py-2 text-sm">
-                      Página {page} de {totalPages}
-                    </span>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationNext
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setPage((old) => Math.min(old + 1, totalPages));
-                      }}
-                      className={
-                        page >= totalPages
-                          ? 'pointer-events-none opacity-50'
-                          : ''
-                      }
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
+            <SchoolsTable data={schoolsOnPage}  />
+            <div className="mt-8 flex justify-center">
+              <CustomPagination
+                currentPage={page}
+                totalPages={totalPages}
+                paginationRange={paginationRange}
+                onPageChange={setPage}
+              />
             </div>
           </>
         )}
         {!isLoading && !isError && totalSchools === 0 && (
           <div className="text-center text-brand-text-secondary py-10">
-            <p>Nenhuma escola encontrada para o filtro atual.</p>
+            <p>Nenhuma escola encontrada para os filtros aplicados.</p>
           </div>
         )}
       </div>

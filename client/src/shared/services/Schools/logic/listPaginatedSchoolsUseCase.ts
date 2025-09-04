@@ -1,10 +1,16 @@
-import { School } from '@/domain/entities/School/SchoolProps';
 import { schoolRepository } from '@/shared/services/Schools/repositories/schoolRepository';
+import { IFilterState } from '@/ui/context/FiltersContext';
 
-const execute = (): Promise<School[]> => {
-  return schoolRepository.listAll();
+type ListParams = IFilterState & {
+  page?: number;
+  limit?: number;
+  searchTerm?: string;
 };
 
-export const listAllSchoolsUseCase = {
+const execute = (params: ListParams) => {
+  return schoolRepository.listOrSearch(params);
+};
+
+export const listSchoolsUseCase = {
   execute,
 };

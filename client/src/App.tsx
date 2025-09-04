@@ -6,6 +6,8 @@ import { DashboardProvider } from './ui/context/DashboardContext';
 import SchoolsPage from './modules/Schools/SchoolsPage';
 import { TooltipProvider } from './ui/components/common/tooltip';
 import SchoolDetailsPage from './modules/Schools/SchoolDetails/SchoolDetailsPage';
+import MunicipalityPage from './modules/Municipality/MunicipalityPage';
+import MunicipalityDetailsPage from './modules/Municipality/MunicipalityDetails/MunicipalityDetails';
 
 function App() {
   return (
@@ -17,8 +19,11 @@ function App() {
               <Route path="/" element={<DashboardPage />} />
               <Route path="/escolas" element={<SchoolsPage />} />
               <Route path="/escolas/:id" element={<SchoolDetailsPage />} />
-              <Route path="/municipios" />
-              <Route path="/municipios/:id" />
+              <Route path="/municipios" element={<MunicipalityPage />} />
+              <Route
+                path="/municipios/:id"
+                element={<MunicipalityDetailsPage />}
+              />
             </Route>
           </Routes>
         </DashboardProvider>

@@ -7,9 +7,9 @@ import {
 import 'leaflet/dist/leaflet.css';
 import { School } from '@/domain/entities/School/SchoolProps';
 import { Button } from '@/ui/components/common/button';
-import { Check, Share2, Users } from 'lucide-react';
+import { Check, Expand, LocateIcon, Share2, Users } from 'lucide-react';
 import RiskIndicator from '@/ui/components/common/RiskIndicator';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Tooltip,
   TooltipContent,
@@ -25,7 +25,7 @@ const dependencyStyles: { [key: string]: string } = {
   Estadual: 'bg-orange-100 text-orange-800',
 };
 const locationStyles: { [key: string]: string } = {
-  Urbana: 'bg-red-100 text-red-800',
+  Urbana: 'bg-lime-100 text-lime-800',
   Rural: 'bg-yellow-100 text-yellow-800',
 };
 
@@ -51,6 +51,9 @@ export const SchoolHeader = ({ school }: SchoolHeaderProps) => {
   const [isClient, setIsClient] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
 
+  const mapRef = useRef<L.Map>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -60,6 +63,26 @@ export const SchoolHeader = ({ school }: SchoolHeaderProps) => {
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     });
+  };
+
+  const handleRecenter = () => {
+    const map = mapRef.current;
+    if (map) {
+      map.setView([school.coordenadas[1], school.coordenadas[0]], 15); 
+    }
+  };
+
+  const handleFullscreen = () => {
+    const container = containerRef.current;
+    if (container) {
+      if (!document.fullscreenElement) {
+        container.requestFullscreen().catch((err) => {
+          alert(`Erro ao tentar entrar em tela cheia: ${err.message}`);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    }
   };
 
   const depStyle = dependencyStyles[school.dependenciaAdm] || 'bg-gray-100';
@@ -122,28 +145,25 @@ export const SchoolHeader = ({ school }: SchoolHeaderProps) => {
           </div>
         </div>
 
-        <div className="relative w-full md:w-1/3 h-56 rounded-lg overflow-hidden border bg-gray-100">
+        <div
+          className="relative w-full md:w-1/3 h-56 rounded-lg overflow-hidden border bg-gray-100"
+          ref={containerRef}
+        >
           {isClient && (
             <>
               <MapContainer
+                ref={mapRef} // 4. Adicionamos a ref ao mapa
                 center={[school.coordenadas[1], school.coordenadas[0]]}
-                zoom={13}
+                zoom={15}
                 scrollWheelZoom={true}
                 className="h-full w-full"
               >
                 <LayersControl position="topright">
-                  <LayersControl.BaseLayer checked name="Padrão">
-                    <TileLayer
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    />
+                  <LayersControl.BaseLayer name="Padrão">
+                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                   </LayersControl.BaseLayer>
-                  <LayersControl.BaseLayer name="Satélite">
-                    {' '}
-                    <TileLayer
-                      url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                      attribution="&copy; Esri"
-                    />
+                  <LayersControl.BaseLayer checked name="Satélite">
+                    <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" />
                   </LayersControl.BaseLayer>
                 </LayersControl>
 
@@ -158,11 +178,29 @@ export const SchoolHeader = ({ school }: SchoolHeaderProps) => {
                   }}
                 />
               </MapContainer>
+
+              <div className="absolute bottom-4 right-4 z-[1000] flex flex-col gap-2">
+                <Button
+                  size="icon"
+                  onClick={handleRecenter}
+                  title="Centralizar na escola"
+                  className="bg-white/80 text-brand-text-primary shadow-lg hover:bg-white backdrop-blur-sm"
+                >
+                  <LocateIcon className="h-4 w-4" />
+                </Button>
+                <Button
+                  size="icon"
+                  onClick={handleFullscreen}
+                  title="Ver em tela cheia"
+                  className="bg-white/80 text-brand-text-primary shadow-lg hover:bg-white backdrop-blur-sm"
+                >
+                  <Expand className="h-4 w-4" />
+                </Button>
+              </div>
             </>
           )}
         </div>
       </div>
-      {/* A seção de botões que ficava aqui foi removida, deixando o componente mais compacto */}
     </div>
   );
 };
