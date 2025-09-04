@@ -140,13 +140,34 @@ export class GetMunicipalityWithIbgeCodeUseCase {
         localizacao: school.localizacao,
       }));
 
+        const totalSchools = schools
+      .filter(
+        (school) =>
+        String(school.municipioIdIbge) === codigoIbge
+      )
+      .map((school) => ({
+        id: school.id,
+        escolaIdInep: school.escolaIdInep,
+        escolaNome: school.escolaNome,
+        municipioNome: school.municipioNome,
+        municipioIdIbge: school.municipioIdIbge,
+        dependenciaAdm: school.dependenciaAdm,
+        tipoLocalizacao: school.tipoLocalizacao,
+        estadoSigla: school.estadoSigla,
+        scoreRisco: school.scoreRisco,
+        scoreRiscoContextualizado: school.scoreRiscoContextualizado,
+        infraestrutura: school.infraestrutura,
+        localizacao: school.localizacao,
+      }));
+
+
     return {
       id: municipality?.id,
       codigoIbge: municipality?.codigoIbge,
       nome: municipality?.nome,
       uf: municipality?.uf,
       riscoMedio:municipality?.riscoMedio,
-      totalEscolas: municipality?.totalEscolas,
+      totalEscolas: totalSchools.length,
       totalEscolasUrbanas: urbans.length,
       totalEscolasRurais: rural.length,
       totalEscolasMunicipais:schoolMunicipality.length,
