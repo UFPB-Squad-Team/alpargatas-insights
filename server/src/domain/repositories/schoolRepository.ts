@@ -22,6 +22,7 @@ export interface ISchoolRepository {
     page: number,
     limit: number,
     filters?: Partial<School>,
+    term?: string,
     threshold?: number,
   ): Promise<{
     schools: School[];

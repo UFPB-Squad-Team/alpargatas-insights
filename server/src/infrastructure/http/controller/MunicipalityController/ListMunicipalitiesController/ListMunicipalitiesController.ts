@@ -50,13 +50,18 @@ export class ListMunicipalitiesController {
       limit: z.coerce
         .number()
         .gt(0, { message: 'Limit need be greater than 0' }),
+      term: z
+        .string()
+        .min(1, { message: 'Term need min 1 caracter' })
+        .optional(),
     });
 
-    const { page, limit } = querySchema.parse(req.query);
+    const { page, limit, term } = querySchema.parse(req.query);
 
     const municipalities = await this.listMunicipalitiesUseCase.execute(
       page,
       limit,
+      term,
     );
 
     res.status(200).json(municipalities);
