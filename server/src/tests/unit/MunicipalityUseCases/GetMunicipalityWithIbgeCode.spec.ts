@@ -49,7 +49,8 @@ describe('GetMunicipalityWithIbgeCodeUseCase', () => {
     };
 
     const getMunicipalityWithIbgeCode = new GetMunicipalityWithIbgeCodeUseCase(
-      mockMunicipalityRepository, mockSchoolRepository
+      mockMunicipalityRepository,
+      mockSchoolRepository,
     );
 
     const schoolData = {
@@ -66,9 +67,9 @@ describe('GetMunicipalityWithIbgeCodeUseCase', () => {
       totalEscolasUrbanas: 1,
       totalEscolasRurais: 0,
       totalEscolasMunicipais: 0,
-      totalEscolasEstaduais:0,
+      totalEscolasEstaduais: 0,
       totalEscolasFederais: 0,
-      totalEscolasEmAltoRisco: 1
+      totalEscolasEmAltoRisco: 1,
     });
   });
 
@@ -81,7 +82,7 @@ describe('GetMunicipalityWithIbgeCodeUseCase', () => {
       findAll: jest.fn().mockResolvedValue(null),
     };
 
-        const mockSchoolRepository = {
+    const mockSchoolRepository = {
       findById: jest.fn().mockResolvedValue(null),
       findByIbgeCode: jest.fn().mockResolvedValue(null),
       findByName: jest.fn().mockResolvedValue(null),
@@ -106,7 +107,8 @@ describe('GetMunicipalityWithIbgeCodeUseCase', () => {
     };
 
     const getMunicipalityWithIbgeCode = new GetMunicipalityWithIbgeCodeUseCase(
-      mockMunicipalityRepository, mockSchoolRepository
+      mockMunicipalityRepository,
+      mockSchoolRepository,
     );
 
     const schoolData = {
@@ -125,7 +127,7 @@ describe('GetMunicipalityWithIbgeCodeUseCase', () => {
       totalEscolasMunicipais: 0,
       totalEscolasEstaduais: 0,
       totalEscolasFederais: 0,
-      totalEscolasEmAltoRisco: 0
+      totalEscolasEmAltoRisco: 0,
     });
   });
 });
