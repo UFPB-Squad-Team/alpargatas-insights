@@ -183,33 +183,33 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
     const aggregationPipeline: any[] = [];
 
     if (filters?.municipioIdIbge) {
-        matchStage.municipioIdIbge = +filters.municipioIdIbge;
-      }
+      matchStage.municipioIdIbge = +filters.municipioIdIbge;
+    }
 
     if (filters?.dependenciaAdm) {
-        matchStage.dependenciaAdm = filters.dependenciaAdm;
-      }
+      matchStage.dependenciaAdm = filters.dependenciaAdm;
+    }
 
     if (filters?.tipoLocalizacao) {
-        matchStage.tipoLocalizacao = filters.tipoLocalizacao;
-      }
+      matchStage.tipoLocalizacao = filters.tipoLocalizacao;
+    }
 
     if (term) {
-        matchStage.$or = [
-          { estadoSigla: term.toUpperCase() },
-          { escolaNome: { $regex: term, $options: "i" } },
-          { municipioNome: { $regex: term, $options: "i" } },
-          {
-            $expr: {
-              $regexMatch: {
-                input: { $toString: "$municipioIdIbge" },
-                regex: term,
-                options: "i"
-              }
-            }
-          }
-        ];
-      }
+      matchStage.$or = [
+        { estadoSigla: term.toUpperCase() },
+        { escolaNome: { $regex: term, $options: 'i' } },
+        { municipioNome: { $regex: term, $options: 'i' } },
+        {
+          $expr: {
+            $regexMatch: {
+              input: { $toString: '$municipioIdIbge' },
+              regex: term,
+              options: 'i',
+            },
+          },
+        },
+      ];
+    }
 
     aggregationPipeline.push({ $match: matchStage });
 

@@ -128,7 +128,10 @@ export class GetAllSchoolsController {
           .optional(),
         dependenciaAdm: z.enum(dependenciaAdministrativa).optional(),
         tipoLocalizacao: z.enum(tipoLocalizacao).optional(),
-        term: z.string().min(1, { message: 'Term need min 1 caracter' }).optional(),
+        term: z
+          .string()
+          .min(1, { message: 'Term need min 1 caracter' })
+          .optional(),
       })
       .strict();
 

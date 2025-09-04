@@ -1,15 +1,12 @@
-import { School } from "../../../../../domain/entities/school";
-import { ISchoolRepository } from "../../../../../domain/repositories/schoolRepository";
+import { School } from '../../../../../domain/entities/school';
+import { ISchoolRepository } from '../../../../../domain/repositories/schoolRepository';
 
 export class GetAllMunicipalitiesWithHighRiskSchoolUseCase {
+  private readonly HIGH_RISK_THRESHOLD: number = 0.75;
+  constructor(private schoolRepository: ISchoolRepository) {}
 
-    private readonly HIGH_RISK_THRESHOLD: number = 0.75
-    constructor(
-        private schoolRepository: ISchoolRepository
-    ){}
-
-    async execute(filters?: Partial<School>){
-            const schools = await this.schoolRepository.findWithFilters(
+  async execute(filters?: Partial<School>) {
+    const schools = await this.schoolRepository.findWithFilters(
       this.HIGH_RISK_THRESHOLD,
       filters,
     );
@@ -55,11 +52,10 @@ export class GetAllMunicipalitiesWithHighRiskSchoolUseCase {
         name: stats.name,
         schoolCount: stats.schoolCount,
       }))
-      .sort((a, b) => b.schoolCount - a.schoolCount)
+      .sort((a, b) => b.schoolCount - a.schoolCount);
 
     return {
-        schoolsWithHighRiskPerMunicipality
-    }
-
-    }
+      schoolsWithHighRiskPerMunicipality,
+    };
+  }
 }

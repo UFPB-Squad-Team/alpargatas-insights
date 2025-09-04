@@ -18,13 +18,17 @@ const getMunicipalityStatisticsUseCase = new GetMunicipalityStatisticsUseCase(
 );
 
 const getMunicpalityWithIbgeCodeUseCase =
-  new GetMunicipalityWithIbgeCodeUseCase(municipalityRepository, schoolRepository);
+  new GetMunicipalityWithIbgeCodeUseCase(
+    municipalityRepository,
+    schoolRepository,
+  );
 
 const listMunicpalitiesUseCase = new ListMunicipalitiesUseCase(
   municipalityRepository,
 );
 
-const getAllMunicipalitiesWithHighRiskSchoolUseCase = new GetAllMunicipalitiesWithHighRiskSchoolUseCase(schoolRepository)
+const getAllMunicipalitiesWithHighRiskSchoolUseCase =
+  new GetAllMunicipalitiesWithHighRiskSchoolUseCase(schoolRepository);
 
 export const getMunicipalityStatisticsController =
   new GetMunicipalityStatisticsController(getMunicipalityStatisticsUseCase);
@@ -36,4 +40,7 @@ export const listMunicipalitiesController = new ListMunicipalitiesController(
   listMunicpalitiesUseCase,
 );
 
-export const getAllMunicipalitiesWithHighRiskSchoolController =  new GetAllMunicipalitiesWithHighRiskSchoolController(getAllMunicipalitiesWithHighRiskSchoolUseCase)
+export const getAllMunicipalitiesWithHighRiskSchoolController =
+  new GetAllMunicipalitiesWithHighRiskSchoolController(
+    getAllMunicipalitiesWithHighRiskSchoolUseCase,
+  );

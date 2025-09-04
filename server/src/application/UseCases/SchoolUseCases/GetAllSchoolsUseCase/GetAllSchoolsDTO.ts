@@ -4,5 +4,5 @@ export interface GetAllSchoolsDTO {
   page: number;
   limit: number;
   filters?: Partial<School>;
-  term?: string
+  term?: string;
 }
