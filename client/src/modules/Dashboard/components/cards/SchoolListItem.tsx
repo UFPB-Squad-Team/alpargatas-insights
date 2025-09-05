@@ -1,7 +1,7 @@
-import { HighRiskSchool } from '@/shared/mocks/services/getHighRiskSchools';
+import { HighRiskSchool } from '../../services/types/Municipality/MunicipalitiesTypes';
 
 interface SchoolListItemProps {
-  school: HighRiskSchool; 
+  school: HighRiskSchool;
   rank: number;
 }
 
@@ -13,7 +13,7 @@ const getRiskBgClass = (score: number) => {
 };
 
 const SchoolListItem = ({ school, rank }: SchoolListItemProps) => {
-  const scorePercentage = (school.score_de_risco * 100).toFixed(0);
+  const scorePercentage = (school.scoreDeRisco * 100).toFixed(0);
 
   return (
     <div className="flex items-center p-3 space-x-4 border-b border-gray-100 last:border-b-0">
@@ -22,18 +22,13 @@ const SchoolListItem = ({ school, rank }: SchoolListItemProps) => {
       </div>
       <div className="flex-grow min-w-0">
         {' '}
-        {/* Adicionado min-w-0 para o truncate funcionar corretamente */}
         <p
           className="font-semibold text-sm text-brand-text-primary truncate"
-          title={school.escola_nome}
+          title={school.nome}
         >
-          {/* Usando a propriedade 'escola_nome' do mock antigo */}
-          {school.escola_nome}
+          {school.nome}
         </p>
-        <p className="text-xs text-brand-text-secondary">
-          {/* Usando a propriedade 'municipio_nome' do mock antigo */}
-          {school.municipio_nome}
-        </p>
+        <p className="text-xs text-brand-text-secondary">{school.municipio}</p>
       </div>
       <div className="flex-none flex items-center space-x-3 w-28 justify-end">
         <span className="text-sm font-bold text-brand-text-primary">
@@ -41,7 +36,7 @@ const SchoolListItem = ({ school, rank }: SchoolListItemProps) => {
         </span>
         <div className="w-12 h-2 bg-gray-200 rounded-full">
           <div
-            className={`h-full rounded-full ${getRiskBgClass(school.score_de_risco)}`}
+            className={`h-full rounded-full ${getRiskBgClass(school.scoreDeRisco)}`}
             style={{ width: `${scorePercentage}%` }}
           ></div>
         </div>

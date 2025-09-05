@@ -4,7 +4,7 @@ type LocationCoordinates = [number, number];
  * @description Contract that represents the API response for the optimized map endpoint.
  */
 export type SchoolForMapFromApi = {
-  _id: string;
+  id: string;
   escolaNome: string;
   localizacao: {
     coordinates: LocationCoordinates;

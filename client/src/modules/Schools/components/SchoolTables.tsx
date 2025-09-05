@@ -23,7 +23,6 @@ import { SortableHeader } from './SortableHeader';
 
 type SchoolsTableProps = {
   data: SchoolProps[];
-  globalFilter: string;
 };
 
 const dependencyStyles: { [key: string]: string } = {
@@ -35,7 +34,7 @@ const locationStyles: { [key: string]: string } = {
   Rural: 'bg-yellow-100 text-yellow-800',
 };
 
-export const SchoolsTable = ({ data, globalFilter }: SchoolsTableProps) => {
+export const SchoolsTable = ({ data }: SchoolsTableProps) => {
   const navigate = useNavigate();
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -130,7 +129,6 @@ export const SchoolsTable = ({ data, globalFilter }: SchoolsTableProps) => {
     getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
-      globalFilter,
     },
   });
 

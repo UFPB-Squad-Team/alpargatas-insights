@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { BarChart3 } from 'lucide-react';
 import {
   Bar,
@@ -14,13 +14,17 @@ import Spinner from '@/ui/components/common/Spinner';
 import InfoPopover from '@/ui/components/common/InfoPopover';
 import { explanations } from '@/shared/config/explanations.config';
 import { getMunicipalitiesByRiskCountUseCase } from '../../services/logic/Municipality/getMunicipalitiesByRiskCountUseCase';
+import { useFilters } from '@/ui/context/FiltersContext';
 
 const BAR_COLORS = ['#963B14', '#D46419', '#FFA726'];
 
 const MunicipalitiesByRiskCountChart = () => {
+  const { filters } = useFilters();
+
   const { data: municipalities = [], isLoading } = useQuery({
-    queryKey: ['municipalities-by-risk-count'],
-    queryFn: getMunicipalitiesByRiskCountUseCase.execute,
+    queryKey: ['municipalities-by-risk-count', filters],
+    queryFn: () => getMunicipalitiesByRiskCountUseCase.execute(filters),
+    placeholderData: keepPreviousData,
   });
 
   if (isLoading) {
@@ -50,42 +54,51 @@ const MunicipalitiesByRiskCountChart = () => {
         />
       </div>
 
-      <div className="flex-grow">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={sortedData}
-            layout="vertical"
-            margin={{ top: 5, right: 20, left: 5, bottom: 5 }} 
-            barCategoryGap="20%"
-          >
-            <XAxis type="number" hide />
-            <YAxis
-              type="category"
-              dataKey="nome"
-              width={100}
-              tick={{ fontSize: 12 }}
-              axisLine={false}
-              tickLine={false}
-            />
-            <Tooltip
-              cursor={{ fill: '#f8f9fa' }}
-              formatter={(value) => [`${value} escolas`, 'Quantidade']}
-            />
-            <Bar
-              dataKey="escolasEmAltoRisco"
-              barSize={20}
-              radius={[0, 5, 5, 0]}
+      {sortedData.length > 0 ? (
+        <div className="flex-grow">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={sortedData}
+              layout="vertical"
+              margin={{ top: 5, right: 20, left: 5, bottom: 5 }}
+              barCategoryGap="20%"
             >
-              {sortedData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={BAR_COLORS[index % BAR_COLORS.length]}
-                />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+              <XAxis type="number" hide />
+              <YAxis
+                type="category"
+                dataKey="nome"
+                width={100}
+                tick={{ fontSize: 12 }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <Tooltip
+                cursor={{ fill: '#f8f9fa' }}
+                formatter={(value) => [`${value} escolas`, 'Quantidade']}
+              />
+              <Bar
+                dataKey="escolasEmAltoRisco"
+                barSize={20}
+                radius={[0, 5, 5, 0]}
+              >
+                {sortedData.map((_entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={BAR_COLORS[index % BAR_COLORS.length]}
+                  />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      ) : (
+        <div className="flex-grow flex items-center justify-center text-center text-brand-text-secondary">
+          <p>
+            Nenhum município com escolas de alto risco encontrado para os
+            filtros selecionados.
+          </p>
+        </div>
+      )}
     </div>
   );
 };

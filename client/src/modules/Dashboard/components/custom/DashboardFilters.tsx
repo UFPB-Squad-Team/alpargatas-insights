@@ -1,109 +1,78 @@
 import { Filter, X } from 'lucide-react';
 import FilterDropdown from '@/ui/components/common/FilterDropdown';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
 import { listMunicipalitiesUseCase } from '@/shared/services/Municipality/logic/listMunicipalitiesUseCase';
 import { Button } from '@/ui/components/common/button';
+import { useFilters } from '@/ui/context/FiltersContext';
 
 const DashboardFilters = () => {
-  const [selectedMunicipality, setSelectedMunicipality] = useState<string>();
-  const [selectedINSE, setSelectedINSE] = useState<string>();
-  const [selectedLocation, setSelectedLocation] = useState<string>();
-  const [selectedDependency, setSelectedDependency] = useState<string>();
+  const { filters, clearFilters, updateFilter } = useFilters();
 
-  const { data: municipalities = [] } = useQuery({
+  const { data: municipalitiesResponse } = useQuery({
     queryKey: ['municipalities-for-filter'],
-    queryFn: listMunicipalitiesUseCase.execute,
+    queryFn: () => listMunicipalitiesUseCase.execute({ limit: 250 }),
   });
 
+  const municipalities = municipalitiesResponse?.data || [];
+
   const municipalityOptions = municipalities.map((m) => ({
-    value: m.codigoIbge.toString(),
+    value: m.codigoIbge,
     label: m.nome,
   }));
 
-  const inseOptions = [
-    { value: '1', label: 'Nível I' },
-    { value: '2', label: 'Nível II' },
-  ];
-
   const locationOptions = [
-    { value: 'urbana', label: 'Urbana' },
-    { value: 'rural', label: 'Rural' },
+    { value: 'Urbana', label: 'Urbana' },
+    { value: 'Rural', label: 'Rural' },
   ];
 
   const dependenciesOptions = [
-    { value: 'municipal', label: 'Municipal' },
-    { value: 'estadual', label: 'Estadual' },
+    { value: 'Municipal', label: 'Municipal' },
+    { value: 'Estadual', label: 'Estadual' },
+    { value: 'Federal', label: 'Federal' },
   ];
 
-  const handleClearFilters = () => {
-    setSelectedMunicipality(undefined);
-    setSelectedINSE(undefined);
-    setSelectedLocation(undefined);
-    setSelectedDependency(undefined);
-  };
-
-  const hasActiveFilters =
-    selectedMunicipality || selectedINSE || selectedLocation;
+  const hasActiveFilters = Object.values(filters).some((v) => v);
 
   return (
     <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 mb-6">
       <div className="flex flex-col md:flex-row md:items-center gap-4">
-        {/* Título Filtros */}
         <div className="flex items-center gap-2 text-brand-orange-dark flex-shrink-0">
           <Filter size={16} />
           <h3 className="font-semibold text-sm uppercase">Filtros</h3>
         </div>
 
-        {/* Container dos Filtros */}
         <div className="flex flex-wrap gap-3 w-full">
           <FilterDropdown
             label="Município"
             placeholder="Todos os municípios"
-            searchPlaceholder="Buscar município..."
-            emptyText="Nenhum município encontrado."
             options={municipalityOptions}
-            value={selectedMunicipality}
-            onChange={setSelectedMunicipality}
+            value={filters.municipioIdIbge}
+            onChange={(value) => updateFilter('municipioIdIbge', value)}
+            searchPlaceholder={''}
+            emptyText={''}
           />
           <FilterDropdown
             label="Dependência Administrativa"
-            placeholder="Municipal e Estadual"
-            searchPlaceholder="Buscar dependência..."
-            emptyText="Nenhuma dependência encontrada."
+            placeholder="Todas"
             options={dependenciesOptions}
-            value={selectedDependency}
-            onChange={setSelectedDependency}
-            disabled={true}
-          />
-          <FilterDropdown
-            label="Nível Socioeconômico"
-            placeholder="Todos os níveis"
-            searchPlaceholder="Buscar nível..."
-            emptyText="Nenhum nível encontrado."
-            options={inseOptions}
-            value={selectedINSE}
-            onChange={setSelectedINSE}
-            disabled={true}
+            value={filters.dependenciaAdm}
+            onChange={(value) => updateFilter('dependenciaAdm', value)}
+            searchPlaceholder={''}
+            emptyText={''}
           />
           <FilterDropdown
             label="Localização"
-            placeholder="Urbana e Rural"
-            searchPlaceholder="Buscar localização..."
-            emptyText="Nenhuma localização encontrada."
+            placeholder="Ambas"
             options={locationOptions}
-            value={selectedLocation}
-            onChange={setSelectedLocation}
-            disabled={true}
+            value={filters.tipoLocalizacao}
+            onChange={(value) => updateFilter('tipoLocalizacao', value)}
+            searchPlaceholder={''}
+            emptyText={''}
           />
         </div>
 
         {hasActiveFilters && (
-          <Button
-            variant="ghost"
-            onClick={handleClearFilters}
-            className="flex items-center gap-2 text-brand-text-secondary hover:text-brand-orange-dark"
-          >
+          <Button variant="ghost" onClick={clearFilters} className="...">
             <X size={14} />
             Limpar Filtros
           </Button>

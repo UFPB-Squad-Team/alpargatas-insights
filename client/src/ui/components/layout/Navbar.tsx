@@ -2,6 +2,7 @@ import { Bell, Settings, Menu as MenuIcon, HelpCircle } from 'lucide-react';
 import NotificationsDropdown from './NotificationsDropdown';
 import React from 'react';
 import SearchInput from '../common/SearchInput';
+import { GlobalLoadingIndicator } from './GlobalLoadingIndicator';
 
 interface NavbarProps {
   isNotificationsOpen: boolean;
@@ -30,6 +31,7 @@ const Navbar = ({
       </div>
 
       <div className="flex items-center gap-2 md:gap-6">
+        <GlobalLoadingIndicator />
         <div className="relative" ref={notificationsRef}>
           <button
             onClick={onNotificationsClick}

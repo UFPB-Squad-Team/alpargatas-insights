@@ -5,6 +5,7 @@ import { getTopDeficienciesUseCase } from '../../services/logic/School/getTopDef
 import { useQuery } from '@tanstack/react-query';
 import InfoPopover from '@/ui/components/common/InfoPopover';
 import { explanations } from '@/shared/config/explanations.config';
+import { useFilters } from '@/ui/context/FiltersContext';
 
 const CustomizedContent = (props: any) => {
   const { x, y, width, height, index, name, value } = props;
@@ -67,9 +68,11 @@ const CustomizedContent = (props: any) => {
 };
 
 const TopDeficienciesChart = () => {
+  const { filters } = useFilters();
+
   const { data: deficiencies = [], isLoading } = useQuery({
-    queryKey: ['top-deficiencies'],
-    queryFn: getTopDeficienciesUseCase.execute,
+    queryKey: ['top-deficiencies', filters],
+    queryFn: () => getTopDeficienciesUseCase.execute(filters),
   });
 
   if (isLoading) {
@@ -96,20 +99,28 @@ const TopDeficienciesChart = () => {
           content={explanations.CHART_TOP_DEFICIENCIES.content}
         />
       </div>
-      <div className="flex-grow">
-        <ResponsiveContainer width="100%" height="100%">
-          <Treemap
-            data={deficiencies}
-            dataKey="quantidadeEscolas"
-            nameKey="carencia"
-            aspectRatio={aspectRatio}
-            stroke="#fff"
-            content={<CustomizedContent />}
-          >
-            <Tooltip formatter={(value, name) => [`${value} escolas`, name]} />
-          </Treemap>
-        </ResponsiveContainer>
-      </div>
+      {deficiencies.length > 0 ? (
+        <div className="flex-grow">
+          <ResponsiveContainer width="100%" height="100%">
+            <Treemap
+              data={deficiencies}
+              dataKey="quantidadeEscolas"
+              nameKey="carencia"
+              aspectRatio={aspectRatio}
+              stroke="#fff"
+              content={<CustomizedContent />}
+            >
+              <Tooltip
+                formatter={(value, name) => [`${value} escolas`, name]}
+              />
+            </Treemap>
+          </ResponsiveContainer>
+        </div>
+      ) : (
+        <div className="flex-grow flex items-center justify-center text-center text-brand-text-secondary">
+          <p>Nenhuma deficiência encontrada para os filtros selecionados.</p>
+        </div>
+      )}
     </div>
   );
 };

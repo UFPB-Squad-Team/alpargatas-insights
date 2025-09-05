@@ -11,7 +11,6 @@ import {
 import { mapSchoolFromApiToDomain } from '@/shared/services/Schools/repositories/mappers/schoolMapper';
 import {
   HighRiskSchool,
-  HighRiskSchoolsApiResponse,
   TopMunicipalitiesApiResponse,
 } from '../types/Municipality/MunicipalitiesTypes';
 import {
@@ -24,6 +23,9 @@ import {
 } from '../types/School/DeficiencyTypes';
 import { mapDeficiencyFromApiToDomain } from './mappers/deficiencyMapper';
 import { GeoJsonFeatureCollection } from '@/domain/entities/Municipality/GeoJson';
+import { FiltersOptions } from '@/shared/services/Schools/repositories/schoolRepository';
+import { IFilterState } from '@/ui/context/FiltersContext';
+import { SchoolFromApi } from '@/domain/entities/School/SchoolProps';
 
 type DashboardKpisFromApi = {
   schools: number;
@@ -65,10 +67,17 @@ type MunicipalitiesByRiskCountApiResponse = {
   schoolsWithHighRiskPerMunicipality: MunicipalityRiskCountFromApi[];
 };
 
-const getKpis = async (): Promise<DashboardKpis> => {
+const getKpis = async (filters?: FiltersOptions): Promise<DashboardKpis> => {
   try {
     const { data } = await apiClient.get<DashboardKpisFromApi>(
       '/api/v1/dashboard/kpis',
+      {
+        params: {
+          municipioIdIbge: filters?.municipioIdIbge,
+          dependenciaAdm: filters?.dependenciaAdm,
+          tipoLocalizacao: filters?.tipoLocalizacao,
+        },
+      },
     );
     return mapKpisFromApiToDomain(data);
   } catch (error) {
@@ -77,15 +86,22 @@ const getKpis = async (): Promise<DashboardKpis> => {
   }
 };
 
-const getHighRiskSchools = async (): Promise<HighRiskSchool[]> => {
+const getHighRiskSchools = async (
+  filters?: IFilterState,
+): Promise<HighRiskSchool[]> => {
   try {
-    const { data } = await apiClient.get<HighRiskSchoolsApiResponse>(
+    const { data: schoolsFromApi } = await apiClient.get<SchoolFromApi[]>(
       '/api/v1/dashboard/high-risk-schools',
+      {
+        params: {
+          ...filters,
+          page: 1,
+          limit: 5,
+        },
+      },
     );
 
-    const schoolsFromApi = data.schoolsWithHighInfraestructureRisk || [];
-
-    return schoolsFromApi.map(mapSchoolFromApiToDomain);
+    return schoolsFromApi ? schoolsFromApi.map(mapSchoolFromApiToDomain) : [];
   } catch (error) {
     console.error(
       'Erro no repositório ao buscar escolas de alto risco:',
@@ -95,10 +111,19 @@ const getHighRiskSchools = async (): Promise<HighRiskSchool[]> => {
   }
 };
 
-const getTopMunicipalitiesByRisk = async (): Promise<MunicipalityRisk[]> => {
+const getTopMunicipalitiesByRisk = async (
+  filters?: FiltersOptions,
+): Promise<MunicipalityRisk[]> => {
   try {
     const { data } = await apiClient.get<TopMunicipalitiesApiResponse>(
       '/api/v1/dashboard/top-municipalities-by-risk',
+      {
+        params: {
+          municipioIdIbge: filters?.municipioIdIbge,
+          dependenciaAdm: filters?.dependenciaAdm,
+          tipoLocalizacao: filters?.tipoLocalizacao,
+        },
+      },
     );
 
     const municipalitiesFromApi =
@@ -133,10 +158,19 @@ const mapRiskDistributionFromApiToDomain = (
   ];
 };
 
-const getRiskDistribution = async (): Promise<RiskDistribution[]> => {
+const getRiskDistribution = async (
+  filters?: FiltersOptions,
+): Promise<RiskDistribution[]> => {
   try {
     const { data } = await apiClient.get<RiskDistributionFromApi>(
       '/api/v1/dashboard/risk-distribution',
+      {
+        params: {
+          municipioIdIbge: filters?.municipioIdIbge,
+          dependenciaAdm: filters?.dependenciaAdm,
+          tipoLocalizacao: filters?.tipoLocalizacao,
+        },
+      },
     );
     return mapRiskDistributionFromApiToDomain(data);
   } catch (error) {
@@ -148,10 +182,19 @@ const getRiskDistribution = async (): Promise<RiskDistribution[]> => {
   }
 };
 
-const getTopDeficiencies = async (): Promise<Deficiency[]> => {
+const getTopDeficiencies = async (
+  filters?: FiltersOptions,
+): Promise<Deficiency[]> => {
   try {
     const { data } = await apiClient.get<TopDeficienciesApiResponse>(
       '/api/v1/dashboard/top-deficiencies',
+      {
+        params: {
+          municipioIdIbge: filters?.municipioIdIbge,
+          dependenciaAdm: filters?.dependenciaAdm,
+          tipoLocalizacao: filters?.tipoLocalizacao,
+        },
+      },
     );
 
     return data.topDeficiencies.map(mapDeficiencyFromApiToDomain);
@@ -174,12 +217,19 @@ const getParaibaGeoJson = async (): Promise<GeoJsonFeatureCollection> => {
   }
 };
 
-const getMunicipalitiesByRiskCount = async (): Promise<
-  MunicipalityRiskCount[]
-> => {
+const getMunicipalitiesByRiskCount = async (
+  filters?: FiltersOptions,
+): Promise<MunicipalityRiskCount[]> => {
   try {
     const { data } = await apiClient.get<MunicipalitiesByRiskCountApiResponse>(
       '/api/v1/dashboard/municipalities-by-risk-count',
+      {
+        params: {
+          municipioIdIbge: filters?.municipioIdIbge,
+          dependenciaAdm: filters?.dependenciaAdm,
+          tipoLocalizacao: filters?.tipoLocalizacao,
+        },
+      },
     );
     const municipalitiesFromApi = data.schoolsWithHighRiskPerMunicipality || [];
     return municipalitiesFromApi.map(mapMunicipalityRiskCountFromApiToDomain);

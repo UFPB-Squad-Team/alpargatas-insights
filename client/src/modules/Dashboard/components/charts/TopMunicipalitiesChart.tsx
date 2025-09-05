@@ -5,6 +5,7 @@ import { getTopMunicipalitiesByRiskUseCase } from '../../services/logic/Municipa
 import { MunicipalityRisk } from '@/domain/entities/Municipality/Municipality';
 import { explanations } from '@/shared/config/explanations.config';
 import InfoPopover from '@/ui/components/common/InfoPopover';
+import { useFilters } from '@/ui/context/FiltersContext';
 
 const getRiskInfo = (score: number) => {
   if (score >= 0.9) return { color: 'text-orange-900', text: 'Alerta Máximo' };
@@ -14,9 +15,11 @@ const getRiskInfo = (score: number) => {
 };
 
 const TopMunicipalitiesChart = () => {
+  const { filters } = useFilters();
+
   const { data: municipalities = [], isLoading } = useQuery({
-    queryKey: ['top-municipalities-by-risk'],
-    queryFn: getTopMunicipalitiesByRiskUseCase.execute,
+    queryKey: ['top-municipalities-by-risk', filters],
+    queryFn: () => getTopMunicipalitiesByRiskUseCase.execute(filters),
   });
 
   const sortedMunicipalities = [...municipalities]
@@ -41,7 +44,7 @@ const TopMunicipalitiesChart = () => {
         <div className="flex justify-center items-center h-48">
           <Spinner />
         </div>
-      ) : (
+      ) : sortedMunicipalities.length > 0 ? (
         <div className="space-y-5">
           {sortedMunicipalities.map((item: MunicipalityRisk) => {
             const riskInfo = getRiskInfo(item.riscoMedio);
@@ -90,6 +93,10 @@ const TopMunicipalitiesChart = () => {
               </div>
             );
           })}
+        </div>
+      ) : (
+        <div className="flex-grow flex items-center justify-center text-center text-brand-text-secondary">
+          <p>Nenhum dado encontrado para os filtros selecionados.</p>
         </div>
       )}
     </div>

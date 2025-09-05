@@ -1,5 +1,5 @@
 import Spinner from '@/ui/components/common/Spinner';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { ChartBar } from 'lucide-react';
 import {
   Bar,
@@ -13,11 +13,15 @@ import {
 import { getRiskDistributionUseCase } from '../../services/logic/School/getRiskDistributionUseCase';
 import InfoPopover from '@/ui/components/common/InfoPopover';
 import { explanations } from '@/shared/config/explanations.config';
+import { useFilters } from '@/ui/context/FiltersContext';
 
-const RiskDistribuitonChart = () => {
+const RiskDistributionChart = () => {
+  const { filters } = useFilters();
+
   const { data = [], isLoading } = useQuery({
-    queryKey: ['risk-distribution'],
-    queryFn: getRiskDistributionUseCase.execute,
+    queryKey: ['risk-distribution', filters],
+    queryFn: () => getRiskDistributionUseCase.execute(filters),
+    placeholderData: keepPreviousData, 
   });
 
   if (isLoading) {
@@ -60,7 +64,7 @@ const RiskDistribuitonChart = () => {
             />
             <Tooltip cursor={{ fill: '#f8f9fa' }} />
             <Bar dataKey="quantidade" barSize={20} radius={[0, 5, 5, 0]}>
-              {data.map((entry) => (
+              {data.map((entry: any) => (
                 <Cell key={`cell-${entry.faixa}`} fill={entry.cor} />
               ))}
             </Bar>
@@ -71,4 +75,5 @@ const RiskDistribuitonChart = () => {
   );
 };
 
-export default RiskDistribuitonChart;
+// Renomeei para o padrão de nomenclatura (camelCase)
+export default RiskDistributionChart;
