@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Spinner from '@/ui/components/common/Spinner';
 import { usePagination } from '@/ui/hooks/usePagination';
 import { listMunicipalitiesUseCase } from '@/shared/services/Municipality/logic/listMunicipalitiesUseCase';
@@ -36,30 +36,24 @@ const KpiCard = ({
 const MunicipalitiesPage = () => {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  const debouncedSearchTerm = useDebounce(searchTerm, 500); 
 
   const {
     data: paginatedData,
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ['municipalities', page],
+    queryKey: ['municipalities', page, debouncedSearchTerm],
     queryFn: () =>
-      listMunicipalitiesUseCase.execute({ page, limit: PAGE_SIZE }),
+      listMunicipalitiesUseCase.execute({
+        page,
+        limit: PAGE_SIZE,
+        searchTerm: debouncedSearchTerm,
+      }),
     placeholderData: keepPreviousData,
   });
 
-  const municipalitiesFromApi = paginatedData?.data || [];
-
-  const filteredMunicipalities = useMemo(() => {
-    if (!debouncedSearchTerm) return municipalitiesFromApi;
-    return municipalitiesFromApi.filter((municipality) =>
-      municipality.nome
-        .toLowerCase()
-        .includes(debouncedSearchTerm.toLowerCase()),
-    );
-  }, [municipalitiesFromApi, debouncedSearchTerm]);
-
+  const municipalities = paginatedData?.data || [];
   const totalMunicipalities = paginatedData?.total || 0;
   const totalPages = Math.ceil(totalMunicipalities / PAGE_SIZE);
 
@@ -68,6 +62,10 @@ const MunicipalitiesPage = () => {
     totalCount: totalMunicipalities,
     pageSize: PAGE_SIZE,
   });
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearchTerm]);
 
   return (
     <div className="space-y-6">
@@ -95,7 +93,7 @@ const MunicipalitiesPage = () => {
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
-            placeholder="Buscar município na lista atual..."
+            placeholder="Buscar município..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-9"
@@ -115,8 +113,8 @@ const MunicipalitiesPage = () => {
         {!isLoading && !isError && (
           <>
             <div className="space-y-3">
-              {filteredMunicipalities.length > 0 ? (
-                filteredMunicipalities.map((municipality) => (
+              {municipalities.length > 0 ? (
+                municipalities.map((municipality) => (
                   <Link
                     key={municipality.codigoIbge}
                     to={`/municipios/${municipality.codigoIbge}`}

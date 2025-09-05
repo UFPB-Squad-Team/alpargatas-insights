@@ -21,6 +21,7 @@ export interface IMunicipalityRepository {
   list(
     page?: number,
     limit?: number,
+    term?: string,
   ): Promise<PaginatedResponse<MunicipalityForFilter>>;
   findById(id: string): Promise<MunicipalityDetails | null>;
 }
@@ -28,18 +29,30 @@ export interface IMunicipalityRepository {
 const list = async (
   page?: number,
   limit?: number,
+  searchTerm?: string,
 ): Promise<PaginatedResponse<MunicipalityForFilter>> => {
   try {
-    const queryParams = {
+    const apiParams: Record<string, any> = {
       page: page || 1,
-      limit: limit || 250,
+      limit: limit || 20, 
+      term: searchTerm,
     };
+
+    Object.keys(apiParams).forEach((key) => {
+      if (
+        apiParams[key] === undefined ||
+        apiParams[key] === null ||
+        apiParams[key] === ''
+      ) {
+        delete apiParams[key];
+      }
+    });
 
     const { data: apiResponse } =
       await apiClient.get<RawPaginatedMunicipalitiesFromApi>(
         '/api/v1/municipalities',
         {
-          params: queryParams,
+          params: apiParams,
         },
       );
 
@@ -51,7 +64,7 @@ const list = async (
       data: mappedData,
       total: apiResponse.total,
       page: apiResponse.currentPage,
-      limit: queryParams.limit,
+      limit: apiParams.limit,
     };
   } catch (error) {
     console.error('Erro no repositório ao buscar lista de municípios:', error);

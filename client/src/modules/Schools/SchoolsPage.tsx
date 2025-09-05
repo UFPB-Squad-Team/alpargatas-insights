@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
 import Spinner from '@/ui/components/common/Spinner';
 import DashboardFilters from '../Dashboard/components/custom/DashboardFilters';
@@ -30,8 +30,10 @@ const SchoolsPage = () => {
       listSchoolsUseCase.execute({
         page,
         limit: PAGE_SIZE,
+        searchTerm: debouncedSearchTerm,
         ...filters,
       }),
+    placeholderData: keepPreviousData,
   });
 
   const schoolsOnPage = paginatedData?.data || [];
@@ -66,6 +68,7 @@ const SchoolsPage = () => {
             Exibindo {schoolsOnPage.length} de {totalSchools}
           </p>
           <p className="text-xs text-brand-text-secondary">
+            {/* CORREÇÃO: Verificamos o `searchTerm` para a mensagem */}
             {searchTerm || Object.values(filters).some((v) => v)
               ? 'Escolas Filtradas'
               : 'Total de Escolas'}
@@ -98,7 +101,7 @@ const SchoolsPage = () => {
         )}
         {!isLoading && !isError && totalSchools > 0 && (
           <>
-            <SchoolsTable data={schoolsOnPage}  />
+            <SchoolsTable data={schoolsOnPage} />
             <div className="mt-8 flex justify-center">
               <CustomPagination
                 currentPage={page}

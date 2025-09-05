@@ -56,7 +56,13 @@ export const mapMunicipalityDetailsFromApiToDomain = (
     codigoIbge: apiMunicipality.codigoIbge,
     nome: apiMunicipality.nome,
     uf: apiMunicipality.uf,
-    totalEscolas: apiMunicipality.totalEscolas,
     riscoMedio: apiMunicipality.riscoMedio,
+    totalEscolas: apiMunicipality.totalEscolas,
+    totalEscolasUrbanas: apiMunicipality.totalEscolasUrbanas,
+    totalEscolasRurais: apiMunicipality.totalEscolasRurais,
+    totalEscolasMunicipais: apiMunicipality.totalEscolasMunicipais,
+    totalEscolasEstaduais: apiMunicipality.totalEscolasEstaduais,
+    totalEscolasFederais: apiMunicipality.totalEscolasFederais,
+    totalEscolasEmAltoRisco: apiMunicipality.totalEscolasEmAltoRisco,
   };
 };

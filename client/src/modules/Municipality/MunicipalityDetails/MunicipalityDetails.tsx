@@ -2,8 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import Spinner from '@/ui/components/common/Spinner';
 import { Button } from '@/ui/components/common/button';
-import { ArrowLeft, School, TrendingUp } from 'lucide-react';
-import RiskIndicator from '@/ui/components/common/RiskIndicator';
+import { ArrowLeft } from 'lucide-react';
 import { getMunicipalityDetailsUseCase } from '@/shared/services/Municipality/logic/getMunicipalityDetailsUseCase';
 import { MunicipalityMap } from './components/MunicipalityMap';
 import { listSchoolsUseCase } from '@/shared/services/Schools/logic/listPaginatedSchoolsUseCase';
@@ -13,6 +12,7 @@ import { SchoolsTable } from '@/modules/Schools/components/SchoolTables';
 import { usePagination } from '@/ui/hooks/usePagination';
 import { useState } from 'react';
 import { CustomPagination } from '@/ui/components/common/CustomPagination';
+import { MunicipalityStatsPanel } from './components/MunicipalityStatsPanel';
 
 const TABLE_PAGE_SIZE = 10;
 
@@ -109,35 +109,7 @@ const MunicipalityDetailsPage = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-2xl shadow-sm border">
-          <div className="flex items-center gap-2 mb-2">
-            <School className="h-4 w-4 text-brand-text-secondary" />
-            <h3 className="font-semibold text-brand-text-secondary">
-              Total de Escolas
-            </h3>
-          </div>
-          <p className="text-4xl font-bold text-brand-text-primary pl-6">
-            {municipality.totalEscolas}
-          </p>
-        </div>
-        <div className="bg-white p-6 rounded-2xl shadow-sm border">
-          <div className="flex items-center gap-2 mb-2">
-            <TrendingUp className="h-4 w-4 text-brand-text-secondary" />
-            <h3 className="font-semibold text-brand-text-secondary">
-              Média de Risco (Infra.)
-            </h3>
-          </div>
-          <div className="pl-6">
-            <p className="text-4xl font-bold text-brand-text-primary">
-              {(municipality.riscoMedio * 100).toFixed(0)}%
-            </p>
-            <div className="mt-1">
-              <RiskIndicator score={municipality.riscoMedio} />
-            </div>
-          </div>
-        </div>
-      </div>
+      <MunicipalityStatsPanel municipality={municipality} />
 
       <div className="bg-white p-6 rounded-2xl shadow-sm border">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">

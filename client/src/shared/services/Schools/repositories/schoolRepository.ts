@@ -59,7 +59,6 @@ const listForMap = async (filters: FiltersOptions): Promise<SchoolForMap[]> => {
   } catch (error) {
     console.error('Erro no repositório ao buscar dados para o mapa:', error);
     throw error;
-    // TODO: Implements new errors for this repository
   }
 };
 
@@ -67,29 +66,24 @@ const listOrSearch = async (
   params: ListOrSearchParams,
 ): Promise<PaginatedResponse<School>> => {
   try {
-    // Pegamos todos os parâmetros possíveis
-    const {
-      page,
-      limit,
-      searchTerm,
-      municipioIdIbge,
-      dependenciaAdm,
-      tipoLocalizacao,
-    } = params;
-
-    const apiParams = {
-      page,
-      limit,
-      term: searchTerm,
-      municipioIdIbge,
-      dependenciaAdm,
-      tipoLocalizacao,
+    const apiParams: Record<string, any> = {
+      page: params.page,
+      limit: params.limit,
+      term: params.searchTerm,
+      municipioIdIbge: params.municipioIdIbge,
+      dependenciaAdm: params.dependenciaAdm,
+      tipoLocalizacao: params.tipoLocalizacao,
     };
 
-    Object.keys(apiParams).forEach(
-      (key) =>
-        (apiParams as any)[key] === undefined && delete (apiParams as any)[key],
-    );
+    Object.keys(apiParams).forEach((key) => {
+      if (
+        apiParams[key] === undefined ||
+        apiParams[key] === null ||
+        apiParams[key] === ''
+      ) {
+        delete apiParams[key];
+      }
+    });
 
     const { data: apiResponse } =
       await apiClient.get<RawPaginatedSchoolFromApi>('/api/v1/schools/all', {

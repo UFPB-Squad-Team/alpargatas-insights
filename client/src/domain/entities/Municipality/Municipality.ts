@@ -60,8 +60,14 @@ export type MunicipalityDetailsFromApi = {
   codigoIbge: string;
   nome: string;
   uf: string;
-  totalEscolas: number;
   riscoMedio: number;
+  totalEscolas: number;
+  totalEscolasUrbanas: number;
+  totalEscolasRurais: number;
+  totalEscolasMunicipais: number;
+  totalEscolasEstaduais: number;
+  totalEscolasFederais: number;
+  totalEscolasEmAltoRisco: number;
 };
 
 /**
@@ -71,6 +77,12 @@ export type MunicipalityDetails = {
   codigoIbge: string;
   nome: string;
   uf: string;
-  totalEscolas: number;
   riscoMedio: number;
+  totalEscolas: number;
+  totalEscolasUrbanas: number;
+  totalEscolasRurais: number;
+  totalEscolasMunicipais: number;
+  totalEscolasEstaduais: number;
+  totalEscolasFederais: number;
+  totalEscolasEmAltoRisco: number;
 };
