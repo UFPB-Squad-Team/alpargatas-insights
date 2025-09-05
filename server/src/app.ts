@@ -6,12 +6,12 @@ import { errorHandling } from './infrastructure/http/middleware/errorHandling';
 import { schoolRoutes } from './infrastructure/http/routes/schoolRoutes';
 import { dashboardRoutes } from './infrastructure/http/routes/dashboardRoutes';
 import { municipalityRoutes } from './infrastructure/http/routes/municipalityRoutes';
+import { feedbackRoutes } from './infrastructure/http/routes/feedbackRoutes';
 
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './infrastructure/configs/swagger';
 
 const app = express();
-// const BASE_PATH = config.BASE_PATH;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -20,6 +20,7 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
   'https://development.dbvzz9cfb1jf.amplifyapp.com',
+  'https://main.dbvzz9cfb1jf.amplifyapp.com',
 ];
 
 app.use(
@@ -41,6 +42,8 @@ app.use(schoolRoutes);
 app.use(dashboardRoutes);
 
 app.use(municipalityRoutes);
+
+app.use(feedbackRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.status(200).json({
