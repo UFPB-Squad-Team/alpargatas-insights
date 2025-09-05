@@ -5,6 +5,7 @@ import Sidebar from './Sidebar';
 import SettingsModal from './SettingsModal';
 import { useClickOutside } from '@/ui/hooks/useClickOutside';
 import AboutModal from '../common/AboutModal';
+import { FeedbackButton } from '../common/Feedback/FeedbackButton';
 
 const Layout = () => {
   const [isSettingsOpen, setSettingsOpen] = useState(false);
@@ -37,6 +38,7 @@ const Layout = () => {
         onClose={() => setSettingsOpen(false)}
       />
       <AboutModal isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} />
+      <FeedbackButton />
     </div>
   );
 };
