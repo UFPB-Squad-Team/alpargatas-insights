@@ -10,6 +10,7 @@ import { feedbackRoutes } from './infrastructure/http/routes/feedbackRoutes';
 
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './infrastructure/configs/swagger';
+import { healthCheckRoutes } from './infrastructure/http/routes/healthCheckRoutes';
 
 const app = express();
 
@@ -34,6 +35,8 @@ app.use(
     },
   }),
 );
+
+app.use(healthCheckRoutes)
 
 app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
