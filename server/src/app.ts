@@ -36,7 +36,7 @@ app.use(
   }),
 );
 
-app.use(healthCheckRoutes)
+app.use(healthCheckRoutes);
 
 app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 

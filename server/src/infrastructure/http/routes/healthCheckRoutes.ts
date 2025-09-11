@@ -1,10 +1,9 @@
+import { Router } from 'express';
 
-import { Router } from "express"
+import { healthCheckController } from '../controller/HealthCheckControllers/index';
 
-import { healthCheckController } from "../controller/HealthCheckControllers/index"
+const healthCheckRoutes = Router();
 
-const healthCheckRoutes = Router()
+healthCheckRoutes.get('/health', healthCheckController.health);
 
-healthCheckRoutes.get("/health", healthCheckController.health)
-
-export { healthCheckRoutes }
+export { healthCheckRoutes };

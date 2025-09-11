@@ -1,3 +1,3 @@
-import { HealthCheckController } from "./HealthCheckController/HealthCheckController";
+import { HealthCheckController } from './HealthCheckController/HealthCheckController';
 
-export const healthCheckController = new HealthCheckController()
+export const healthCheckController = new HealthCheckController();
