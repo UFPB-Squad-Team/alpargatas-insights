@@ -1,11 +1,12 @@
 import logging
+
 import numpy as np
 import pandas as pd
 
 # Importa as funções EXATAMENTE como estão no seu utils.py
 from src.common.utils import (
-    load_config,
     get_s3_storage_options,
+    load_config,
     read_zipped_file_from_s3,
 )
 
@@ -14,13 +15,14 @@ logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - [%(levelname)s] - %(message)s"
 )
 
+
 def _rename_censo_renda_columns(df: pd.DataFrame) -> pd.DataFrame:
     """
     Renomeia as colunas do arquivo DomicilioRenda do Censo 2010
     para nomes padronizados em snake_case.
     """
     logging.info("Renomeando colunas do Censo (Renda)...")
-    
+
     # Mapeamento exato das colunas do arquivo do IBGE
     rename_map = {
         "Cod_setor": "id_setor_censitario",
@@ -61,7 +63,7 @@ def _clean_censo_renda_data(df: pd.DataFrame) -> pd.DataFrame:
     # Substitui o caractere 'X' (usado pelo IBGE para dados suprimidos) por NaN
     for col in value_cols:
         df_clean[col] = df_clean[col].replace("X", np.nan)
-        df_clean[col] = pd.to_numeric(df_clean[col], errors='coerce')
+        df_clean[col] = pd.to_numeric(df_clean[col], errors="coerce")
 
     # Preenchemos os valores nulos com 0, assumindo que NaN significa ausência de contagem
     df_clean[value_cols] = df_clean[value_cols].fillna(0)
@@ -79,14 +81,17 @@ def _create_censo_renda_features(df: pd.DataFrame) -> pd.DataFrame:
 
     # Feature 1: Renda média por domicílio no setor censitário
     # Evita divisão por zero, resultando em 0 caso não haja domicílios com renda
-    total_rendimento = df_featured["total_rendimento_domicilios_particulares_permanentes"]
+    total_rendimento = df_featured[
+        "total_rendimento_domicilios_particulares_permanentes"
+    ]
     total_domicilios = df_featured["total_domicilios_particulares_permanentes"]
 
     # Usamos np.divide para tratar a divisão por zero de forma segura
     df_featured["renda_media_domiciliar_setor"] = np.divide(
-        total_rendimento, total_domicilios,
+        total_rendimento,
+        total_domicilios,
         out=np.zeros_like(total_rendimento, dtype=float),
-        where=(total_domicilios!=0)
+        where=(total_domicilios != 0),
     )
 
     logging.info("Criação de features finalizada.")
@@ -98,7 +103,9 @@ def run():
     Orquestra a extração, processamento e salvamento dos dados de renda do Censo 2010
     a nível de setor censitário.
     """
-    logging.info("--- INICIANDO PIPELINE DE EXTRAÇÃO: CENSO RENDA (SETOR CENSITÁRIO) ---")
+    logging.info(
+        "--- INICIANDO PIPELINE DE EXTRAÇÃO: CENSO RENDA (SETOR CENSITÁRIO) ---"
+    )
 
     try:
         # Carrega as configurações do arquivo YAML usando sua função do utils
@@ -111,7 +118,7 @@ def run():
             bucket_name=s3_config["bucket_name"],
             s3_zip_key=f"{s3_config['raw_folder']}/{source_config['output_filename']}",
             target_filename=source_config["target_filename_in_zip"],
-            read_params={"header": 0}
+            read_params={"header": 0},
         )
 
         # Aplica a sequência de transformações
@@ -126,13 +133,11 @@ def run():
         storage_options = get_s3_storage_options()
 
         logging.info(f"Salvando dados processados em: {output_path}")
-        df_final.to_parquet(
-            output_path,
-            index=False,
-            storage_options=storage_options
-        )
+        df_final.to_parquet(output_path, index=False, storage_options=storage_options)
 
-        logging.info(f"--- PIPELINE FINALIZADA COM SUCESSO! {len(df_final)} setores censitários processados. ---")
+        logging.info(
+            f"--- PIPELINE FINALIZADA COM SUCESSO! {len(df_final)} setores censitários processados. ---"
+        )
 
     except Exception as e:
         logging.error(f"Ocorreu um erro na execução do pipeline: {e}", exc_info=True)
