@@ -3,7 +3,6 @@ import logging
 import geopandas as gpd
 import numpy as np
 import pandas as pd
-from shapely.geometry import Point
 
 from src.common.utils import (
     get_s3_storage_options,
@@ -48,7 +47,9 @@ def _calculate_neighborhood_profile(
     """
     Calcula o perfil da vizinhança (Abordagem Hiperlocal) e adiciona uma flag para rastrear dados imputados.
     """
-    logging.info("Calculando perfil socioeconômico da vizinhança (abordagem híbrida)...")
+    logging.info(
+        "Calculando perfil socioeconômico da vizinhança (abordagem híbrida)..."
+    )
 
     target_crs = "EPSG:31985"
     gdf_escolas_proj = gdf_escolas.to_crs(target_crs)
@@ -90,7 +91,7 @@ def _calculate_neighborhood_profile(
         )
 
     # --- MUDANÇA 1: Adicionando a Flag de Imputação ---
-    df_neighborhood['viz_dados_imputados'] = False # Inicia todos como Falso
+    df_neighborhood["viz_dados_imputados"] = False  # Inicia todos como Falso
 
     escolas_sem_dados_ids = df_neighborhood[
         df_neighborhood[f"viz_{socioeconomic_cols[0]}"] <= 0
@@ -123,15 +124,17 @@ def _calculate_neighborhood_profile(
 
             for col in socioeconomic_cols:
                 df_neighborhood.loc[escola_id, f"viz_{col}"] = median_values[col]
-            
+
             # Atualiza a flag para True para esta escola
-            df_neighborhood.loc[escola_id, 'viz_dados_imputados'] = True
+            df_neighborhood.loc[escola_id, "viz_dados_imputados"] = True
 
     logging.info("Cálculo do perfil da vizinhança finalizado.")
     return df_neighborhood.reset_index()
 
 
-def _treat_outliers(df: pd.DataFrame, columns: list, lower_quantile=0.01, upper_quantile=0.99) -> pd.DataFrame:
+def _treat_outliers(
+    df: pd.DataFrame, columns: list, lower_quantile=0.01, upper_quantile=0.99
+) -> pd.DataFrame:
     """
     Trata outliers em colunas especificadas usando a técnica de capping (Winsorizing).
     """
@@ -143,7 +146,9 @@ def _treat_outliers(df: pd.DataFrame, columns: list, lower_quantile=0.01, upper_
             lower_bound = df_capped[col].quantile(lower_quantile)
             upper_bound = df_capped[col].quantile(upper_quantile)
             df_capped[col] = df_capped[col].clip(lower=lower_bound, upper=upper_bound)
-            logging.info(f"Coluna '{col}': valores limitados entre {lower_bound:.2f} e {upper_bound:.2f}")
+            logging.info(
+                f"Coluna '{col}': valores limitados entre {lower_bound:.2f} e {upper_bound:.2f}"
+            )
     return df_capped
 
 
@@ -247,13 +252,15 @@ def run():
         df_final_merged = pd.merge(
             df_merged_1, df_neighborhood_profile, on="escolaIdInep", how="left"
         )
-        
+
         # Chamada para a função de tratamento de outliers
-        cols_to_cap = [col for col in df_final_merged.columns if 'renda_media' in col]
+        cols_to_cap = [col for col in df_final_merged.columns if "renda_media" in col]
         df_treated = _treat_outliers(df_final_merged, cols_to_cap)
-        
+
         # Preenche NaNs que possam ter surgido no merge municipal
-        municipal_cols_final = [col for col in df_treated.columns if col.startswith('mun_')]
+        municipal_cols_final = [
+            col for col in df_treated.columns if col.startswith("mun_")
+        ]
         df_treated[municipal_cols_final] = df_treated[municipal_cols_final].fillna(0)
 
         # 4. Estruturar a saída para o formato NoSQL
