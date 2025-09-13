@@ -18,10 +18,13 @@ ingestion_sources:
     output_filename: "DTB_2024.zip"
     target_filename_in_zip: "RELATORIO_DTB_BRASIL_2024_MUNICIPIOS.xls"
 
-
 paths:
   raw_municipios_brasileiros: "raw/municipios_brasileiros.csv"
-  
+
+  ml_training_dataset: "processed/ml_training_dataset.parquet"
+  ml_model_artifact: "models/modelo_saeb.pkl"
+  ml_model_metrics: "reports/model_performance.json"
+
   intermediate_escolas_paraiba: "intermediate/escolas_paraiba.parquet"
   intermediate_professor_dtb: "intermediate/professor_dtb.parquet"
   intermediate_professor_ideb: "intermediate/professor_ideb.parquet"
@@ -32,7 +35,6 @@ paths:
   processed_professor_final: "processed/ENTREGAVEL_escolas_enriquecidas.parquet"
 
   audit_professor_municipal_summary: "audit/municipal_summary.parquet"
-
 
 # --- 2. Configurações do Banco de Dados ---
 database:
@@ -122,3 +124,19 @@ professor_pipeline:
     contextualized_score_weights:
       base_score_peso: 0.6
       ideb_score_peso: 0.4
+
+ml_pipeline:
+  feature_engineering:
+    target_columns_to_impute: ["ideb_anos_iniciais", "inse_valor"]
+
+  training:
+    test_size: 0.2
+    random_state: 42
+    model_params:
+      n_estimators: 100
+      random_state: 42
+      n_jobs: -1
+
+  validation:
+    primary_metric: "r2_score"
+    min_threshold: 0.6

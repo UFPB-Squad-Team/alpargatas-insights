@@ -1,0 +1,23 @@
+# Conteúdo para model-training-pipeline/.dockerignore
+
+# Ambientes virtuais e caches do Python
+__pycache__/
+*.pyc
+
+# A PARTE MAIS IMPORTANTE:
+# Se você criou uma pasta para seus dados, ignore-a
+data/
+dados/
+
+# Se os arquivos estão soltos, ignore-os por extensão
+*.csv
+*.xlsx
+*.zip
+*.parquet
+*.pkl
+*.json
+
+# Arquivos de IDE e sistema operacional
+.vscode/
+.idea/
+.DS_Store
