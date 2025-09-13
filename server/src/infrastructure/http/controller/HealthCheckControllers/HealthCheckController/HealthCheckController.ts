@@ -5,12 +5,10 @@ export class HealthCheckController {
   async health(req: Request, res: Response) {
     await healthCheckconnectDataBase();
 
-    res
-      .status(200)
-      .json({
-        status: 'ok',
-        database: 'connected',
-        timeStamp: new Date().toISOString(),
-      });
+    res.status(200).json({
+      status: 'ok',
+      database: 'connected',
+      timeStamp: new Date().toISOString(),
+    });
   }
 }
