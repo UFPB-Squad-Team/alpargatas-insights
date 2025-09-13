@@ -3,7 +3,6 @@ import logging
 import numpy as np
 import pandas as pd
 
-# Importa as funções EXATAMENTE como estão no seu utils.py
 from src.common.utils import (
     get_s3_storage_options,
     load_config,
@@ -65,7 +64,7 @@ def _clean_censo_renda_data(df: pd.DataFrame) -> pd.DataFrame:
         df_clean[col] = df_clean[col].replace("X", np.nan)
         df_clean[col] = pd.to_numeric(df_clean[col], errors="coerce")
 
-    # Preenchemos os valores nulos com 0, assumindo que NaN significa ausência de contagem
+    # Preenche os valores nulos com 0, assumindo que NaN significa ausência de contagem
     df_clean[value_cols] = df_clean[value_cols].fillna(0)
 
     logging.info("Limpeza de dados finalizada.")
@@ -79,14 +78,14 @@ def _create_censo_renda_features(df: pd.DataFrame) -> pd.DataFrame:
     logging.info("Criando features de renda...")
     df_featured = df.copy()
 
-    # Feature 1: Renda média por domicílio no setor censitário
+    # Calcula enda média por domicílio no setor censitário
     # Evita divisão por zero, resultando em 0 caso não haja domicílios com renda
     total_rendimento = df_featured[
         "total_rendimento_domicilios_particulares_permanentes"
     ]
     total_domicilios = df_featured["total_domicilios_particulares_permanentes"]
 
-    # Usamos np.divide para tratar a divisão por zero de forma segura
+    # Usa np.divide para tratar a divisão por zero de forma segura
     df_featured["renda_media_domiciliar_setor"] = np.divide(
         total_rendimento,
         total_domicilios,
@@ -108,12 +107,10 @@ def run():
     )
 
     try:
-        # Carrega as configurações do arquivo YAML usando sua função do utils
         config = load_config()
         s3_config = config["s3"]
         source_config = config["ingestion_sources"]["domicilio_renda"]
 
-        # Lê o arquivo diretamente do S3 usando sua função do utils
         df_raw = read_zipped_file_from_s3(
             bucket_name=s3_config["bucket_name"],
             s3_zip_key=f"{s3_config['raw_folder']}/{source_config['output_filename']}",
