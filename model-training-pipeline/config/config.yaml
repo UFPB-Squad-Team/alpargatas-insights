@@ -1,0 +1,97 @@
+s3:
+  bucket_name: "alpargatas-insights-datalake"
+  raw_folder: "raw"
+  intermediate_folder: "intermediate"
+  processed_folder: "processed"
+  models_folder: "models"
+  reports_folder: "reports"
+
+# Fontes de dados que esta pipeline consome
+data_sources:
+  escolas_censo_intermediate: "intermediate/escolas_paraiba.parquet"
+  ideb_raw: "raw/ideb.xlsx"
+
+# Paths para os artefatos que esta pipeline GERA
+paths:
+  prepared_data: "intermediate/ml_prepared_data.parquet"
+  featured_data: "intermediate/ml_featured_data.parquet"
+  model_artifact: "models/modelo_diagnostico_v1.pkl"
+  model_metrics: "reports/v1_metrics.json"
+  feature_importances: "reports/v1_feature_importances.json"
+  final_output_with_ivir: "processed/escolas_com_score_ivir.parquet"
+
+# --- 2. Parâmetros da Pipeline ---
+ml_pipeline_v1:
+  # Parâmetros para a etapa de Engenharia de Features (usado no script 02)
+  feature_engineering:
+    outlier_cap_quantile: 0.99 # O percentil para limitar os outliers dos ratios
+    
+    feature_definitions:
+      infra_columns:
+        agua: ['IN_AGUA_REDE_PUBLICA', 'IN_AGUA_POCO_ARTESIANO']
+        saneamento: ['IN_ESGOTO_REDE_PUBLICA', 'IN_ESGOTO_FOSSA_SEPTICA']
+        energia: ['IN_ENERGIA_REDE_PUBLICA', 'IN_ENERGIA_GERADOR_FOSSIL']
+      
+      staff_columns:
+        funcionarios: [
+          'QT_PROF_ADMINISTRATIVOS', 
+          'QT_PROF_SERVICOS_GERAIS', 
+          'QT_PROF_BIBLIOTECARIO',
+          'QT_PROF_SAUDE', 
+          'QT_PROF_COORDENADOR', 
+          'QT_PROF_FONAUDIOLOGO', 
+          'QT_PROF_NUTRICIONISTA', 
+          'QT_PROF_PSICOLOGO', 
+          'QT_PROF_ALIMENTACAO', 
+          'QT_PROF_PEDAGOGIA', 
+          'QT_PROF_SECRETARIO', 
+          'QT_PROF_SEGURANCA', 
+          'QT_PROF_MONITORES', 
+          'QT_PROF_GESTAO', 
+          'QT_PROF_ASSIST_SOCIAL', 
+          'QT_PROF_TRAD_LIBRAS'
+        ]
+
+      ratio_columns:
+        cap_targets: [
+          'ratio_alunos_por_docente', 
+          'ratio_alunos_por_funcionario', 
+          'ratio_alunos_por_turma'
+        ]
+
+      categorical_columns:
+        - 'TP_DEPENDENCIA'
+        - 'TP_LOCALIZACAO'
+        - 'TP_LOCALIZACAO_DIFERENCIADA'
+      
+      base_model_features:
+        - 'infra_agua_tratada'
+        - 'infra_saneamento_adequado'
+        - 'infra_energia_confiavel'
+        - 'IN_BIBLIOTECA'
+        - 'IN_LABORATORIO_CIENCIAS'
+        - 'IN_LABORATORIO_INFORMATICA'
+        - 'IN_QUADRA_ESPORTES'
+        - 'IN_ACESSIBILIDADE_INEXISTENTE'
+        - 'IN_INTERNET_ALUNOS'
+        - 'IN_BANDA_LARGA'
+        - 'ratio_computadores_por_aluno'
+        - 'ratio_alunos_por_docente'
+        - 'ratio_alunos_por_turma'
+        - 'ratio_alunos_por_funcionario'
+        - 'TP_AEE'
+        - 'IN_EDUCACAO_INDIGENA'
+  
+  # Parâmetros para a etapa de Treinamento (usado no script 03)
+  training:
+    test_size: 0.2
+    random_state: 42
+    model_params:
+      n_estimators: 100
+      random_state: 42
+      n_jobs: -1
+
+mlflow:
+  experiment_name: "diagnostico_ideb_paraiba_v1"
+  db_s3_path: "mlflow-db/mlruns.db.parquet"
+  artifact_root: "mlflow-artifacts"

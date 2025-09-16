@@ -3,7 +3,7 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
-    container_name: alpargatas_api
+    container_name: api_service
     ports:
       - "5000:5000"
     env_file:
@@ -13,7 +13,7 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
-    container_name: alpargatas_frontend
+    container_name: client_app
     ports:
       - "5173:80"
     depends_on:
@@ -21,12 +21,24 @@ services:
 
   etl:
     build:
-      context: ./etl  
+      context: ./etl
       dockerfile: Dockerfile
-    container_name: alpargatas_etl
+    container_name: etl_pipeline
     env_file:
       - .env
     volumes:
       - ./etl/src:/app/src
       - ./etl/config:/app/config
+    command: tail -f /dev/null
+
+  model-training-pipeline:
+    build:
+      context: ./model-training-pipeline
+      dockerfile: Dockerfile
+    container_name: model_training_pipeline
+    env_file:
+      - .env
+    volumes:
+      - ./model-training-pipeline/src:/app/src
+      - ./model-training-pipeline/config:/app/config
     command: tail -f /dev/null

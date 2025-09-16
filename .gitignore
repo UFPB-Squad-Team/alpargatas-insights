@@ -1,47 +1,39 @@
-# Python
 __pycache__/
 *.py[cod]
 .venv/
 venv/
 
-# Node.js
 node_modules/
 dist/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Ambiente
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# IDE / Editor
 .vscode/
 .idea/
 
-# Ignora diretórios de dados processados e de entrada
 etl/data/processed/
 etl/data/input_data/
 
-# Ignora todos os arquivos .zip e .csv (em qualquer pasta)
 *.zip
 *.csv
 
-# Ignora todos os arquivos .parquet dentro de data/raw/
 etl/data/raw/*.parquet
 etl/data/raw_professor/
 
-# Exceto este arquivo específico
 !etl/data/raw/escolas_paraiba_sample.parquet
 
-# Logs
 *.log
 
-# Docker
 docker-compose.override.yml
 
-# Notebooks
 *.ipynb
+
+mlruns/
+mlruns.db
