@@ -1,8 +1,8 @@
-import { Need } from "../../../../domain/entities/need";
+import { Need } from '../../../../domain/entities/need';
 
-export interface ListApprovedNeedOutputDTO{
-    needs: Need[]
-    page: number
-    total: number
-    currentPage: number
+export interface ListApprovedNeedOutputDTO {
+  needs: Need[];
+  page: number;
+  total: number;
+  currentPage: number;
 }

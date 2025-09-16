@@ -25,7 +25,7 @@ export class MoongoseNeedRepository implements INeedRepository {
   }> {
     const skip = (page - 1) * limit;
 
-    const matchStage: any = { status: { $regex: 'approved', $options: 'i' }};
+    const matchStage: any = { status: { $regex: 'approved', $options: 'i' } };
 
     const aggregationPipeline: any[] = [];
 
@@ -42,7 +42,6 @@ export class MoongoseNeedRepository implements INeedRepository {
     if (Object.keys(matchStage).length > 0) {
       aggregationPipeline.push({ $match: matchStage });
     }
-    
 
     aggregationPipeline.push({
       $facet: {
@@ -68,7 +67,7 @@ export class MoongoseNeedRepository implements INeedRepository {
       },
     });
 
-    const [result] = await NeedModel.aggregate(aggregationPipeline)
+    const [result] = await NeedModel.aggregate(aggregationPipeline);
 
     const needs = result.paginatedResults;
     const total = result.totalCount[0]?.count || 0;

@@ -8,8 +8,10 @@ const needRepository = new MoongoseNeedRepository();
 
 const createNeedUseCase = new CreateNeedUseCase(needRepository);
 
-const listNeedApprovedUseCase = new ListApprovedNeedUseCase(needRepository)
+const listNeedApprovedUseCase = new ListApprovedNeedUseCase(needRepository);
 
 export const createNeedController = new CreateNeedController(createNeedUseCase);
 
-export const listNeedApprovedController = new ListApprovedNeedController(listNeedApprovedUseCase)
+export const listNeedApprovedController = new ListApprovedNeedController(
+  listNeedApprovedUseCase,
+);
