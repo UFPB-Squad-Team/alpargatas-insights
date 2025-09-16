@@ -49,7 +49,7 @@ app.use(municipalityRoutes);
 
 app.use(feedbackRoutes);
 
-app.use(needRoutes)
+app.use(needRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.status(200).json({

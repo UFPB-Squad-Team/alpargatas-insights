@@ -1,32 +1,36 @@
-import { model, Schema, Types, Document } from "mongoose";
-import { NeedType } from "../../../domain/enums/Need/enumNeedType";
-import { SubmitterType } from "../../../domain/enums/Need/enumSubmitterType";
-import { NeedStatus } from "../../../domain/enums/Need/enumNeedStatus";
+import { model, Schema, Types, Document } from 'mongoose';
+import { NeedType } from '../../../domain/enums/Need/enumNeedType';
+import { SubmitterType } from '../../../domain/enums/Need/enumSubmitterType';
+import { NeedStatus } from '../../../domain/enums/Need/enumNeedStatus';
 
 /**
  * @description Mongoose schema and model for Need.
  */
 
 export interface INeedDocument extends Document {
-    _id: Types.ObjectId;
+  _id: Types.ObjectId;
 
-    title: string
+  title: string;
 
-    description: string
+  description: string;
 
-    type: NeedType
+  type: NeedType;
 
-    submitterType: SubmitterType
+  submitterType: SubmitterType;
 
-    submitterContact?: { name?: string, email?: string }
+  submitterContact?: { name?: string; email?: string };
 
-    location?: { locationType: 'school' | 'municipality', id: string, name: string }
+  location?: {
+    locationType: 'school' | 'municipality';
+    id: string;
+    name: string;
+  };
 
-    status: NeedStatus
+  status: NeedStatus;
 
-    createdAt?: Date
+  createdAt?: Date;
 
-    updatedAt?: Date
+  updatedAt?: Date;
 }
 const needSchema = new Schema(
   {

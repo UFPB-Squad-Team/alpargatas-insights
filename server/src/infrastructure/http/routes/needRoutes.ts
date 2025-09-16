@@ -1,10 +1,14 @@
+import { Router } from 'express';
 
-import { Router } from "express"
+import * as needController from '../controller/NeedController/index';
 
-import * as needController from "../controller/NeedController/index"
+const needRoutes = Router();
 
-const needRoutes = Router()
+needRoutes.post(
+  '/api/v1/needs',
+  needController.createNeedController.create.bind(
+    needController.createNeedController,
+  ),
+);
 
-needRoutes.post("/api/v1/needs", needController.createNeedController.create.bind(needController.createNeedController))
-
-export { needRoutes }
+export { needRoutes };
