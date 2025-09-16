@@ -18,6 +18,7 @@ ingestion_sources:
     output_filename: "DTB_2024.zip"
     target_filename_in_zip: "RELATORIO_DTB_BRASIL_2024_MUNICIPIOS.xls"
 
+
 paths:
   raw_municipios_brasileiros: "raw/municipios_brasileiros.csv"
 
@@ -25,14 +26,32 @@ paths:
   ml_model_artifact: "models/modelo_saeb.pkl"
   ml_model_metrics: "reports/model_performance.json"
 
+
+  domicilio_renda:
+    url: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2010/Resultados_do_Universo/Agregados_por_Setores_Censitarios/PB_20231030.zip"
+    output_filename: "PB_20231030.zip"
+    target_filename_in_zip: "DomicilioRenda_PB.XLS"
+  domicilio_infra:
+    url: "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2010/Resultados_do_Universo/Agregados_por_Setores_Censitarios/PB_20231030.zip"
+    output_filename: "PB_20231030.zip"
+    target_filename_in_zip: "Domicilio01_PB.XLS"
+  
+
+paths:
+  raw_municipios_brasileiros: "raw/municipios_brasileiros.csv"
+  raw_malha_setorial: "raw/malha_setorial/PB_setores_CD2022.shp"
+  
+
   intermediate_escolas_paraiba: "intermediate/escolas_paraiba.parquet"
   intermediate_professor_dtb: "intermediate/professor_dtb.parquet"
   intermediate_professor_ideb: "intermediate/professor_ideb.parquet"
   intermediate_professor_ia: "intermediate/professor_ia.parquet"
   intermediate_professor_municipios: "intermediate/professor_municipios.parquet"
+  intermediate_malha_setorial: "intermediate/censo_renda_por_setor_censitario.parquet"
 
   processed_escolas: "processed/escolas_processado.parquet"
   processed_professor_final: "processed/ENTREGAVEL_escolas_enriquecidas.parquet"
+  processed_escolas_setorial: "processed/escolas_setorial.parquet"
 
   audit_professor_municipal_summary: "audit/municipal_summary.parquet"
 

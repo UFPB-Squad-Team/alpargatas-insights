@@ -50,7 +50,7 @@ def _add_jitter_to_coordinates(df: pd.DataFrame) -> pd.DataFrame:
 
     df_copy = df.copy()
 
-    MAX_JITTER_KM = 2.5  # Raio máximo de perturbação em quilômetros
+    MAX_JITTER_KM = 0.5  # Raio máximo de perturbação em quilômetros
     KM_PER_DEGREE = 111.32  # Fator de conversão aproximado
 
     jitter_radius_km = np.random.uniform(0, MAX_JITTER_KM, size=len(df_copy))
