@@ -11,6 +11,7 @@ import { feedbackRoutes } from './infrastructure/http/routes/feedbackRoutes';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './infrastructure/configs/swagger';
 import { healthCheckRoutes } from './infrastructure/http/routes/healthCheckRoutes';
+import { needRoutes } from './infrastructure/http/routes/needRoutes';
 
 const app = express();
 
@@ -47,6 +48,8 @@ app.use(dashboardRoutes);
 app.use(municipalityRoutes);
 
 app.use(feedbackRoutes);
+
+app.use(needRoutes)
 
 app.get('/', (req: Request, res: Response) => {
   res.status(200).json({
