@@ -1,6 +1,6 @@
 import logging
 
-from . import extract, load, transform, validate, enrich
+from . import enrich, extract, load, transform, validate
 
 logging.basicConfig(
     level=logging.INFO,
@@ -18,7 +18,7 @@ def run_pipeline():
         extract.run()
 
         transform.run()
-        
+
         enrich.run()
 
         validate.run()

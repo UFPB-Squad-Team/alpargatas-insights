@@ -1,7 +1,8 @@
 import logging
+from typing import Dict
+
 import pandas as pd
 from dotenv import load_dotenv
-from typing import Dict
 
 from src.common.utils import get_s3_storage_options, load_config
 
@@ -12,7 +13,9 @@ logging.basicConfig(
 )
 
 
-def _load_data_sources(s3_config: Dict, paths: Dict, storage_options: Dict) -> tuple[pd.DataFrame, pd.DataFrame]:
+def _load_data_sources(
+    s3_config: Dict, paths: Dict, storage_options: Dict
+) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Carrega o dataset base do ETL e o dataset enriquecido com scores de ML."""
     etl_processed_path = f"s3://{s3_config['bucket_name']}/{paths['processed_escolas']}"
     logger.info(f"Lendo dados base do ETL de: {etl_processed_path}")
@@ -30,11 +33,19 @@ def _merge_datasets(df_base: pd.DataFrame, df_ml: pd.DataFrame) -> pd.DataFrame:
     logger.info("Iniciando a unificação dos dados do ETL com os scores de ML...")
 
     cols_to_add = [
-        "escolaIdInep", "scoreRisco", "scoreRiscoContextualizado", "ideb_anos_iniciais",
-        "ideb_imputado", "saeb_anos_iniciais", "inse_imputado_final",
-        "ratio_alunos_por_docente", "ratio_alunos_por_funcionario", "ratio_alunos_por_turma",
-        "viz_renda_media_domiciliar_setor", "mun_renda_media_domiciliar_setor",
-        "viz_total_domicilios_particulares_permanentes"
+        "escolaIdInep",
+        "scoreRisco",
+        "scoreRiscoContextualizado",
+        "ideb_anos_iniciais",
+        "ideb_imputado",
+        "saeb_anos_iniciais",
+        "inse_imputado_final",
+        "ratio_alunos_por_docente",
+        "ratio_alunos_por_funcionario",
+        "ratio_alunos_por_turma",
+        "viz_renda_media_domiciliar_setor",
+        "mun_renda_media_domiciliar_setor",
+        "viz_total_domicilios_particulares_permanentes",
     ]
     existing_cols_to_add = [col for col in cols_to_add if col in df_ml.columns]
 
@@ -47,7 +58,7 @@ def _merge_datasets(df_base: pd.DataFrame, df_ml: pd.DataFrame) -> pd.DataFrame:
         df_base_sem_score_antigo,
         df_ml[existing_cols_to_add],
         on="escolaIdInep",
-        how="left"
+        how="left",
     )
     return df_enriquecido
 
@@ -91,9 +102,13 @@ def _structure_final_schema(df: pd.DataFrame) -> pd.DataFrame:
     return df_final
 
 
-def _save_final_dataset(df: pd.DataFrame, s3_config: Dict, paths: Dict, storage_options: Dict):
+def _save_final_dataset(
+    df: pd.DataFrame, s3_config: Dict, paths: Dict, storage_options: Dict
+):
     """Salva o dataset enriquecido no S3."""
-    output_path = f"s3://{s3_config['bucket_name']}/{paths['processed_escolas_enriquecidas']}"
+    output_path = (
+        f"s3://{s3_config['bucket_name']}/{paths['processed_escolas_enriquecidas']}"
+    )
     logger.info(f"Salvando dataset super enriquecido no S3 em: {output_path}")
     df.to_parquet(output_path, index=False, storage_options=storage_options)
 
@@ -107,7 +122,9 @@ def run():
         s3_config, paths = config["s3"], config["paths"]
         storage_options = get_s3_storage_options()
 
-        df_base_etl, df_ml_scores = _load_data_sources(s3_config, paths, storage_options)
+        df_base_etl, df_ml_scores = _load_data_sources(
+            s3_config, paths, storage_options
+        )
 
         df_merged = _merge_datasets(df_base_etl, df_ml_scores)
 

@@ -67,9 +67,10 @@ def run():
         operations = _prepare_bulk_upsert_operations(df_ready_to_load)
 
         loader = MongoLoader(db_uri=mongo_uri, db_name=db_config["db_name"])
-        
+
         loader.bulk_upsert(
-            operations=operations, collection_name=db_config["escolas_enrich_collection_name"]
+            operations=operations,
+            collection_name=db_config["escolas_enrich_collection_name"],
         )
         logging.info("--- JOB DE CARREGAMENTO FINALIZADO COM SUCESSO ---")
 
