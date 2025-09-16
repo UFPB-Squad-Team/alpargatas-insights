@@ -10,6 +10,9 @@ s3:
 data_sources:
   escolas_censo_intermediate: "intermediate/escolas_paraiba.parquet"
   ideb_raw: "raw/ideb.xlsx"
+  escolas_ivir_v1: "processed/escolas_com_score_ivir.parquet"
+  escolas_inse: "processed/censo_e_inse_publicas_pb.parquet"
+  escolas_setorial: "processed/escolas_setorial.parquet"
 
 # Paths para os artefatos que esta pipeline GERA
 paths:
@@ -20,11 +23,17 @@ paths:
   feature_importances: "reports/v1_feature_importances.json"
   final_output_with_ivir: "processed/escolas_com_score_ivir.parquet"
 
+  mestre_data_v2: "intermediate/mestre_data_v2.parquet"
+  featured_data_v2: "intermediate/featured_data_v2.parquet"
+  model_artifact_v2: "models/modelo_contextual_v2.pkl"
+  model_metrics_v2: "reports/v2_metrics.json"
+  feature_importances_v2: "reports/v2_feature_importances.json"
+  final_output_with_context_score: "processed/escolas_com_score_contextualizado.parquet"
+
 # --- 2. Parâmetros da Pipeline ---
 ml_pipeline_v1:
-  # Parâmetros para a etapa de Engenharia de Features (usado no script 02)
   feature_engineering:
-    outlier_cap_quantile: 0.99 # O percentil para limitar os outliers dos ratios
+    outlier_cap_quantile: 0.99 
     
     feature_definitions:
       infra_columns:
@@ -82,7 +91,6 @@ ml_pipeline_v1:
         - 'TP_AEE'
         - 'IN_EDUCACAO_INDIGENA'
   
-  # Parâmetros para a etapa de Treinamento (usado no script 03)
   training:
     test_size: 0.2
     random_state: 42
@@ -95,3 +103,67 @@ mlflow:
   experiment_name: "diagnostico_ideb_paraiba_v1"
   db_s3_path: "mlflow-db/mlruns.db.parquet"
   artifact_root: "mlflow-artifacts"
+
+
+ml_pipeline_v2:
+  feature_engineering:
+    feature_definitions:
+      base_model_features:
+        # --- Features V1 ---
+        - 'infra_agua_tratada'
+        - 'infra_saneamento_adequado'
+        - 'infra_energia_confiavel'
+        - 'IN_BIBLIOTECA'
+        - 'IN_LABORATORIO_CIENCIAS'
+        - 'IN_LABORATORIO_INFORMATICA'
+        - 'IN_QUADRA_ESPORTES'
+        - 'IN_ACESSIBILIDADE_INEXISTENTE'
+        - 'IN_INTERNET_ALUNOS'
+        - 'IN_BANDA_LARGA'
+        - 'ratio_computadores_por_aluno'
+        - 'ratio_alunos_por_docente'
+        - 'ratio_alunos_por_turma'
+        - 'ratio_alunos_por_funcionario'
+        - 'TP_AEE'
+        - 'IN_EDUCACAO_INDIGENA'
+        # --- Novas Features V2 (Socioeconômicas) ---
+        - 'inse_imputado_final'
+        - 'mun_domicilios_renda_ate_1_4_salario'
+        - 'mun_domicilios_renda_mais_10_salarios'
+        - 'mun_domicilios_renda_mais_1_2_a_1_salario'
+        - 'mun_domicilios_renda_mais_1_4_a_1_2_salario'
+        - 'mun_domicilios_renda_mais_1_a_2_salarios'
+        - 'mun_domicilios_renda_mais_2_a_3_salarios'
+        - 'mun_domicilios_renda_mais_3_a_5_salarios'
+        - 'mun_domicilios_renda_mais_5_a_10_salarios'
+        - 'mun_domicilios_sem_renda_nominal'
+        - 'mun_renda_media_domiciliar_setor'
+        - 'mun_total_domicilios_particulares_permanentes'
+        - 'mun_total_rendimento_domicilios_particulares_permanentes'
+        - 'viz_domicilios_renda_ate_1_4_salario'
+        - 'viz_domicilios_renda_mais_10_salarios'
+        - 'viz_domicilios_renda_mais_1_2_a_1_salario'
+        - 'viz_domicilios_renda_mais_1_4_a_1_2_salario'
+        - 'viz_domicilios_renda_mais_1_a_2_salarios'
+        - 'viz_domicilios_renda_mais_2_a_3_salarios'
+        - 'viz_domicilios_renda_mais_3_a_5_salarios'
+        - 'viz_domicilios_renda_mais_5_a_10_salarios'
+        - 'viz_domicilios_sem_renda_nominal'
+        - 'viz_renda_media_domiciliar_setor'
+        - 'viz_total_domicilios_particulares_permanentes'
+        - 'viz_total_rendimento_domicilios_particulares_permanentes'
+
+  training:
+    test_size: 0.2
+    random_state: 42
+    model_params:
+      n_estimators: 100
+      random_state: 42
+      n_jobs: -1
+    
+    outlier_treatment:
+      enabled: true
+      quantile: 0.99
+      columns_to_cap:
+        - 'viz_renda_media_domiciliar_setor'
+        - 'mun_renda_media_domiciliar_setor'

@@ -1,10 +1,8 @@
-# Alpargatas Insight Platform
+# Education Observatory - PB
 
 ## Project Overview
 
-**Alpargatas Insight** is a data analysis platform developed as a project for the Data Analysis course at the Federal University of Paraíba (UFPB), in collaboration with the **Alpargatas Institute**. The goal is to create a strategic intelligence tool to support the Institute's social impact initiatives by transforming public data into actionable insights.
-
-The initial focus is on **Education**, utilizing microdata from the School Census (INEP) to identify challenges, predict risks (such as school dropout rates), and simulate the impact of potential interventions.
+**Education Observatory - PB** is a data analysis platform developed as a project for the Data Analysis course at the Federal University of Paraíba (UFPB), in collaboration with the **Alpargatas Institute**. The goal is to create a strategic intelligence tool to support the social impact initiatives by transforming public data into actionable insights.
 
 ## System Architecture
 
@@ -13,22 +11,23 @@ The project is built on a microservices architecture orchestrated with Docker, o
 - **Backend (API):** A **Node.js + TypeScript** service (using Express) responsible for serving processed data, executing business logic, and connecting to the database.
 - **Frontend:** A **React + Vite** application that consumes data from the API and presents it on interactive dashboards for the Institute's managers. It is served in production by an optimized **Nginx** container.
 - **ETL Pipeline:** A set of **Python** scripts responsible for the Extraction, Transformation, and Loading of raw data from the School Census. It uses **Poetry** for dependency management and is executed on-demand.
+- **Diagnostic Model Training Pipeline:** Scripts responsible for brief data processing and training of diagnostic, rather than forecast, models for analysis and generation of indicators that use poetry.
 - **Database:** A **MongoDB Atlas** cluster in the cloud, serving as the single source of truth for processed data and ensuring the entire development team shares the same state.
 
 ---
 
 ## Tech Stack
 
-| Category               | Tools                                                      |
-| ---------------------- | ---------------------------------------------------------- |
-| **Languages**          | `TypeScript`, `Python`                                     |
-| **Backend**            | `Node.js`, `Express`, `Mongoose`, `dotenv`                 |
-| **Frontend**           | `React`, `Vite`                                            |
-| **ETL & Data**         | `Pandas`, `PyMongo`, `PyArrow`                             |
-| **Database**           | `MongoDB Atlas` (Cloud)                                    |
-| **DevOps & Infra**     | `Docker`, `Docker Compose`, `Nginx`, `Makefile` (optional) |
-| **Package Management** | `Poetry` (Python), `npm` (Node.js)                         |
-| **Code Quality**       | `ESLint`, `Prettier` (TypeScript), `Ruff` (Python)         |
+| Category               | Tools                                                  |
+| ---------------------- | ------------------------------------------------------ |
+| **Languages**          | `TypeScript`, `Python`                                 |
+| **Backend**            | `Node.js`, `Express`, `Mongoose`, `dotenv`             |
+| **Frontend**           | `React`, `Vite`, `Typescript`                          |
+| **ETL & Data**         | `Pandas`, `PyMongo`, `PyArrow`, `Mlflow`, `Sklearn`    |
+| **Database**           | `MongoDB Atlas` (Cloud)                                |
+| **DevOps & Infra**     | `Docker`, `Docker Compose`, `Nginx`, `Makefile`, `AWS` |
+| **Package Management** | `Poetry` (Python), `npm` (Node.js)                     |
+| **Code Quality**       | `ESLint`, `Prettier` (TypeScript), `Ruff` (Python)     |
 
 ## Getting Started (Development Environment)
 
