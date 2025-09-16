@@ -2,13 +2,12 @@ import { randomUUID } from 'node:crypto';
 import { NeedStatus } from '../enums/Need/enumNeedStatus';
 import { NeedType } from '../enums/Need/enumNeedType';
 import { SubmitterType } from '../enums/Need/enumSubmitterType';
+import { NeedValidator } from '../validators/needValidator';
 
 /**
  * @description Interface representing a need entry.
  */
 export type NeedProps = {
-  id: string;
-
   title: string;
 
   description: string;
@@ -57,38 +56,27 @@ export class Need {
 
   public updatedAt?: Date;
 
-  constructor(
-    {
-      title,
-      description,
-      type,
-      submitterType,
-      submitterContact,
-      location,
-      status,
-      createdAt,
-      updatedAt,
-    }: NeedProps,
-    id?: string,
-  ) {
+  constructor(props: NeedProps, id?: string) {
+    NeedValidator.validate(props);
+
     this.id = id ?? randomUUID();
 
-    this.title = title.trim();
+    this.title = props.title.trim();
 
-    this.description = description.trim();
+    this.description = props.description.trim();
 
-    this.type = type;
+    this.type = props.type;
 
-    this.submitterType = submitterType;
+    this.submitterType = props.submitterType;
 
-    this.submitterContact = submitterContact;
+    this.submitterContact = props.submitterContact;
 
-    this.location = location;
+    this.location = props.location;
 
-    this.status = status ?? NeedStatus.PENDING;
+    this.status = props.status ?? NeedStatus.PENDING;
 
-    this.createdAt = createdAt;
+    this.createdAt = props.createdAt;
 
-    this.updatedAt = updatedAt;
+    this.updatedAt = props.updatedAt;
   }
 }

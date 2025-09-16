@@ -1,5 +1,4 @@
-import { model, Schema } from 'mongoose';
-import { Need } from '../../../domain/entities/need';
+import { model, Schema, Types, Document } from 'mongoose';
 import { NeedType } from '../../../domain/enums/Need/enumNeedType';
 import { SubmitterType } from '../../../domain/enums/Need/enumSubmitterType';
 import { NeedStatus } from '../../../domain/enums/Need/enumNeedStatus';
@@ -7,8 +6,35 @@ import { NeedStatus } from '../../../domain/enums/Need/enumNeedStatus';
 /**
  * @description Mongoose schema and model for Need.
  */
-const needSchema = new Schema<Need>(
+
+export interface INeedDocument extends Document {
+  _id: Types.ObjectId;
+
+  title: string;
+
+  description: string;
+
+  type: NeedType;
+
+  submitterType: SubmitterType;
+
+  submitterContact?: { name?: string; email?: string };
+
+  location?: {
+    locationType: 'school' | 'municipality';
+    id: string;
+    name: string;
+  };
+
+  status: NeedStatus;
+
+  createdAt?: Date;
+
+  updatedAt?: Date;
+}
+const needSchema = new Schema(
   {
+    _id: { type: Schema.Types.ObjectId, auto: true },
     title: { type: String, required: true },
     description: { type: String, required: true },
     type: { type: String, enum: Object.values(NeedType), required: true },
@@ -41,4 +67,4 @@ const needSchema = new Schema<Need>(
   { timestamps: true },
 );
 
-export const NeedModel = model<Need>('Need', needSchema);
+export const NeedModel = model<INeedDocument>('Need', needSchema);
