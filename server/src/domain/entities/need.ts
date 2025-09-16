@@ -1,77 +1,94 @@
-import { randomUUID } from "node:crypto"
-import { NeedStatus } from "../enums/Need/enumNeedStatus"
-import { NeedType } from "../enums/Need/enumNeedType"
-import { SubmitterType } from "../enums/Need/enumSubmitterType"
+import { randomUUID } from 'node:crypto';
+import { NeedStatus } from '../enums/Need/enumNeedStatus';
+import { NeedType } from '../enums/Need/enumNeedType';
+import { SubmitterType } from '../enums/Need/enumSubmitterType';
 
 /**
  * @description Interface representing a need entry.
  */
 export type NeedProps = {
-    id: string
+  id: string;
 
-    title: string
+  title: string;
 
-    description: string
+  description: string;
 
-    type: NeedType
+  type: NeedType;
 
-    submitterType: SubmitterType
+  submitterType: SubmitterType;
 
-    submitterContact?: { name?: string, email?: string }
+  submitterContact?: { name?: string; email?: string };
 
-    location?: { locationType: 'school' | 'municipality', id: string, name: string }
+  location?: {
+    locationType: 'school' | 'municipality';
+    id: string;
+    name: string;
+  };
 
-    status: NeedStatus
+  status: NeedStatus;
 
-    createdAt?: Date
+  createdAt?: Date;
 
-    updatedAt?: Date
-}
+  updatedAt?: Date;
+};
 
-export class Need{
-    public readonly id: string
+export class Need {
+  public readonly id: string;
 
-    public title: string
+  public title: string;
 
-    public description: string
+  public description: string;
 
-    public type: NeedType
+  public type: NeedType;
 
-    public submitterType: SubmitterType
+  public submitterType: SubmitterType;
 
-    public submitterContact?: { name?: string, email?: string }
+  public submitterContact?: { name?: string; email?: string };
 
-    public location?: { locationType: 'school' | 'municipality', id: string, name: string }
+  public location?: {
+    locationType: 'school' | 'municipality';
+    id: string;
+    name: string;
+  };
 
-    public status: NeedStatus
-    
-    public createdAt?: Date
+  public status: NeedStatus;
 
-    public updatedAt?: Date
+  public createdAt?: Date;
 
+  public updatedAt?: Date;
 
-    constructor({ title, description, type, submitterType, submitterContact, location,status, createdAt, updatedAt }: NeedProps, id?: string ){
+  constructor(
+    {
+      title,
+      description,
+      type,
+      submitterType,
+      submitterContact,
+      location,
+      status,
+      createdAt,
+      updatedAt,
+    }: NeedProps,
+    id?: string,
+  ) {
+    this.id = id ?? randomUUID();
 
-        this.id = id ?? randomUUID()
+    this.title = title.trim();
 
-        this.title = title.trim()
+    this.description = description.trim();
 
-        this.description = description.trim()
+    this.type = type;
 
-        this.type = type
+    this.submitterType = submitterType;
 
-        this.submitterType = submitterType
+    this.submitterContact = submitterContact;
 
-        this.submitterContact = submitterContact
+    this.location = location;
 
-        this.location = location
+    this.status = status ?? NeedStatus.PENDING;
 
-        this.status = status ?? NeedStatus.PENDING
+    this.createdAt = createdAt;
 
-        this.createdAt = createdAt
-
-        this.updatedAt = updatedAt
-
-    }
-
+    this.updatedAt = updatedAt;
+  }
 }

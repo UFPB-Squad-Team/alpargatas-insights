@@ -1,4 +1,3 @@
-
 /**
  * @enum NeedType
  *
@@ -6,10 +5,10 @@
  * we can add more statuses in the future if needed.
  */
 
-export enum NeedType{
-    INFRASTRUCTURE = 'infrastructure',
-    MATERIAL = 'material',
-    HR = 'hr',
-    SOCIAL = 'social',
-    OTHER = 'other'
+export enum NeedType {
+  INFRASTRUCTURE = 'infrastructure',
+  MATERIAL = 'material',
+  HR = 'hr',
+  SOCIAL = 'social',
+  OTHER = 'other',
 }
