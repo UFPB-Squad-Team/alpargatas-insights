@@ -67,4 +67,8 @@ const needSchema = new Schema(
   { timestamps: true },
 );
 
+needSchema.index({ status: 1 });
+needSchema.index({ type: 1 })
+needSchema.index({ submitterType: 1 })
+
 export const NeedModel = model<INeedDocument>('Need', needSchema);

@@ -1,14 +1,13 @@
-import { Router } from 'express';
 
-import * as needController from '../controller/NeedController/index';
+import { Router } from "express"
 
-const needRoutes = Router();
+import * as needController from "../controller/NeedController/index"
 
-needRoutes.post(
-  '/api/v1/needs',
-  needController.createNeedController.create.bind(
-    needController.createNeedController,
-  ),
-);
+const needRoutes = Router()
+
+needRoutes.get("/api/v1/list/needsApproved", needController.listNeedApprovedController.listApprovedNeeds.bind(needController.listNeedApprovedController))
+
+needRoutes.post("/api/v1/needs", needController.createNeedController.create.bind(needController.createNeedController))
+
 
 export { needRoutes };
