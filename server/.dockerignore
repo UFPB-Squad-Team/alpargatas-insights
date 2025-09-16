@@ -1,0 +1,10 @@
+# Conteúdo para .dockerignore nos projetos Node.js
+
+# A pasta mais importante a ser ignorada
+node_modules
+
+# Arquivos de log e build local
+npm-debug.log
+dist
+build
+.env

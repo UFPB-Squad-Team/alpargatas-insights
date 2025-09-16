@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+
+data/
+dados/
+
+*.csv
+*.xlsx
+*.zip
+*.parquet
+*.pkl
+*.json
+
+.vscode/
+.idea/
+.DS_Store
