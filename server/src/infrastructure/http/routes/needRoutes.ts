@@ -4,6 +4,13 @@ import * as needController from '../controller/NeedController/index';
 
 const needRoutes = Router();
 
+needRoutes.get(
+  '/api/v1/list/needsApproved',
+  needController.listNeedApprovedController.listApprovedNeeds.bind(
+    needController.listNeedApprovedController,
+  ),
+);
+
 needRoutes.post(
   '/api/v1/needs',
   needController.createNeedController.create.bind(
