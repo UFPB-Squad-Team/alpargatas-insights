@@ -21,3 +21,6 @@ dados/
 .vscode/
 .idea/
 .DS_Store
+
+notebooks/
+mlruns/
