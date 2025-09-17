@@ -8,7 +8,7 @@ import { NeedMapper } from '../../mapper/needMapper';
  * @implements INeedRepository
  * @description Mongoose implementation of the Need repository.
  *
- * @method listApproved - Get needs with status 'Pending' and pagination and filters
+ * @method listApproved - Get needs with status 'Approved' and pagination and filters
  * @method save - Saves a need entry to the database.
  */
 
@@ -25,16 +25,16 @@ export class MoongoseNeedRepository implements INeedRepository {
   }> {
     const skip = (page - 1) * limit;
 
-    const matchStage: any = { status: NeedStatus.APPROVED };
+    const matchStage: any = { status: { $regex: 'approved', $options: 'i' } };
 
     const aggregationPipeline: any[] = [];
 
     if (filters?.type) {
-      matchStage.type = +filters.type;
+      matchStage.type = filters.type;
     }
 
     if (filters?.submitterType) {
-      matchStage.submitterType = +filters.submitterType;
+      matchStage.submitterType = filters.submitterType;
     }
 
     aggregationPipeline.push({ $match: matchStage });
