@@ -58,19 +58,20 @@ def run():
     loader = None
     try:
         final_data_s3_path = (
-            f"s3://{s3_config['bucket_name']}/{paths['processed_professor_final']}"
+            f"s3://{s3_config['bucket_name']}/{paths['processed_escolas_enriquecidas']}"
         )
-        logging.info(f"Lendo dados finais enriquecidos de: {final_data_s3_path}")
+        logging.info(f"Lendo dados finais super enriquecidos de: {final_data_s3_path}")
         df_final = pd.read_parquet(final_data_s3_path, storage_options=storage_options)
 
         df_ready_to_load = _prepare_data_for_mongo(df_final)
         operations = _prepare_bulk_upsert_operations(df_ready_to_load)
 
         loader = MongoLoader(db_uri=mongo_uri, db_name=db_config["db_name"])
-        loader.bulk_upsert(
-            operations=operations, collection_name=db_config["escolas_collection_name"]
-        )
 
+        loader.bulk_upsert(
+            operations=operations,
+            collection_name=db_config["escolas_enrich_collection_name"],
+        )
         logging.info("--- JOB DE CARREGAMENTO FINALIZADO COM SUCESSO ---")
 
     except Exception as e:
