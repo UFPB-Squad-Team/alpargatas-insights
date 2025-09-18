@@ -1,6 +1,7 @@
 import { Need } from '../entities/need';
 
 export interface INeedRepository {
+  findById(id: string): Promise<Need | null>
   listApproved(
     page: number,
     limit: number,

@@ -13,6 +13,19 @@ import { NeedMapper } from '../../mapper/needMapper';
  */
 
 export class MoongoseNeedRepository implements INeedRepository {
+
+  async findById(id: string): Promise<Need | null> {
+      
+    const needExist = await NeedModel.findById(id);
+
+    if (!needExist) {
+      return null;
+    }
+
+    return NeedMapper.toDomain(needExist)
+
+  }
+
   async listApproved(
     page: number,
     limit: number = 20,
