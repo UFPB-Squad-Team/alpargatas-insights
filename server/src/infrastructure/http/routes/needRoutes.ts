@@ -11,7 +11,12 @@ needRoutes.get(
   ),
 );
 
-needRoutes.get('/api/v1/needs/:id', needController.listNeedDetailsController.listDetails.bind(needController.listNeedDetailsController))
+needRoutes.get(
+  '/api/v1/needs/:id',
+  needController.listNeedDetailsController.listDetails.bind(
+    needController.listNeedDetailsController,
+  ),
+);
 
 needRoutes.post(
   '/api/v1/needs',

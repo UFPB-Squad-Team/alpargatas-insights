@@ -12,7 +12,7 @@ const createNeedUseCase = new CreateNeedUseCase(needRepository);
 
 const listNeedApprovedUseCase = new ListApprovedNeedUseCase(needRepository);
 
-const listNeedDetailsUseCase = new ListNeedDetailsUseCase(needRepository)
+const listNeedDetailsUseCase = new ListNeedDetailsUseCase(needRepository);
 
 export const createNeedController = new CreateNeedController(createNeedUseCase);
 
@@ -20,4 +20,6 @@ export const listNeedApprovedController = new ListApprovedNeedController(
   listNeedApprovedUseCase,
 );
 
-export const listNeedDetailsController = new ListNeedDetailsController(listNeedDetailsUseCase)
+export const listNeedDetailsController = new ListNeedDetailsController(
+  listNeedDetailsUseCase,
+);

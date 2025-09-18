@@ -1,4 +1,3 @@
-
-export interface ListNeedDetailsInputDTO{
-    id: string
+export interface ListNeedDetailsInputDTO {
+  id: string;
 }
