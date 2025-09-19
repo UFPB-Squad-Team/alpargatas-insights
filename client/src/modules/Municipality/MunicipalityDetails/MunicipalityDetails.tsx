@@ -13,6 +13,7 @@ import { usePagination } from '@/ui/hooks/usePagination';
 import { useState } from 'react';
 import { CustomPagination } from '@/ui/components/common/CustomPagination';
 import { MunicipalityStatsPanel } from './components/MunicipalityStatsPanel';
+import { School } from '@/domain/entities/School/SchoolProps';
 
 const TABLE_PAGE_SIZE = 10;
 
@@ -89,6 +90,10 @@ const MunicipalityDetailsPage = () => {
     );
   }
 
+  const handleSelectSchool = (school: School) => {
+    navigate(`/escolas/${school.id}`); 
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -123,7 +128,10 @@ const MunicipalityDetailsPage = () => {
 
         {schoolsForTable.length > 0 ? (
           <>
-            <SchoolsTable data={schoolsForTable} />
+            <SchoolsTable
+              data={schoolsForTable}
+              onRowClick={handleSelectSchool}
+            />
             <div className="mt-6 flex justify-center">
               <CustomPagination
                 currentPage={tablePage}

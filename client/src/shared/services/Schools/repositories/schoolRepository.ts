@@ -31,6 +31,17 @@ type ListOrSearchParams = {
   tipoLocalizacao?: string;
 };
 
+type SimulateRiskScoreParams = {
+  schoolId: string;
+  interventions: string[];
+};
+
+type SimulateRiskScoreResponse = {
+  currentScore: number;
+  simulatedScore: number;
+  scoreReduction: number;
+};
+
 export interface ISchoolRepository {
   search(
     searchTerm: string,
@@ -40,6 +51,7 @@ export interface ISchoolRepository {
   listOrSearch(params: ListOrSearchParams): Promise<PaginatedResponse<School>>;
   listForMap(filters: FiltersOptions): Promise<SchoolForMap[]>;
   findById(id: string): Promise<School | null>;
+  simulateRiskScore(params: SimulateRiskScoreParams): Promise<SimulateRiskScoreResponse>;
 }
 
 const listForMap = async (filters: FiltersOptions): Promise<SchoolForMap[]> => {
@@ -150,9 +162,27 @@ const findById = async (id: string): Promise<School | null> => {
   }
 };
 
+const simulateRiskScore = async (
+  params: SimulateRiskScoreParams,
+): Promise<SimulateRiskScoreResponse> => {
+  console.log('Simulando score para a escola:', params.schoolId);
+  console.log('Com as seguintes intervenções:', params.interventions);
+
+  const mockResponse: SimulateRiskScoreResponse = {
+    currentScore: 0.85, 
+    simulatedScore: 0.85 - params.interventions.length * 0.07,
+    scoreReduction: params.interventions.length * 0.07,
+  };
+
+  await new Promise(resolve => setTimeout(resolve, 1000));
+
+  return mockResponse;
+};
+
 export const schoolRepository: ISchoolRepository = {
   search,
   listForMap,
   listOrSearch,
   findById,
+  simulateRiskScore
 };
