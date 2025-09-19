@@ -1,6 +1,5 @@
 import React from 'react';
-import { Bell, Settings, HelpCircle } from 'lucide-react';
-import NotificationsDropdown from './NotificationsDropdown';
+import { Settings, HelpCircle } from 'lucide-react';
 
 interface DesktopNavActionsProps {
   isNotificationsOpen: boolean;
@@ -11,25 +10,11 @@ interface DesktopNavActionsProps {
 }
 
 export const DesktopNavActions = ({
-  isNotificationsOpen,
-  onNotificationsClick,
   onSettingsClick,
   onAboutClick,
-  notificationsRef,
 }: DesktopNavActionsProps) => {
   return (
     <div className="hidden sm:flex items-center gap-2 md:gap-6">
-      <div className="relative" ref={notificationsRef}>
-        <button
-          onClick={onNotificationsClick}
-          className="relative text-brand-text-secondary hover:text-brand-orange-light transition-colors"
-        >
-          <Bell className="h-6 w-6" />
-          <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white" />
-        </button>
-        <NotificationsDropdown isOpen={isNotificationsOpen} />
-      </div>
-
       <button
         onClick={onSettingsClick}
         className="text-brand-text-secondary hover:text-brand-orange-light transition-colors"

@@ -1,21 +1,21 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Spinner from '@/ui/components/common/Spinner';
-import DashboardFilters from '../Dashboard/components/custom/DashboardFilters';
-import { Input } from '@/ui/components/common/input';
-import { School2, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { useDebounce } from '@/ui/hooks/useDebounce';
 import { usePagination } from '@/ui/hooks/usePagination';
 import { CustomPagination } from '@/ui/components/common/CustomPagination';
-import { SchoolsTable } from './components/SchoolTables';
-import { listSchoolsUseCase } from '@/shared/services/Schools/logic/listPaginatedSchoolsUseCase';
 import { useFilters } from '@/ui/context/FiltersContext';
 import { School } from '@/domain/entities/School/SchoolProps';
-import { useNavigate } from 'react-router-dom';
+import { listSchoolsUseCase } from '@/shared/services/Schools/logic/listPaginatedSchoolsUseCase';
+import DashboardFilters from '../../Dashboard/components/custom/DashboardFilters';
+import { Input } from '@/ui/components/common/input';
+import { SchoolsTable } from '../../Schools/components/SchoolTables';
 
 const PAGE_SIZE = 25;
 
-const SchoolsPage = () => {
+const SimulatorSchoolSelection = () => {
   const [page, setPage] = useState(1);
   const { filters } = useFilters();
   const navigate = useNavigate();
@@ -28,7 +28,12 @@ const SchoolsPage = () => {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ['schools-list', page, debouncedSearchTerm, filters],
+    queryKey: [
+      'schools-list-for-simulator',
+      page,
+      debouncedSearchTerm,
+      filters,
+    ],
     queryFn: () =>
       listSchoolsUseCase.execute({
         page,
@@ -54,39 +59,11 @@ const SchoolsPage = () => {
   }, [debouncedSearchTerm, filters]);
 
   const handleSelectSchool = (school: School) => {
-    navigate(`/escolas/${school.id}`);
+    navigate(`/simulador/${school.id || school.inep}`);
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="p-3 bg-brand-orange-light/20 rounded-lg">
-            <School2 className="h-8 w-8 text-brand-orange-dark" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-brand-text-primary">
-              Análise de Escolas{' '}
-              <span className="text-brand-orange-dark">da Paraíba </span>
-            </h1>
-            <p className="text-brand-text-secondary mt-1">
-              Explore, filtre e analise os dados de todas as escolas da rede
-              pública.
-            </p>
-          </div>
-        </div>
-        <div className="text-right">
-          <p className="font-semibold text-brand-text-primary">
-            Exibindo {schoolsOnPage.length} de {totalSchools}
-          </p>
-          <p className="text-xs text-brand-text-secondary">
-            {searchTerm || Object.values(filters).some((v) => v)
-              ? 'Escolas Filtradas'
-              : 'Total de Escolas'}
-          </p>
-        </div>
-      </div>
-
       <DashboardFilters />
 
       <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
@@ -101,15 +78,16 @@ const SchoolsPage = () => {
         </div>
 
         {isLoading && (
-          <div className="flex justify-center items-center h-64">
+          <div className="flex justify-center items-center h-96">
             <Spinner />
           </div>
         )}
         {isError && (
-          <div className="text-center text-red-500">
-            Ocorreu um erro ao buscar os dados das escolas.
+          <div className="text-center text-red-500 py-10">
+            Erro ao carregar os dados.
           </div>
         )}
+
         {!isLoading && !isError && totalSchools > 0 && (
           <>
             <SchoolsTable
@@ -136,4 +114,4 @@ const SchoolsPage = () => {
   );
 };
 
-export default SchoolsPage;
+export default SimulatorSchoolSelection;

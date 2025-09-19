@@ -23,6 +23,7 @@ import { SortableHeader } from './SortableHeader';
 
 type SchoolsTableProps = {
   data: SchoolProps[];
+  onRowClick?: (school: SchoolProps) => void;
 };
 
 const dependencyStyles: { [key: string]: string } = {
@@ -34,7 +35,7 @@ const locationStyles: { [key: string]: string } = {
   Rural: 'bg-yellow-100 text-yellow-800',
 };
 
-export const SchoolsTable = ({ data }: SchoolsTableProps) => {
+export const SchoolsTable = ({ data, onRowClick  }: SchoolsTableProps) => {
   const navigate = useNavigate();
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -133,8 +134,9 @@ export const SchoolsTable = ({ data }: SchoolsTableProps) => {
   });
 
   const handleRowClick = (rowData: SchoolProps) => {
-    const schoolId = rowData.id; 
-    navigate(`/escolas/${schoolId}`);
+    if (onRowClick) {
+      onRowClick(rowData);
+    }
   };
 
   return (

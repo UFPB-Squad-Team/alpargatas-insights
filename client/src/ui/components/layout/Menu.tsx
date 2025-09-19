@@ -4,10 +4,8 @@ import {
   School,
   Map,
   Microscope,
-  Settings,
   AlertCircle,
   FileText,
-  Network,
   FileSearchIcon,
 } from 'lucide-react';
 import React from 'react';
@@ -51,7 +49,7 @@ const menuItems: MenuItem[] = [
     path: '/simulador',
     Icon: Microscope,
     group: 'Ferramentas',
-    disabled: true,
+    disabled: false,
   },
   {
     id: 5,
@@ -59,7 +57,7 @@ const menuItems: MenuItem[] = [
     path: '/necessidades',
     Icon: AlertCircle,
     group: 'Ferramentas',
-    disabled: true,
+    disabled: false,
   },
   {
     id: 6,
@@ -67,22 +65,6 @@ const menuItems: MenuItem[] = [
     path: '/relatorios',
     Icon: FileText,
     group: 'Ferramentas',
-    disabled: true,
-  },
-  {
-    id: 7,
-    title: 'Ecossistema',
-    path: '/ecossistema',
-    Icon: Network,
-    group: 'Avançado',
-    disabled: true,
-  },
-  {
-    id: 8,
-    title: 'Configurações',
-    path: '/configuracoes',
-    Icon: Settings,
-    group: 'Sistema',
     disabled: true,
   },
   {
