@@ -10,6 +10,7 @@ import MunicipalityPage from './modules/Municipality/MunicipalityPage';
 import MunicipalityDetailsPage from './modules/Municipality/MunicipalityDetails/MunicipalityDetails';
 import SimulatorDetailsPage from './modules/Simulator/SimulatorDetails/SimulatorDetailsPage';
 import SimulatorPage from './modules/Simulator/SimulatorPage';
+import NeedsPage from './modules/Needs/NeedsPage';
 
 function App() {
   return (
@@ -28,7 +29,7 @@ function App() {
               />
               <Route path="/simulador" element={<SimulatorPage />} />
               <Route path="/simulador/:id" element={<SimulatorDetailsPage />} />
-              <Route path='/necessidades' />
+              <Route path="/necessidades" element={<NeedsPage />} />
             </Route>
           </Routes>
         </DashboardProvider>
