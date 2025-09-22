@@ -128,6 +128,7 @@ export class GetAllSchoolsController {
           .optional(),
         dependenciaAdm: z.enum(dependenciaAdministrativa).optional(),
         tipoLocalizacao: z.enum(tipoLocalizacao).optional(),
+        municipioSomaProjetos: z.unknown().optional(),
         term: z
           .string()
           .min(1, { message: 'Term need min 1 caracter' })

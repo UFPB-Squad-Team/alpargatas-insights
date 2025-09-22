@@ -4,6 +4,7 @@ import { dependenciaAdministrativa } from '../../../domain/enums/enumDependencia
 import { tipoLocalizacao } from '../../../domain/enums/enumTipoLocalizacao';
 import { LocationCoordinates } from '../../../domain/entities/school';
 import { randomUUID } from 'node:crypto';
+import { required } from 'zod/v4/core/util.cjs';
 
 export interface ISchoolDocument extends Document {
   _id: Types.ObjectId;
@@ -21,6 +22,8 @@ export interface ISchoolDocument extends Document {
   scoreRisco: number;
 
   scoreRiscoContextualizado: number;
+
+  municipioSomaProjetos: number | unknown
 
   indicadores: {
     total_alunos: number;
@@ -59,6 +62,8 @@ const schoolSchema: Schema = new Schema({
   scoreRisco: { type: Number, required: true },
 
   scoreRiscoContextualizado: { type: Number, required: true },
+
+  municipioSomaProjetos: { type: Number, required: true },
 
   indicadores: {
     total_alunos: { type: Number, required: true },
