@@ -160,11 +160,10 @@ export class GetMunicipalityWithIbgeCodeUseCase {
         scoreRisco: school.scoreRisco,
         scoreRiscoContextualizado: school.scoreRiscoContextualizado,
         municipioSomaProjetos: school.municipioSomaProjetos,
-        municipioSomaBeneficiados:school.municipioSomaBeneficiados,
+        municipioSomaBeneficiados: school.municipioSomaBeneficiados,
         infraestrutura: school.infraestrutura,
         localizacao: school.localizacao,
       }));
-
 
     return {
       id: municipality?.id,
@@ -179,8 +178,9 @@ export class GetMunicipalityWithIbgeCodeUseCase {
       totalEscolasEstaduais: schoolsState.length,
       totalEscolasFederais: schoolFederal.length,
       totalEscolasEmAltoRisco: schoolsWithHighInfraestructureRisk.length,
-      totalProjetosDoInstituto: totalSchools[0].municipioSomaProjetos || 0 ,
-      totalBeneficiadosDoInstituto: totalSchools[0].municipioSomaBeneficiados || 0
+      totalProjetosDoInstituto: totalSchools[0].municipioSomaProjetos || 0,
+      totalBeneficiadosDoInstituto:
+        totalSchools[0].municipioSomaBeneficiados || 0,
     };
   }
 }

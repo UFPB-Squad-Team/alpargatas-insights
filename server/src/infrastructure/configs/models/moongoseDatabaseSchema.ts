@@ -25,7 +25,7 @@ export interface ISchoolDocument extends Document {
 
   municipioSomaProjetos: number | unknown;
 
-  municipioSomaBeneficiados: number
+  municipioSomaBeneficiados: number;
 
   indicadores: {
     total_alunos: number;
