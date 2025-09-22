@@ -160,11 +160,10 @@ export class GetMunicipalityWithIbgeCodeUseCase {
         scoreRisco: school.scoreRisco,
         scoreRiscoContextualizado: school.scoreRiscoContextualizado,
         municipioSomaProjetos: school.municipioSomaProjetos,
-        municipioSomaBeneficiados:school.municipioSomaBeneficiados,
+        municipioSomaBeneficiados: school.municipioSomaBeneficiados,
         infraestrutura: school.infraestrutura,
         localizacao: school.localizacao,
       }));
-
 
     return {
       id: municipality?.id,

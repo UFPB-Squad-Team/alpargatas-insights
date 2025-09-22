@@ -32,7 +32,7 @@ export type SchoolProps = {
 
   municipioSomaProjetos: number | unknown;
 
-  municipioSomaBeneficiados: number 
+  municipioSomaBeneficiados: number;
 
   indicadores: {
     total_alunos: number;
@@ -69,7 +69,7 @@ export class School {
 
   public municipioSomaProjetos: number | unknown;
 
-  public municipioSomaBeneficiados: number
+  public municipioSomaBeneficiados: number;
 
   public indicadores: {
     total_alunos: number;
@@ -105,7 +105,7 @@ export class School {
 
     this.municipioSomaProjetos = props.municipioSomaProjetos;
 
-    this.municipioSomaBeneficiados = props.municipioSomaBeneficiados
+    this.municipioSomaBeneficiados = props.municipioSomaBeneficiados;
 
     this.indicadores = props.indicadores;
 
