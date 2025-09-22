@@ -302,16 +302,16 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
       });
     }
 
-    if(filters?.municipioSomaProjetos !== undefined){
+    if (filters?.municipioSomaProjetos !== undefined) {
       aggregationPipeline.push({
-        $match:{
-          municipioSomaProjetos:{
+        $match: {
+          municipioSomaProjetos: {
             $exists: true,
             $ne: null,
-            $nin: [null, undefined, "", NaN]
-          }
-        }
-      })
+            $nin: [null, undefined, '', NaN],
+          },
+        },
+      });
     }
 
     if (page && limit) {

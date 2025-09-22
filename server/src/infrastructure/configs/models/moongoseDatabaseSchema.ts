@@ -23,7 +23,7 @@ export interface ISchoolDocument extends Document {
 
   scoreRiscoContextualizado: number;
 
-  municipioSomaProjetos: number | unknown
+  municipioSomaProjetos: number | unknown;
 
   indicadores: {
     total_alunos: number;
