@@ -178,8 +178,14 @@ export class GetMunicipalityWithIbgeCodeUseCase {
       totalEscolasEstaduais: schoolsState.length,
       totalEscolasFederais: schoolFederal.length,
       totalEscolasEmAltoRisco: schoolsWithHighInfraestructureRisk.length,
-      totalProjetosDoInstituto:  totalSchools.length > 0 ? totalSchools[0].municipioSomaProjetos || 0 : 0,
-      totalBeneficiadosDoInstituto: totalSchools.length > 0 ? totalSchools[0].municipioSomaBeneficiados || 0 : 0
+      totalProjetosDoInstituto:
+        totalSchools.length > 0
+          ? totalSchools[0].municipioSomaProjetos || 0
+          : 0,
+      totalBeneficiadosDoInstituto:
+        totalSchools.length > 0
+          ? totalSchools[0].municipioSomaBeneficiados || 0
+          : 0,
     };
   }
 }
