@@ -25,6 +25,8 @@ export interface ISchoolDocument extends Document {
 
   municipioSomaProjetos: number | unknown
 
+  municipioSomaBeneficiados: number
+
   indicadores: {
     total_alunos: number;
   };
@@ -64,6 +66,8 @@ const schoolSchema: Schema = new Schema({
   scoreRiscoContextualizado: { type: Number, required: true },
 
   municipioSomaProjetos: { type: Number, required: true },
+
+  municipioSomaBeneficiados: { type: Number, required: true },
 
   indicadores: {
     total_alunos: { type: Number, required: true },
