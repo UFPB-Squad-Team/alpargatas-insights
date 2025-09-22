@@ -66,7 +66,7 @@ export class MunicipalitiesByRiskCountController {
           .optional(),
         dependenciaAdm: z.enum(dependenciaAdministrativa).optional(),
         tipoLocalizacao: z.enum(tipoLocalizacao).optional(),
-        municipioSomaProjetos: z.unknown().optional()
+        municipioSomaProjetos: z.unknown().optional(),
       })
       .strict();
 

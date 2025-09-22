@@ -30,7 +30,7 @@ export type SchoolProps = {
 
   scoreRiscoContextualizado: number;
 
-  municipioSomaProjetos: number | unknown
+  municipioSomaProjetos: number | unknown;
 
   municipioSomaBeneficiados: number 
 
@@ -67,7 +67,7 @@ export class School {
 
   public scoreRiscoContextualizado: number;
 
-  public municipioSomaProjetos: number | unknown
+  public municipioSomaProjetos: number | unknown;
 
   public municipioSomaBeneficiados: number
 
@@ -103,7 +103,7 @@ export class School {
 
     this.scoreRiscoContextualizado = props.scoreRiscoContextualizado;
 
-    this.municipioSomaProjetos = props.municipioSomaProjetos
+    this.municipioSomaProjetos = props.municipioSomaProjetos;
 
     this.municipioSomaBeneficiados = props.municipioSomaBeneficiados
 
