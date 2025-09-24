@@ -23,9 +23,9 @@ export class RiskDistributionDashboardUseCase {
       filters,
     );
 
-    const high = schools.high
-    const medium = schools.medium
-    const low = schools.low
+    const high = schools.high;
+    const medium = schools.medium;
+    const low = schools.low;
 
     return {
       schoolsWithHighInfraestructureRisk: high,
