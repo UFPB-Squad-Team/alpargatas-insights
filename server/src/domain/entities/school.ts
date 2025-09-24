@@ -30,6 +30,10 @@ export type SchoolProps = {
 
   scoreRiscoContextualizado: number;
 
+  municipioSomaProjetos: number | unknown;
+
+  municipioSomaBeneficiados: number;
+
   indicadores: {
     total_alunos: number;
   };
@@ -63,6 +67,10 @@ export class School {
 
   public scoreRiscoContextualizado: number;
 
+  public municipioSomaProjetos: number | unknown;
+
+  public municipioSomaBeneficiados: number;
+
   public indicadores: {
     total_alunos: number;
   };
@@ -94,6 +102,10 @@ export class School {
     this.scoreRisco = props.scoreRisco;
 
     this.scoreRiscoContextualizado = props.scoreRiscoContextualizado;
+
+    this.municipioSomaProjetos = props.municipioSomaProjetos;
+
+    this.municipioSomaBeneficiados = props.municipioSomaBeneficiados;
 
     this.indicadores = props.indicadores;
 

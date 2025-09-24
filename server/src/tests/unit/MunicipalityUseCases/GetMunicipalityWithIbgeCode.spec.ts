@@ -41,6 +41,8 @@ describe('GetMunicipalityWithIbgeCodeUseCase', () => {
           tipoLocalizacao: tipoLocalizacao.URBANA,
           localizacao: { type: 1, coordinates: [0, 0] },
           scoreRiscoContextualizado: 0.8,
+          municipioSomaProjetos: 0,
+          municipioSomaBeneficiados: 0,
         },
       ]),
       delete: jest.fn(),
@@ -70,6 +72,8 @@ describe('GetMunicipalityWithIbgeCodeUseCase', () => {
       totalEscolasEstaduais: 0,
       totalEscolasFederais: 0,
       totalEscolasEmAltoRisco: 1,
+      totalProjetosDoInstituto: 0,
+      totalBeneficiadosDoInstituto: 0,
     });
   });
 
@@ -99,6 +103,8 @@ describe('GetMunicipalityWithIbgeCodeUseCase', () => {
           escolaNome: 'Escola mock',
           localizacao: { type: 1, coordinates: [0, 0] },
           scoreRisco: 0.8,
+          municipioSomaProjetos: 0,
+          municipioSomaBeneficiados: 0,
         },
       ]),
       delete: jest.fn(),
@@ -128,6 +134,8 @@ describe('GetMunicipalityWithIbgeCodeUseCase', () => {
       totalEscolasEstaduais: 0,
       totalEscolasFederais: 0,
       totalEscolasEmAltoRisco: 0,
+      totalProjetosDoInstituto: 0,
+      totalBeneficiadosDoInstituto: 0,
     });
   });
 });
