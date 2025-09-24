@@ -8,4 +8,5 @@ export interface GetDashboardKPIsDTO {
     schoolsCount: number;
   };
   lackName: string;
+  bestMunicipalityOpportunity: string;
 }
