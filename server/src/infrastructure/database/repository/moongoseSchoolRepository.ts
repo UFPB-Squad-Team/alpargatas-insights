@@ -341,10 +341,9 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
   async getRiskDistribution(
     thresholds: { high: number; medium: number; low: number },
     filters?: Partial<School>,
-  ): Promise<{ high: number, medium: number, low: number }> {
+  ): Promise<{ high: number; medium: number; low: number }> {
     const matchConditions: any = {};
 
-  
     const aggregationPipeline: any[] = [
       {
         $match: {
@@ -352,7 +351,6 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
         },
       },
     ];
-
 
     if (filters?.municipioIdIbge) {
       aggregationPipeline.push({
@@ -395,10 +393,8 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
       });
     }
 
-
     aggregationPipeline.push({ $match: matchConditions });
 
-    
     aggregationPipeline.push({
       $facet: {
         highRisk: [
@@ -406,7 +402,14 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
           { $count: 'count' },
         ],
         mediumRisk: [
-          { $match: { scoreRiscoContextualizado: { $gt: thresholds.low, $lt: thresholds.high } } },
+          {
+            $match: {
+              scoreRiscoContextualizado: {
+                $gt: thresholds.low,
+                $lt: thresholds.high,
+              },
+            },
+          },
           { $count: 'count' },
         ],
         lowRisk: [
@@ -418,7 +421,6 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
 
     const [results] = await SchoolModel.aggregate(aggregationPipeline).exec();
 
-      
     return {
       high: results.highRisk[0]?.count || 0,
       medium: results.mediumRisk[0]?.count || 0,
@@ -450,7 +452,6 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
 
     if (filters?.tipoLocalizacao)
       matchStage.tipoLocalizacao = filters.tipoLocalizacao;
-
 
     const pipeline: any[] = [];
 
