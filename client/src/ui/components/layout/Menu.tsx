@@ -23,14 +23,14 @@ const menuItems: MenuItem[] = [
   {
     id: 1,
     title: 'Dashboard',
-    path: '/',
+    path: '/dashboard',
     Icon: LayoutDashboard,
     group: 'Análises',
   },
   {
     id: 2,
     title: 'Escolas',
-    path: '/escolas',
+    path: '/dashboard/escolas',
     Icon: School,
     group: 'Análises',
     disabled: false,
@@ -38,7 +38,7 @@ const menuItems: MenuItem[] = [
   {
     id: 3,
     title: 'Municípios',
-    path: '/municipios',
+    path: '/dashboard/municipios',
     Icon: Map,
     group: 'Análises',
     disabled: false,
@@ -46,7 +46,7 @@ const menuItems: MenuItem[] = [
   {
     id: 4,
     title: 'Simulador de Impacto',
-    path: '/simulador',
+    path: '/dashboard/simulador',
     Icon: Microscope,
     group: 'Ferramentas',
     disabled: false,
@@ -54,7 +54,7 @@ const menuItems: MenuItem[] = [
   {
     id: 5,
     title: 'Necessidades',
-    path: '/necessidades',
+    path: '/dashboard/necessidades',
     Icon: AlertCircle,
     group: 'Ferramentas',
     disabled: false,
@@ -62,7 +62,7 @@ const menuItems: MenuItem[] = [
   {
     id: 6,
     title: 'Relatórios',
-    path: '/relatorios',
+    path: '/dashboard/relatorios',
     Icon: FileText,
     group: 'Ferramentas',
     disabled: true,
@@ -70,7 +70,7 @@ const menuItems: MenuItem[] = [
   {
     id: 9,
     title: 'Metodologia',
-    path: '/metodologia',
+    path: '/dashboard/metodologia',
     Icon: FileSearchIcon,
     group: 'Sistema',
     disabled: true,
@@ -99,7 +99,7 @@ const Menu = () => {
           <ul>
             {items.map((item) => {
               const isActive =
-                item.path === '/'
+                item.path === '/dashboard'
                   ? pathname === item.path
                   : pathname.startsWith(item.path);
               return (

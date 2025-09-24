@@ -95,4 +95,12 @@ Ajuda a interpretar rapidamente o nível de risco de cada escola.`,
     title: 'Raio-X da Infraestrutura',
     content: `Esta seção detalha os **principais indicadores de infraestrutura** da escola, baseados nos dados do Censo Escolar.\n\nCada item mostra se a escola possui (✔️) ou não possui (❌) o recurso, justificando o cálculo do Score de Risco.`,
   },
+  MUNICIPALITY_ANALYSIS_OVERVIEW: {
+    title: 'Visão Geral do Município',
+    content: `Esta seção oferece uma análise rápida do município selecionado, destacando **indicadores chave** como:
+- Composição das escolas por **localização** (urbanas vs. rurais)
+- Composição das escolas por **dependência administrativa** (municipais vs. estaduais vs. federais)
+
+Esses dados ajudam a entender o contexto geral do município e a planejar **intervenções mais eficazes**.`,
+  },
 };

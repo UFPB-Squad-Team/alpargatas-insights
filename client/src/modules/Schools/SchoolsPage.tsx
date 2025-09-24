@@ -54,7 +54,7 @@ const SchoolsPage = () => {
   }, [debouncedSearchTerm, filters]);
 
   const handleSelectSchool = (school: School) => {
-    navigate(`/escolas/${school.id}`);
+    navigate(`/dashboard/escolas/${school.id}`);
   };
 
   return (

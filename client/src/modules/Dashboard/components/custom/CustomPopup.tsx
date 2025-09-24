@@ -55,7 +55,7 @@ const CustomPopup = ({ school }: CustomPopupProps) => {
       </div>
 
       <Link
-        to={`/escolas/${school.id}`}
+        to={`/dashboard/escolas/${school.id}`}
         className="flex items-center justify-center gap-2 bg-brand-orange-dark hover:bg-brand-orange-contrast !text-brand-text-primary transition-colors py-2 px-4 rounded-lg w-full"
       >
         Ver Detalhes da Escola

@@ -100,3 +100,27 @@
 .scrollbar-custom {
   scrollbar-color: #d46419 transparent;
 }
+
+.animated-gradient {
+  background: linear-gradient(
+    -45deg,
+    #f8fafc,
+    /* zinc-50 */ #fef3c7,
+    /* amber-100 */ #fef9c3,
+    /* yellow-100 */ #f8fafc
+  );
+  background-size: 400% 400%;
+  animation: gradient 25s ease infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

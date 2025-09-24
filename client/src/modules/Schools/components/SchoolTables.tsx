@@ -2,14 +2,11 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
   getSortedRowModel,
   SortingState,
   useReactTable,
 } from '@tanstack/react-table';
-import { School as SchoolProps } from '@/domain/entities/School/SchoolProps';
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   Building,
   LocateFixed,
@@ -20,105 +17,115 @@ import {
 } from 'lucide-react';
 import { ScoreCell } from './ScoreCell';
 import { SortableHeader } from './SortableHeader';
+import { School as SchoolProps } from '@/domain/entities/School/SchoolProps';
 
+// A prop `columns` é opcional para permitir a customização pelo Simulador.
 type SchoolsTableProps = {
-  data: SchoolProps[];
-  onRowClick?: (school: SchoolProps) => void;
+  data: any[]; // Usamos `any[]` para ser compatível com os dados do ranking do simulador
+  columns?: ColumnDef<any>[];
+  onRowClick?: (rowData: any) => void;
 };
 
+// Estilos para os badges, com a paleta de cores refinada
 const dependencyStyles: { [key: string]: string } = {
   Municipal: 'bg-amber-100 text-amber-800',
   Estadual: 'bg-orange-100 text-orange-800',
 };
 const locationStyles: { [key: string]: string } = {
-  Urbana: 'bg-red-100 text-red-800',
+  Urbana: 'bg-lime-100 text-lime-800',
   Rural: 'bg-yellow-100 text-yellow-800',
 };
 
-export const SchoolsTable = ({ data, onRowClick  }: SchoolsTableProps) => {
-  const navigate = useNavigate();
+// Definição completa das colunas padrão da tabela de escolas
+const defaultSchoolColumns: ColumnDef<SchoolProps>[] = [
+  {
+    accessorKey: 'nome',
+    header: ({ column }) => (
+      <SortableHeader column={column} title="Escola" Icon={School} />
+    ),
+    cell: ({ row }) => (
+      <div className="font-bold text-brand-text-primary">
+        {row.original.nome}
+      </div>
+    ),
+  },
+  {
+    accessorKey: 'municipio',
+    header: ({ column }) => (
+      <SortableHeader column={column} title="Município" Icon={Building} />
+    ),
+    cell: (info) => info.getValue(),
+  },
+  {
+    accessorKey: 'scoreDeRisco',
+    header: ({ column }) => (
+      <SortableHeader
+        column={column}
+        title="Score de Risco"
+        Icon={TrendingUp}
+      />
+    ),
+    cell: ({ row }) => <ScoreCell score={row.original.scoreDeRisco} />,
+  },
+  {
+    accessorKey: 'totalAlunos',
+    header: ({ column }) => (
+      <SortableHeader column={column} title="Alunos" Icon={Users} />
+    ),
+    cell: (info) => info.getValue(),
+  },
+  {
+    accessorKey: 'dependenciaAdm',
+    header: () => (
+      <div className="flex items-center font-bold">
+        <MapPin className="mr-2 h-4 w-4" />
+        Dependência
+      </div>
+    ),
+    cell: ({ row }) => {
+      const dep = row.original.dependenciaAdm;
+      const style = dependencyStyles[dep] || 'bg-gray-100 text-gray-800';
+      return (
+        <span
+          className={`px-2 py-1 text-xs font-semibold rounded-full ${style}`}
+        >
+          {dep}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: 'localizacaoTipo',
+    header: () => (
+      <div className="flex items-center font-bold">
+        <LocateFixed className="mr-2 h-4 w-4" />
+        Localização
+      </div>
+    ),
+    cell: ({ row }) => {
+      const loc = row.original.localizacaoTipo;
+      const style = locationStyles[loc] || 'bg-gray-100 text-gray-800';
+      return (
+        <span
+          className={`px-2 py-1 text-xs font-semibold rounded-full ${style}`}
+        >
+          {loc}
+        </span>
+      );
+    },
+  },
+];
+
+export const SchoolsTable = ({
+  data,
+  columns: customColumns,
+  onRowClick,
+}: SchoolsTableProps) => {
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const columns = useMemo<ColumnDef<SchoolProps>[]>(
-    () => [
-      {
-        accessorKey: 'nome',
-        header: ({ column }) => (
-          <SortableHeader column={column} title="Escola" Icon={School} />
-        ),
-        cell: ({ row }) => (
-          <div className="font-bold text-brand-text-primary">
-            {row.original.nome}
-          </div>
-        ),
-      },
-      {
-        accessorKey: 'municipio',
-        header: ({ column }) => (
-          <SortableHeader column={column} title="Município" Icon={Building} />
-        ),
-        cell: (info) => info.getValue(),
-      },
-      {
-        accessorKey: 'scoreDeRisco',
-        header: ({ column }) => (
-          <SortableHeader
-            column={column}
-            title="Score de Risco"
-            Icon={TrendingUp}
-          />
-        ),
-        cell: ({ row }) => <ScoreCell score={row.original.scoreDeRisco} />,
-      },
-      {
-        accessorKey: 'totalAlunos',
-        header: ({ column }) => (
-          <SortableHeader column={column} title="Alunos" Icon={Users} />
-        ),
-        cell: (info) => info.getValue(),
-      },
-      {
-        accessorKey: 'dependenciaAdm',
-        header: () => (
-          <div className="flex items-center font-bold">
-            <MapPin className="mr-2 h-4 w-4" />
-            Dependência
-          </div>
-        ),
-        cell: ({ row }) => {
-          const dep = row.original.dependenciaAdm;
-          const style = dependencyStyles[dep] || 'bg-gray-100 text-gray-800';
-          return (
-            <span
-              className={`px-2 py-1 text-xs font-semibold rounded-full ${style}`}
-            >
-              {dep}
-            </span>
-          );
-        },
-      },
-      {
-        accessorKey: 'localizacaoTipo',
-        header: () => (
-          <div className="flex items-center font-bold">
-            <LocateFixed className="mr-2 h-4 w-4" />
-            Localização
-          </div>
-        ),
-        cell: ({ row }) => {
-          const loc = row.original.localizacaoTipo;
-          const style = locationStyles[loc] || 'bg-gray-100 text-gray-800';
-          return (
-            <span
-              className={`px-2 py-1 text-xs font-semibold rounded-full ${style}`}
-            >
-              {loc}
-            </span>
-          );
-        },
-      },
-    ],
-    [],
+  const columns = useMemo(
+    () => customColumns || defaultSchoolColumns,
+    [customColumns],
   );
 
   const table = useReactTable({
@@ -127,13 +134,12 @@ export const SchoolsTable = ({ data, onRowClick  }: SchoolsTableProps) => {
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
     },
   });
 
-  const handleRowClick = (rowData: SchoolProps) => {
+  const handleRowClick = (rowData: any) => {
     if (onRowClick) {
       onRowClick(rowData);
     }
@@ -159,8 +165,8 @@ export const SchoolsTable = ({ data, onRowClick  }: SchoolsTableProps) => {
         <tbody>
           {table.getRowModel().rows.map((row) => (
             <tr
-              key={row.original.inep}
-              className="bg-white border-b hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+              key={row.id}
+              className={`bg-white border-b hover:bg-gray-50 dark:hover:bg-gray-800 ${onRowClick ? 'cursor-pointer' : ''}`}
               onClick={() => handleRowClick(row.original)}
             >
               {row.getVisibleCells().map((cell) => (

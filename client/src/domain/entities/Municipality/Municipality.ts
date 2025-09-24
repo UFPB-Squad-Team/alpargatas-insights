@@ -5,6 +5,7 @@
 export type MunicipalityRiskFromApi = {
   nome: string;
   riscoMedio: number;
+  codigoIbge: string;
 };
 
 /**
@@ -14,6 +15,7 @@ export type MunicipalityRiskFromApi = {
 export type MunicipalityRisk = {
   nome: string;
   riscoMedio: number;
+  codigoIbge: string;
 };
 
 /**
@@ -68,6 +70,8 @@ export type MunicipalityDetailsFromApi = {
   totalEscolasEstaduais: number;
   totalEscolasFederais: number;
   totalEscolasEmAltoRisco: number;
+  totalProjetosDoInstituto: number;
+  totalBeneficiadosDoInstituto: number;
 };
 
 /**
@@ -85,4 +89,6 @@ export type MunicipalityDetails = {
   totalEscolasEstaduais: number;
   totalEscolasFederais: number;
   totalEscolasEmAltoRisco: number;
+  totalProjetosDoInstituto: number;
+  totalBeneficiadosDoInstituto: number;
 };

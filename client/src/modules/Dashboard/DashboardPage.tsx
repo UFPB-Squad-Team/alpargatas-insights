@@ -9,7 +9,6 @@ import {
   Lightbulb,
   ShieldAlert,
   TrendingDown,
-  FileSearch,
 } from 'lucide-react';
 import HighRiskSchoolsList from './components/cards/HighRiskSchoolsList';
 import MapChart from './components/charts/MapChart';
@@ -28,9 +27,13 @@ import InfoPopover from '@/ui/components/common/InfoPopover';
 import MunicipalitiesByRiskCountChart from './components/charts/MunicipalitiesByRiskCountChart';
 import { useFilters } from '@/ui/context/FiltersContext';
 import { cn } from '@/shared/lib/utils';
+import MunicipalAnalysisCard from './components/cards/MunicipalityAnalysisCard';
+import { MunicipalityRisk } from '@/domain/entities/Municipality/Municipality';
+import { useState } from 'react';
 
 const DashboardPage = () => {
   const { filters, isPending } = useFilters();
+  const [selectedMunicipality, setSelectedMunicipality] = useState<MunicipalityRisk | null>(null);
 
   const { data: kpis, isLoading: isLoadingKpis } = useQuery({
     queryKey: ['dashboard-kpis', filters],
@@ -143,24 +146,22 @@ const DashboardPage = () => {
           <HighRiskSchoolsList
             onSelectSchool={(school) => setSelectedSchoolId(school.id)}
           />
-          <TopMunicipalitiesChart />
+          <TopMunicipalitiesChart onSelectMunicipality={setSelectedMunicipality} />
 
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 h-80 flex flex-col">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="bg-gray-100 p-2 rounded-lg">
-                <FileSearch className="h-6 w-6 text-gray-400" />
+          <div className="bg-white p-6 rounded-2xl shadow-sm border h-80 flex flex-col">
+            {selectedMunicipality ? (
+              <MunicipalAnalysisCard
+                municipalityId={selectedMunicipality.codigoIbge}
+              />
+            ) : (
+              <div className="flex-1 h-full flex flex-col items-center justify-center text-center text-gray-400 border-2 border-dashed rounded-lg p-4">
+                <p className="font-medium">Selecione um Município</p>
+                <p className="text-xs mt-1">
+                  Clique em um município na lista acima para ver uma análise
+                  rápida dos dados.
+                </p>
               </div>
-              <h3 className="font-bold text-lg text-gray-400">
-                Análise Detalhada
-              </h3>
-            </div>
-            <div className="flex-1 h-full flex flex-col items-center justify-center text-center text-gray-400 border-2 border-dashed rounded-lg p-4">
-              <p className="font-medium">Em Breve</p>
-              <p className="text-xs mt-1">
-                Clique em um município na lista acima para ver a análise
-                detalhada dos fatores de risco.
-              </p>
-            </div>
+            )}
           </div>
         </div>
       </div>

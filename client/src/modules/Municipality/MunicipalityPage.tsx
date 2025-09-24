@@ -117,7 +117,7 @@ const MunicipalitiesPage = () => {
                 municipalities.map((municipality) => (
                   <Link
                     key={municipality.codigoIbge}
-                    to={`/municipios/${municipality.codigoIbge}`}
+                    to={`/dashboard/municipios/${municipality.codigoIbge}`}
                     className="flex items-center justify-between p-4 rounded-xl hover:bg-brand-surface transition-colors border group"
                   >
                     <span className="font-bold text-lg text-brand-text-primary group-hover:text-brand-orange-dark">

@@ -9,6 +9,7 @@ import {
   SchoolForMap,
   SchoolForMapFromApi,
 } from '@/domain/entities/School/SchoolForMap';
+import { buildApiParams } from '@/modules/Dashboard/services/repositories/dashboardRepository';
 
 type RawPaginatedSchoolFromApi = {
   schools: SchoolFromApi[];
@@ -20,6 +21,7 @@ export type FiltersOptions = {
   municipioIdIbge?: string;
   dependenciaAdm?: string;
   tipoLocalizacao?: string;
+  municipioSomaProjetos?: boolean;
 };
 
 type ListOrSearchParams = {
@@ -29,6 +31,7 @@ type ListOrSearchParams = {
   municipioIdIbge?: string;
   dependenciaAdm?: string;
   tipoLocalizacao?: string;
+  municipioSomaProjetos?: boolean;
 };
 
 type SimulateRiskScoreParams = {
@@ -51,19 +54,18 @@ export interface ISchoolRepository {
   listOrSearch(params: ListOrSearchParams): Promise<PaginatedResponse<School>>;
   listForMap(filters: FiltersOptions): Promise<SchoolForMap[]>;
   findById(id: string): Promise<School | null>;
-  simulateRiskScore(params: SimulateRiskScoreParams): Promise<SimulateRiskScoreResponse>;
+  simulateRiskScore(
+    params: SimulateRiskScoreParams,
+  ): Promise<SimulateRiskScoreResponse>;
 }
 
 const listForMap = async (filters: FiltersOptions): Promise<SchoolForMap[]> => {
   try {
+    const apiParams = buildApiParams(filters);
     const { data } = await apiClient.get<SchoolForMapFromApi[]>(
       '/api/v1/dashboard/map-data',
       {
-        params: {
-          municipioIdIbge: filters.municipioIdIbge,
-          dependenciaAdm: filters.dependenciaAdm,
-          tipoLocalizacao: filters.tipoLocalizacao,
-        },
+        params: apiParams,
       },
     );
 
@@ -78,14 +80,28 @@ const listOrSearch = async (
   params: ListOrSearchParams,
 ): Promise<PaginatedResponse<School>> => {
   try {
+    const {
+      page,
+      limit,
+      searchTerm,
+      municipioIdIbge,
+      dependenciaAdm,
+      tipoLocalizacao,
+      municipioSomaProjetos,
+    } = params;
+
     const apiParams: Record<string, any> = {
-      page: params.page,
-      limit: params.limit,
-      term: params.searchTerm,
-      municipioIdIbge: params.municipioIdIbge,
-      dependenciaAdm: params.dependenciaAdm,
-      tipoLocalizacao: params.tipoLocalizacao,
+      page,
+      limit,
+      term: searchTerm,
+      municipioIdIbge,
+      dependenciaAdm,
+      tipoLocalizacao,
     };
+
+    if (municipioSomaProjetos) {
+      apiParams.municipioSomaProjetos = '';
+    }
 
     Object.keys(apiParams).forEach((key) => {
       if (
@@ -169,12 +185,12 @@ const simulateRiskScore = async (
   console.log('Com as seguintes intervenções:', params.interventions);
 
   const mockResponse: SimulateRiskScoreResponse = {
-    currentScore: 0.85, 
+    currentScore: 0.85,
     simulatedScore: 0.85 - params.interventions.length * 0.07,
     scoreReduction: params.interventions.length * 0.07,
   };
 
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  await new Promise((resolve) => setTimeout(resolve, 1000));
 
   return mockResponse;
 };
@@ -184,5 +200,5 @@ export const schoolRepository: ISchoolRepository = {
   listForMap,
   listOrSearch,
   findById,
-  simulateRiskScore
+  simulateRiskScore,
 };

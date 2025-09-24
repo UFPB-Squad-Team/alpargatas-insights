@@ -59,7 +59,7 @@ const SimulatorSchoolSelection = () => {
   }, [debouncedSearchTerm, filters]);
 
   const handleSelectSchool = (school: School) => {
-    navigate(`/simulador/${school.id || school.inep}`);
+    navigate(`/dashboard/simulador/${school.id || school.inep}`);
   };
 
   return (

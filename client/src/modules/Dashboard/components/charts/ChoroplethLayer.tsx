@@ -1,22 +1,25 @@
 import { GeoJSON } from 'react-leaflet';
 import { useQuery } from '@tanstack/react-query';
 import L from 'leaflet';
-import { getMunicipalitiesByRiskCountUseCase } from '../../services/logic/Municipality/getMunicipalitiesByRiskCountUseCase';
 import { getParaibaGeoJsonUseCase } from '../../services/logic/Municipality/getParaibaGeoJsonUseCase';
 import { MunicipalityRiskCount } from '@/domain/entities/Municipality/Municipality';
+import { getAllMunicipalitiesForMapUseCase } from '../../services/logic/Municipality/getAllMunicipalitiesForMapUseCase';
+import { useFilters } from '@/ui/context/FiltersContext';
 
 const getColor = (count: number) => {
   if (count > 20) return '#963B14';
   if (count > 10) return '#D46419';
   if (count > 5) return '#FFA726';
   if (count > 0) return '#FED7AA';
-  return 'transparent';
+  return '#d3d3d3';
 };
 
 const ChoroplethLayer = () => {
+  const { filters } = useFilters();
+
   const { data: riskCountData = [] } = useQuery({
-    queryKey: ['municipalities-by-risk-count'],
-    queryFn: getMunicipalitiesByRiskCountUseCase.execute,
+    queryKey: ['municipalities-for-choropleth-map', filters],
+    queryFn: () => getAllMunicipalitiesForMapUseCase.execute(filters),
   });
 
   const { data: geoJsonData } = useQuery({

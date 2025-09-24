@@ -1,4 +1,4 @@
-import { fontFamily } from 'tailwindcss/defaultTheme';
+import { fontFamily } from 'tailwindcss/defaultTheme'
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -76,6 +76,9 @@ export default {
       fontFamily: {
         sans: ['Inter', ...fontFamily.sans],
       },
+      gridTemplateColumns: {
+        40: 'repeat(40, minmax(0, 1fr))', // 👈 agora tá no lugar certo
+      },
       typography: (theme) => ({
         DEFAULT: {
           css: {
@@ -111,4 +114,4 @@ export default {
     },
   },
   plugins: [require('@tailwindcss/typography'), require('tailwindcss-animate')],
-};
+}

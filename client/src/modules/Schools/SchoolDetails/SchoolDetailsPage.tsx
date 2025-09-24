@@ -46,7 +46,7 @@ const SchoolDetailsPage = () => {
   return (
     <div className="space-y-4">
       <div>
-        <Button variant="ghost" onClick={() => navigate('/escolas')}>
+        <Button variant="ghost" onClick={() => navigate('/dashboard/escolas')}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Voltar para a lista de escolas
         </Button>

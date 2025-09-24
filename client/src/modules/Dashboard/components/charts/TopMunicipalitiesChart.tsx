@@ -14,7 +14,13 @@ const getRiskInfo = (score: number) => {
   return { color: 'text-orange-300', text: 'Baixo Risco' };
 };
 
-const TopMunicipalitiesChart = () => {
+interface TopMunicipalitiesChartProps {
+  onSelectMunicipality: (municipality: MunicipalityRisk) => void;
+}
+
+const TopMunicipalitiesChart = ({
+  onSelectMunicipality,
+}: TopMunicipalitiesChartProps) => {
   const { filters } = useFilters();
 
   const { data: municipalities = [], isLoading } = useQuery({
@@ -24,7 +30,7 @@ const TopMunicipalitiesChart = () => {
 
   const sortedMunicipalities = [...municipalities]
     .sort((a, b) => b.riscoMedio - a.riscoMedio)
-    .slice(0, 8);
+    .slice(0, 5);
 
   return (
     <div className="bg-brand-background p-6 rounded-2xl shadow-sm border border-gray-200">
@@ -51,7 +57,11 @@ const TopMunicipalitiesChart = () => {
             const scorePercentage = (item.riscoMedio * 100).toFixed(0);
 
             return (
-              <div key={item.nome}>
+              <button
+                key={item.nome}
+                onClick={() => onSelectMunicipality(item)}
+                className="w-full text-left p-2 -m-2 rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-orange-dark"
+              >
                 <div className="flex justify-between items-center mb-1 text-sm">
                   <span className="font-medium text-brand-text-primary">
                     {item.nome}
@@ -61,7 +71,7 @@ const TopMunicipalitiesChart = () => {
                   </span>
                 </div>
                 <div className="relative w-full pt-2">
-                  <div className="flex w-full h-2 rounded-full overflow-hidden">
+                  <div className="flex w-full h-2 rounded-full overflow-hidden bg-gray-200">
                     <div
                       className="bg-orange-300"
                       style={{ width: '40%' }}
@@ -75,12 +85,12 @@ const TopMunicipalitiesChart = () => {
                       style={{ width: '15%' }}
                     ></div>
                     <div
-                      className="bg-orange-800"
+                      className="bg-orange-900"
                       style={{ width: '10%' }}
                     ></div>
                   </div>
                   <div
-                    className="absolute top-0 w-0 h-0"
+                    className="absolute top-0 w-0 h-0 transition-all duration-300"
                     style={{
                       left: `${scorePercentage}%`,
                       borderLeft: '6px solid transparent',
@@ -90,13 +100,13 @@ const TopMunicipalitiesChart = () => {
                     }}
                   ></div>
                 </div>
-              </div>
+              </button>
             );
           })}
         </div>
       ) : (
-        <div className="flex-grow flex items-center justify-center text-center text-brand-text-secondary">
-          <p>Nenhum dado encontrado para os filtros selecionados.</p>
+        <div className="flex h-48 items-center justify-center text-center text-brand-text-secondary">
+          <p>Nenhum município encontrado para os filtros selecionados.</p>
         </div>
       )}
     </div>

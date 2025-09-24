@@ -2,7 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import Spinner from '@/ui/components/common/Spinner';
 import { Button } from '@/ui/components/common/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Handshake } from 'lucide-react';
 import { getMunicipalityDetailsUseCase } from '@/shared/services/Municipality/logic/getMunicipalityDetailsUseCase';
 import { MunicipalityMap } from './components/MunicipalityMap';
 import { listSchoolsUseCase } from '@/shared/services/Schools/logic/listPaginatedSchoolsUseCase';
@@ -91,13 +91,13 @@ const MunicipalityDetailsPage = () => {
   }
 
   const handleSelectSchool = (school: School) => {
-    navigate(`/escolas/${school.id}`); 
+    navigate(`/dashboard/escolas/${school.id}`);
   };
 
   return (
     <div className="space-y-6">
       <div>
-        <Button variant="ghost" onClick={() => navigate('/municipios')}>
+        <Button variant="ghost" onClick={() => navigate('/dashboard/municipios')}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Voltar para a lista de municípios
         </Button>
@@ -113,6 +113,35 @@ const MunicipalityDetailsPage = () => {
           schoolsInMunicipality={mapData}
         />
       </div>
+
+      {municipality.totalProjetosDoInstituto > 0 && (
+        <div className="bg-white p-6 rounded-2xl shadow-sm border">
+          <div className="flex items-center gap-2 mb-4">
+            <Handshake className="h-5 w-5 text-brand-orange-dark" />
+            <h2 className="text-xl font-bold text-brand-text-primary">
+              Impacto do Instituto Alpargatas
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="p-4 bg-gray-50 rounded-lg text-center">
+              <p className="text-3xl font-bold text-brand-text-primary">
+                {municipality.totalProjetosDoInstituto}
+              </p>
+              <p className="text-sm text-brand-text-secondary">
+                Projetos Aplicados
+              </p>
+            </div>
+            <div className="p-4 bg-gray-50 rounded-lg text-center">
+              <p className="text-3xl font-bold text-brand-text-primary">
+                {municipality.totalBeneficiadosDoInstituto}
+              </p>
+              <p className="text-sm text-brand-text-secondary">
+                Pessoas Beneficiadas
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <MunicipalityStatsPanel municipality={municipality} />
 

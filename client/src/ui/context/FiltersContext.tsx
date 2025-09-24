@@ -11,11 +11,15 @@ export interface IFilterState {
   municipioIdIbge?: string;
   dependenciaAdm?: string;
   tipoLocalizacao?: string;
+  municipioSomaProjetos?: boolean;
 }
 
 interface IFiltersContext {
   filters: IFilterState;
-  updateFilter: (filterName: keyof IFilterState, value?: string) => void;
+  updateFilter: (
+    filterName: keyof IFilterState,
+    value?: string | boolean,
+  ) => void;
   clearFilters: () => void;
   isPending: boolean;
 }
@@ -26,6 +30,7 @@ const INITIAL_STATE: IFilterState = {
   municipioIdIbge: undefined,
   dependenciaAdm: undefined,
   tipoLocalizacao: undefined,
+  municipioSomaProjetos: undefined,
 };
 
 export const FiltersProvider = ({ children }: { children: ReactNode }) => {
@@ -38,7 +43,10 @@ export const FiltersProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const updateFilter = (filterName: keyof IFilterState, value?: string) => {
+  const updateFilter = (
+    filterName: keyof IFilterState,
+    value?: string | boolean,
+  ) => {
     startTransition(() => {
       setFilters((prev) => ({
         ...prev,
@@ -65,7 +73,7 @@ export const FiltersProvider = ({ children }: { children: ReactNode }) => {
 export const useFilters = (): IFiltersContext => {
   const context = useContext(FiltersContext);
   if (context === undefined) {
-    throw new Error('useFilters deve ser usado dentro de um FiltersProvider');
+    throw new Error('useFilters must be used within a FiltersProvider');
   }
   return context;
 };

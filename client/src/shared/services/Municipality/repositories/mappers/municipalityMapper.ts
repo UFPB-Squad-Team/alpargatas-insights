@@ -18,6 +18,7 @@ export const mapMunicipalityRiskFromApiToDomain = (
   return {
     nome: apiMunicipality.nome,
     riscoMedio: apiMunicipality.riscoMedio,
+    codigoIbge: apiMunicipality.codigoIbge || '', // Inicializa com string vazia; será preenchido posteriormente se necessário
   };
 };
 
@@ -64,5 +65,7 @@ export const mapMunicipalityDetailsFromApiToDomain = (
     totalEscolasEstaduais: apiMunicipality.totalEscolasEstaduais,
     totalEscolasFederais: apiMunicipality.totalEscolasFederais,
     totalEscolasEmAltoRisco: apiMunicipality.totalEscolasEmAltoRisco,
+    totalProjetosDoInstituto: apiMunicipality.totalProjetosDoInstituto,
+    totalBeneficiadosDoInstituto: apiMunicipality.totalBeneficiadosDoInstituto,
   };
 };

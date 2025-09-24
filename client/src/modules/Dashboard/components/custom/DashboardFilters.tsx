@@ -1,9 +1,11 @@
-import { Filter, X } from 'lucide-react';
+import { Building, Filter, Globe, X } from 'lucide-react';
 import FilterDropdown from '@/ui/components/common/FilterDropdown';
 import { useQuery } from '@tanstack/react-query';
 import { listMunicipalitiesUseCase } from '@/shared/services/Municipality/logic/listMunicipalitiesUseCase';
 import { Button } from '@/ui/components/common/button';
 import { useFilters } from '@/ui/context/FiltersContext';
+import { Label } from '@/ui/components/common/label';
+import { Switch } from '@/ui/components/common/switch';
 
 const DashboardFilters = () => {
   const { filters, clearFilters, updateFilter } = useFilters();
@@ -32,6 +34,11 @@ const DashboardFilters = () => {
   ];
 
   const hasActiveFilters = Object.values(filters).some((v) => v);
+
+  const isIAView = !!filters.municipioSomaProjetos;
+  const handleToggle = (isChecked: boolean) => {
+    updateFilter('municipioSomaProjetos', isChecked ? true : undefined);
+  };
 
   return (
     <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 mb-6">
@@ -77,6 +84,36 @@ const DashboardFilters = () => {
             Limpar Filtros
           </Button>
         )}
+
+        <div className="border-t pt-4 flex items-center justify-center gap-4">
+          <div className="flex items-center gap-2">
+            <Globe
+              className={`h-5 w-5 transition-colors ${!isIAView ? 'text-brand-orange-dark' : 'text-gray-400'}`}
+            />
+            <Label
+              htmlFor="view-toggle"
+              className={`font-semibold transition-colors ${!isIAView ? 'text-brand-text-primary' : 'text-gray-400'}`}
+            >
+              Visão Paraíba (Geral)
+            </Label>
+          </div>
+          <Switch
+            id="view-toggle"
+            checked={isIAView}
+            onCheckedChange={handleToggle}
+          />
+          <div className="flex items-center gap-2">
+            <Building
+              className={`h-5 w-5 transition-colors ${isIAView ? 'text-brand-orange-dark' : 'text-gray-400'}`}
+            />
+            <Label
+              htmlFor="view-toggle"
+              className={`font-semibold transition-colors ${isIAView ? 'text-brand-text-primary' : 'text-gray-400'}`}
+            >
+              Visão I.A. (Municípios Impactados)
+            </Label>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -8,7 +8,7 @@ const Sidebar = () => {
       <div>
         <div className="flex items-center mb-8">
           <Link
-            to={'/'}
+            to={'/dashboard'}
             className="flex items-center justify-center lg:justify-start gap-2"
           >
             <img

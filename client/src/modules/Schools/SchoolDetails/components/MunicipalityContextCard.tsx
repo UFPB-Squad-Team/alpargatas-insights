@@ -22,7 +22,7 @@ export const MunicipalityContextCard = ({
         visite a página dedicada ao município.
       </p>
       <Button asChild className="mt-4 bg-brand-orange-dark hover:bg-brand-orange-contrast">
-        <Link to={`/municipios/${municipalityId}`}>
+        <Link to={`/dashboard/municipios/${municipalityId}`}>
           <Map className="mr-2 h-4 w-4" />
           Ver Análise de {municipalityName}
         </Link>
