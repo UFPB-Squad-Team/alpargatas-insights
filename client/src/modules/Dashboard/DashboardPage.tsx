@@ -96,11 +96,11 @@ const DashboardPage = () => {
               info={explanations.KPI_MUNICIPIO_MAIOR_RISCO}
             />
             <KpiCard
-              title="Desafio Socioeconômico"
+              title="Município de Oportunidade"
               value={kpis.municipioOportunidade}
               icon={Target}
               icon_secondary={Lightbulb}
-              description="Município com maior desafio socioeconômico (INSE)"
+              description="Município com maior oportunidade de melhoria (INSE)"
               info={explanations.KPI_DESAFIO_SOCIOECONOMICO}
             />
           </>

@@ -20,9 +20,9 @@ Essas escolas podem necessitar de intervenções urgentes.`,
     content: `Indica o **município com a maior média de risco de infraestrutura** entre suas escolas.  
 Ajuda a identificar regiões que podem necessitar de ações emergenciais de manutenção ou reforma.`,
   },
-  KPI_DESAFIO_SOCIOECONOMICO: {
-    title: 'Desafio Socioeconômico do Município',
-    content: `Mostra o **município com maior desafio socioeconômico**, baseado no **INSE (Índice de Necessidade Socioeconômica)**.  
+  KPI_MUNICIPIO_OPORTUNIDADE: {
+    title: 'Município de Oportunidade',
+    content: `Mostra o **município com maior oportunidade de melhoria**, baseado no **INSE (Índice de Necessidade Socioeconômica)**.  
 Mesmo que as escolas tenham risco baixo, o município pode ter maiores necessidades sociais e de investimento.`,
   },
   CHART_MAP_RISK: {
