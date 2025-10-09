@@ -45,7 +45,7 @@ Principais componentes:
 ## Arquitetura
 
 - Monorepo com serviços isolados (server, client, etl, model-training-pipeline).
-- Comunicação via HTTP (API) e MongoDB Atlas (dados).
+- Comunicação via HTTP e MongoDB Atlas.
 - Orquestração com Docker Compose.
 - Nginx servindo o frontend em produção.
 
