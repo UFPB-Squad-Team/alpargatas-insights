@@ -18,7 +18,6 @@ export class GetAllMunicipalitiesWithHighRiskSchoolController {
           .trim()
           .length(7, { message: 'Need  7 caracteres' })
           .optional(),
-        municipioSomaProjetos: z.unknown().optional(),
       })
       .strict();
 

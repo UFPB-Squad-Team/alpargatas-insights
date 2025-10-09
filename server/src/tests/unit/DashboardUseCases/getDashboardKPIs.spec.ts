@@ -121,10 +121,8 @@ describe('GetDashboardKPIsUseCase', () => {
         idIbge: 'mun-002',
         name: 'João Pessoa',
         schoolsCount: 2,
-        municipioSomaProjetos: 0,
       },
       lackName: 'possui_ar_condicionado',
-      bestMunicipalityOpportunity: 'João Pessoa',
     });
   });
 });

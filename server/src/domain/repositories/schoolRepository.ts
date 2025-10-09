@@ -39,7 +39,7 @@ export interface ISchoolRepository {
   getRiskDistribution(
     thresholds: { high: number; medium: number; low: number },
     filters?: Partial<School>,
-  ): Promise<{ high: number; medium: number; low: number }>;
+  ): Promise<School[]>;
   findAllForMap(
     filters?: Partial<School>,
   ): Promise<

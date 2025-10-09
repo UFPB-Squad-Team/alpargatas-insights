@@ -217,18 +217,6 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
       aggregationPipeline.push({ $match: matchStage });
     }
 
-    if (filters?.municipioSomaProjetos !== undefined) {
-      aggregationPipeline.push({
-        $match: {
-          municipioSomaProjetos: {
-            $exists: true,
-            $ne: null,
-            $nin: [null, undefined, '', NaN],
-          },
-        },
-      });
-    }
-
     aggregationPipeline.push({
       $facet: {
         paginatedResults: [
@@ -341,91 +329,29 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
   async getRiskDistribution(
     thresholds: { high: number; medium: number; low: number },
     filters?: Partial<School>,
-  ): Promise<{ high: number; medium: number; low: number }> {
-    const matchConditions: any = {};
-
-    const aggregationPipeline: any[] = [
-      {
-        $match: {
-          scoreRiscoContextualizado: { $ne: null },
-        },
-      },
-    ];
+  ): Promise<School[]> {
+    const baseFilter: any = {};
 
     if (filters?.municipioIdIbge) {
-      aggregationPipeline.push({
-        $match: {
-          $expr: {
-            $eq: [
-              { $toString: '$municipioIdIbge' },
-              String(filters.municipioIdIbge),
-            ],
-          },
-        },
-      });
+      baseFilter.$expr = {
+        $eq: [
+          { $toString: '$municipioIdIbge' },
+          String(filters.municipioIdIbge),
+        ],
+      };
     }
 
     if (filters?.dependenciaAdm) {
-      aggregationPipeline.push({
-        $match: {
-          dependenciaAdm: filters.dependenciaAdm,
-        },
-      });
+      baseFilter.dependenciaAdm = filters.dependenciaAdm;
     }
 
     if (filters?.tipoLocalizacao) {
-      aggregationPipeline.push({
-        $match: {
-          tipoLocalizacao: filters.tipoLocalizacao,
-        },
-      });
+      baseFilter.tipoLocalizacao = filters.tipoLocalizacao;
     }
 
-    if (filters?.municipioSomaProjetos !== undefined) {
-      aggregationPipeline.push({
-        $match: {
-          municipioSomaProjetos: {
-            $exists: true,
-            $ne: null,
-            $nin: [null, undefined, '', NaN],
-          },
-        },
-      });
-    }
-
-    aggregationPipeline.push({ $match: matchConditions });
-
-    aggregationPipeline.push({
-      $facet: {
-        highRisk: [
-          { $match: { scoreRiscoContextualizado: { $gte: thresholds.high } } },
-          { $count: 'count' },
-        ],
-        mediumRisk: [
-          {
-            $match: {
-              scoreRiscoContextualizado: {
-                $gt: thresholds.low,
-                $lt: thresholds.high,
-              },
-            },
-          },
-          { $count: 'count' },
-        ],
-        lowRisk: [
-          { $match: { scoreRiscoContextualizado: { $lte: thresholds.low } } },
-          { $count: 'count' },
-        ],
-      },
-    });
-
-    const [results] = await SchoolModel.aggregate(aggregationPipeline).exec();
-
-    return {
-      high: results.highRisk[0]?.count || 0,
-      medium: results.mediumRisk[0]?.count || 0,
-      low: results.lowRisk[0]?.count || 0,
-    };
+    return SchoolMapper.toDomainManySchools(
+      await SchoolModel.find(baseFilter).exec(),
+    );
   }
 
   async findAllForMap(
@@ -446,10 +372,8 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
         ],
       };
     }
-
     if (filters?.dependenciaAdm)
       matchStage.dependenciaAdm = filters.dependenciaAdm;
-
     if (filters?.tipoLocalizacao)
       matchStage.tipoLocalizacao = filters.tipoLocalizacao;
 
@@ -457,18 +381,6 @@ export class MoongoseSchoolRepository implements ISchoolRepository {
 
     if (Object.keys(matchStage).length > 0) {
       pipeline.push({ $match: matchStage });
-    }
-
-    if (filters?.municipioSomaProjetos !== undefined) {
-      pipeline.push({
-        $match: {
-          municipioSomaProjetos: {
-            $exists: true,
-            $ne: null,
-            $nin: [null, undefined, '', NaN],
-          },
-        },
-      });
     }
 
     pipeline.push({

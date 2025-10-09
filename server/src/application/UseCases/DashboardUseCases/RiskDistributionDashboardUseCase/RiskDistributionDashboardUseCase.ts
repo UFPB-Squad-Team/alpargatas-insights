@@ -23,9 +23,17 @@ export class RiskDistributionDashboardUseCase {
       filters,
     );
 
-    const high = schools.high;
-    const medium = schools.medium;
-    const low = schools.low;
+    const high = schools.filter(
+      (s) => s.scoreRiscoContextualizado >= this.HIGH_RISK_THRESHOLD,
+    ).length;
+    const medium = schools.filter(
+      (s) =>
+        s.scoreRiscoContextualizado > this.LOW_RISK_THRESHOLD &&
+        s.scoreRiscoContextualizado < this.HIGH_RISK_THRESHOLD,
+    ).length;
+    const low = schools.filter(
+      (s) => s.scoreRiscoContextualizado <= this.LOW_RISK_THRESHOLD,
+    ).length;
 
     return {
       schoolsWithHighInfraestructureRisk: high,
